@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">RuiTongApp</string>
+    <dimen name="default_divider_height">6dp</dimen>
+    <dimen name="default_divider_padding">6dp</dimen>
+</resources>

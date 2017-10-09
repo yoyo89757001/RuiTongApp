@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="#EEEEEE"
+    tools:context="com.example.ruitongapp.ui.GengGaiFuWuQiActivity">
+    <include
+        android:id="@+id/fff"
+        layout="@layout/base_title"/>
+
+    <com.example.ruitongapp.view.MyEditText
+        android:layout_width="match_parent"
+        android:layout_below="@+id/fff"
+        android:background="@null"
+        android:textSize="16sp"
+        android:hint="请输入服务器地址"
+        android:id="@+id/dizhi"
+        android:textColor="@color/textcolor"
+        android:layout_marginTop="20dp"
+        android:textColorHint="@color/textcolor"
+        android:layout_marginLeft="@dimen/sp_16"
+        android:layout_marginRight="@dimen/sp_16"
+        android:layout_height="wrap_content" />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_below="@+id/dizhi"
+        android:text="保 存"
+        android:textColor="@color/write"
+        android:textSize="16sp"
+        android:id="@+id/baocun"
+        android:layout_marginRight="16dp"
+        android:layout_marginLeft="@dimen/sp_16"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/jiaohu"
+        android:layout_height="42dp" />
+
+
+
+</RelativeLayout>
