@@ -2,4 +2,9 @@
     <string name="app_name">RuiTongApp</string>
     <dimen name="default_divider_height">6dp</dimen>
     <dimen name="default_divider_padding">6dp</dimen>
+    <dimen name="default_divider_height2">1dp</dimen>
+    <dimen name="default_divider_padding2">1dp</dimen>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

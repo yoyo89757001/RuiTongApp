@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#EEEEEE"
+    android:fitsSystemWindows="true"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:layout_height="match_parent">
+
+    <android.support.v4.view.ViewPager
+        android:layout_above="@+id/l1"
+        android:id="@+id/viewpage"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+  <LinearLayout
+      android:id="@+id/l1"
+      android:orientation="horizontal"
+      android:clipChildren="false"
+      android:background="@color/write"
+      android:clipToPadding="false"
+      android:layout_alignParentBottom="true"
+      android:layout_width="match_parent"
+      android:layout_height="48dp">
+
+      <RelativeLayout
+          android:id="@+id/homeLayout"
+          android:layout_weight="1"
+          android:gravity="center"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+          <ImageView
+              android:id="@+id/tabImg"
+              android:layout_centerHorizontal="true"
+              android:src="@drawable/yg1_03"
+              android:layout_width="22dp"
+              android:layout_height="22dp"/>
+
+          <TextView
+              android:id="@+id/tabText"
+              android:layout_centerHorizontal="true"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@+id/tabImg"
+              android:text="员工"
+              android:textColor="@color/textcolor"
+              android:textSize="14sp" />
+
+      </RelativeLayout>
+
+      <RelativeLayout
+          android:id="@+id/chosenLayout"
+          android:layout_weight="1"
+          android:gravity="center"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+          <ImageView
+              android:id="@+id/tabImg2"
+              android:layout_centerHorizontal="true"
+                android:src="@drawable/fk1_03"
+              android:layout_width="22dp"
+              android:layout_height="22dp"/>
+
+          <TextView
+              android:id="@+id/tabText2"
+              android:layout_centerHorizontal="true"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@+id/tabImg2"
+              android:text="访客"
+              android:textColor="@color/textcolor"
+              android:textSize="14sp" />
+
+      </RelativeLayout>
+
+
+      <RelativeLayout
+          android:id="@+id/zhongLayout"
+          android:layout_weight="1"
+          android:gravity="center"
+          android:layout_width="0dp"
+          android:layout_height="match_parent">
+          <ImageView
+              android:id="@+id/tabzhong"
+              android:src="@drawable/hmd1_03"
+              android:layout_centerHorizontal="true"
+              android:layout_width="22dp"
+              android:layout_height="22dp"/>
+
+          <TextView
+              android:id="@+id/tabzhong_tv"
+              android:layout_centerHorizontal="true"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@+id/tabzhong"
+              android:text="黑名单"
+              android:textColor="@color/textcolor"
+              android:textSize="14sp" />
+
+      </RelativeLayout>
+
+
+      <RelativeLayout
+          android:id="@+id/localLayout"
+          android:layout_weight="1"
+          android:layout_width="0dp"
+          android:gravity="center"
+          android:layout_height="match_parent">
+          <ImageView
+              android:id="@+id/tabImg3"
+              android:layout_centerHorizontal="true"
+              android:src="@drawable/fw1_03"
+              android:layout_width="22dp"
+              android:layout_height="22dp"/>
+
+          <TextView
+              android:id="@+id/tabText3"
+              android:layout_centerHorizontal="true"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:text="公告"
+              android:textColor="@color/textcolor"
+              android:textSize="14sp"
+              android:layout_below="@+id/tabImg3"/>
+
+      </RelativeLayout>
+
+      <RelativeLayout
+          android:id="@+id/settingLayout"
+          android:layout_width="0dp"
+          android:layout_height="match_parent"
+          android:layout_weight="1"
+          android:gravity="center">
+
+          <ImageView
+              android:id="@+id/tabImg4"
+              android:src="@drawable/gr1_03"
+             android:layout_centerHorizontal="true"
+              android:layout_width="22dp"
+              android:layout_height="22dp" />
+
+          <TextView
+              android:id="@+id/tabText4"
+              android:layout_centerHorizontal="true"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:layout_below="@+id/tabImg4"
+              android:text="我的"
+              android:textColor="@color/textcolor"
+              android:textSize="14sp" />
+
+      </RelativeLayout>
+
+
+  </LinearLayout>
+
+</RelativeLayout>

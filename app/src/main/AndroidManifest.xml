@@ -18,7 +18,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.GengGaiFuWuQiActivity" />
-        <activity android:name=".ui.TianJiaFuWuQiActivity"></activity>
+        <activity android:name=".ui.TianJiaFuWuQiActivity"/>
+        <activity android:name=".ui.HomePageActivity"/>
+
     </application>
 
 </manifest>

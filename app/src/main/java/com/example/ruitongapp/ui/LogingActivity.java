@@ -53,7 +53,6 @@ public class LogingActivity extends Activity {
         logo.setLayoutParams(params);
         logo.invalidate();
 
-
     }
 
     @OnClick({R.id.fr, R.id.denglu})
@@ -63,7 +62,7 @@ public class LogingActivity extends Activity {
             startActivity(new Intent(LogingActivity.this,GengGaiFuWuQiActivity.class));
                 break;
             case R.id.denglu:
-
+                startActivity(new Intent(LogingActivity.this,HomePageActivity.class));
                 break;
         }
     }

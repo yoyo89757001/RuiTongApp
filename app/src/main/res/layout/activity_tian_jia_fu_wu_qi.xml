@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_below="@+id/fff"
         android:background="@null"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:hint="请输入服务器地址"
         android:id="@+id/dizhi"
         android:textColor="@color/textcolor"
@@ -30,11 +30,11 @@
         android:layout_below="@+id/dizhi"
         android:text="保 存"
         android:textColor="@color/write"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:id="@+id/baocun"
         android:layout_marginRight="16dp"
         android:layout_marginLeft="@dimen/sp_16"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="60dp"
         android:background="@drawable/jiaohu"
         android:layout_height="42dp" />
 

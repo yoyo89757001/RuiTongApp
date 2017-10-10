@@ -1,21 +1,13 @@
 package com.example.ruitongapp;
 
 import android.app.Application;
-
 import android.database.sqlite.SQLiteDatabase;
-
 import android.util.Log;
-
-
 import com.example.ruitongapp.beans.DaoMaster;
 import com.example.ruitongapp.beans.DaoSession;
 import com.example.ruitongapp.cookies.CookiesManager;
 import com.tencent.bugly.Bugly;
-
-import java.io.File;
 import java.util.concurrent.TimeUnit;
-
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 
 
