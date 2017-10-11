@@ -22,7 +22,6 @@ import com.example.ruitongapp.fargments.Fragment4;
 import com.example.ruitongapp.fargments.Fragment5;
 import com.example.ruitongapp.view.ViewPagerFragmentAdapter;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
-
 import java.util.ArrayList;
 import java.util.List;
 

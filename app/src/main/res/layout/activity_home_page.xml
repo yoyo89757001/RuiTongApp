@@ -15,6 +15,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
+<View
+    android:background="@color/view_bg"
+    android:layout_above="@+id/l1"
+    android:layout_width="match_parent"
+    android:layout_height="0.8dp"/>
 
   <LinearLayout
       android:id="@+id/l1"

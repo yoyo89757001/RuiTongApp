@@ -1,18 +1,19 @@
 package com.example.ruitongapp.fargments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.YuanGongAdapter;
 import com.example.ruitongapp.beans.YuanGongBean;
-import com.example.ruitongapp.view.SideBar;
+import com.example.ruitongapp.ui.XiuGaiFangKeActivity;
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
@@ -33,11 +34,14 @@ import opensource.jpinyin.PinyinHelper;
  * A simple {@link Fragment} subclass.
  */
 public class Fragment2 extends Fragment {
-    @BindView(R.id.tianjia)
-    TextView tianjia;
+
+
     @BindView(R.id.sousuo)
-    TextView sousuo;
+    ImageView sousuo;
+    @BindView(R.id.tianjia)
+    ImageView tianjia;
     Unbinder unbinder;
+
 
     private LinearLayoutManager linearLayoutManager = null;
     private LRecyclerView lRecyclerView;
@@ -91,15 +95,15 @@ public class Fragment2 extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
 
-                //    startActivity(new Intent(TaiZhangActivity.this,ChaKanTaiZhangActivity.class));
+                startActivity(new Intent(getContext(), XiuGaiFangKeActivity.class).putExtra("type", 2));
 
             }
         });
 
+
         unbinder = ButterKnife.bind(this, view);
         return view;
     }
-
 
 
     /**
@@ -139,18 +143,19 @@ public class Fragment2 extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+
     }
 
-    @OnClick({R.id.tianjia, R.id.sousuo})
+
+    @OnClick({R.id.sousuo, R.id.tianjia})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.tianjia:
-
-                break;
             case R.id.sousuo:
 
                 break;
+            case R.id.tianjia:
+                startActivity(new Intent(getContext(), XiuGaiFangKeActivity.class).putExtra("type", 1));
+                break;
         }
     }
-
 }

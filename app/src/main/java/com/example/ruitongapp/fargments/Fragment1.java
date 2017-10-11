@@ -1,16 +1,19 @@
 package com.example.ruitongapp.fargments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.YuanGongAdapter;
 import com.example.ruitongapp.beans.YuanGongBean;
+import com.example.ruitongapp.ui.XiuGaiYuanGongActivity;
 import com.example.ruitongapp.view.SideBar;
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
@@ -31,9 +34,9 @@ import opensource.jpinyin.PinyinHelper;
  */
 public class Fragment1 extends Fragment {
     @BindView(R.id.tianjia)
-    TextView tianjia;
+    ImageView tianjia;
     @BindView(R.id.sousuo)
-    TextView sousuo;
+    ImageView sousuo;
     Unbinder unbinder;
     private TextView txtShowCurrentLetter;
     private SideBar sideBar;
@@ -91,7 +94,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
 
-                //    startActivity(new Intent(TaiZhangActivity.this,ChaKanTaiZhangActivity.class));
+                startActivity(new Intent(getContext(),XiuGaiYuanGongActivity.class).putExtra("type",2));
 
             }
         });
@@ -170,6 +173,7 @@ public class Fragment1 extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.tianjia:
+                startActivity(new Intent(getContext(),XiuGaiYuanGongActivity.class).putExtra("type",1));
 
                 break;
             case R.id.sousuo:

@@ -5,6 +5,11 @@
     android:layout_height="match_parent"
     tools:context="com.example.ruitongapp.fargments.Fragment2">
 
+    <RelativeLayout
+        android:id="@+id/ty"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
     <TextView
         android:text="访客管理"
         android:textSize="20sp"
@@ -17,51 +22,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <LinearLayout
-        android:layout_below="@+id/erer"
-        android:orientation="horizontal"
-        android:id="@+id/rtrt"
-        android:background="@color/write"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/sousuo"
+        android:layout_width="50dp"
+        android:src="@drawable/i7"
+        android:layout_marginRight="2dp"
+        android:padding="14dp"
+        android:layout_toLeftOf="@+id/tianjia"
+        android:layout_height="match_parent" />
 
-        <TextView
-            android:textColor="@color/textcolor"
-            android:textSize="18sp"
-            android:text="添加"
-            android:id="@+id/tianjia"
-            android:background="@drawable/jiaohu2"
-            android:paddingTop="@dimen/sp_16"
-            android:paddingBottom="@dimen/sp_16"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content" />
+    <ImageView
+        android:id="@+id/tianjia"
+        android:layout_width="50dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:padding="14dp"
+        android:layout_marginRight="22dp"
+        android:src="@drawable/tj"
+        android:layout_height="match_parent" />
 
-        <View
-            android:background="@color/lanse"
-            android:layout_width="1dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="4dp"
-            android:layout_height="match_parent"/>
+    </RelativeLayout>
 
-        <TextView
-            android:textColor="@color/textcolor"
-            android:textSize="18sp"
-            android:text="搜索"
-            android:id="@+id/sousuo"
-            android:background="@drawable/jiaohu2"
-            android:gravity="center"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:background="@color/view_bg"
-        android:layout_below="@+id/rtrt"
+        android:layout_below="@+id/ty"
         android:id="@+id/rq"
         android:layout_height="0.8dp"/>
 

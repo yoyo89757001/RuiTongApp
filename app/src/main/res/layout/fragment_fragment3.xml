@@ -1,13 +1,85 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context="com.example.ruitongapp.fargments.Fragment3">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
-</FrameLayout>
+    <RelativeLayout
+        android:id="@+id/erer"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <TextView
+            android:text="黑名单管理"
+            android:textSize="20sp"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/sp_16"
+            android:gravity="center_vertical"
+            android:background="@color/lanse"
+            android:textColor="@color/write"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+        <ImageView
+            android:id="@+id/sousuo"
+            android:layout_width="50dp"
+            android:src="@drawable/i7"
+            android:layout_marginRight="2dp"
+            android:padding="14dp"
+            android:layout_toLeftOf="@+id/tianjia"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/tianjia"
+            android:layout_width="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:padding="14dp"
+            android:layout_marginRight="22dp"
+            android:src="@drawable/tj"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:background="@color/view_bg"
+        android:layout_below="@+id/erer"
+        android:id="@+id/rq"
+        android:layout_height="0.8dp"/>
+
+    <com.github.jdsjlzx.recyclerview.LRecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_below="@+id/rq"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+
+
+    <TextView
+        android:id="@+id/txt_show_current_letter"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/zidonghuoqu9"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="A"
+        android:textColor="#ffffff"
+        android:textSize="50sp"
+        android:visibility="gone" />
+
+    <com.example.ruitongapp.view.SideBar
+        android:id="@+id/side_bar"
+        android:layout_below="@+id/erer"
+        android:layout_width="26dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true" />
+
+
+</RelativeLayout>

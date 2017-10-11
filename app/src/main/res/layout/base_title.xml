@@ -34,6 +34,7 @@
         android:id="@+id/righttv"
         android:layout_width="50dp"
         android:visibility="gone"
+        android:layout_marginRight="@dimen/sp_16"
         android:text="添加"
         android:textColor="@color/write"
         android:textSize="18sp"

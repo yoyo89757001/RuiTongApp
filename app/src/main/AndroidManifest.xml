@@ -18,9 +18,12 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.GengGaiFuWuQiActivity" />
-        <activity android:name=".ui.TianJiaFuWuQiActivity"/>
-        <activity android:name=".ui.HomePageActivity"/>
-
+        <activity android:name=".ui.TianJiaFuWuQiActivity" />
+        <activity android:name=".ui.HomePageActivity" />
+        <activity android:name=".ui.XiuGaiYuanGongActivity" />
+        <activity android:name=".ui.XiuGaiFangKeActivity"
+            android:windowSoftInputMode="stateHidden"
+            />
     </application>
 
 </manifest>
