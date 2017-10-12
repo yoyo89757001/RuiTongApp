@@ -8,28 +8,39 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.HeiMingDanAdapter;
-import com.example.ruitongapp.adapters.YuanGongAdapter;
 import com.example.ruitongapp.beans.YuanGongBean;
-import com.example.ruitongapp.ui.XiuGaiFangKeActivity;
+import com.example.ruitongapp.ui.XiuGaiHeiMingDanActivity;
 import com.example.ruitongapp.view.SideBar;
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
 import opensource.jpinyin.PinyinHelper;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Fragment3 extends Fragment {
+    @BindView(R.id.sousuo)
+    ImageView sousuo;
+    @BindView(R.id.tianjia)
+    ImageView tianjia;
+    Unbinder unbinder;
     private LinearLayoutManager linearLayoutManager = null;
     private LRecyclerView lRecyclerView;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
@@ -87,7 +98,7 @@ public class Fragment3 extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
 
-                startActivity(new Intent(getContext(), XiuGaiFangKeActivity.class).putExtra("type", 2));
+                startActivity(new Intent(getContext(), XiuGaiHeiMingDanActivity.class).putExtra("type", 2));
 
             }
         });
@@ -95,6 +106,7 @@ public class Fragment3 extends Fragment {
 
         setCallbackInterface();
 
+        unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
@@ -153,5 +165,25 @@ public class Fragment3 extends Fragment {
                 return lhs.getFirstLetter().compareTo(rhs.getFirstLetter());
             }
         });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unbinder.unbind();
+    }
+
+    @OnClick({R.id.sousuo, R.id.tianjia})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.sousuo:
+
+                break;
+            case R.id.tianjia:
+
+                startActivity(new Intent(getContext(), XiuGaiHeiMingDanActivity.class).putExtra("type", 1));
+
+                break;
+        }
     }
 }

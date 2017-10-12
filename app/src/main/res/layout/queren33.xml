@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:layout_width="280dp"
+        android:layout_height="200dp">
+
+        <RelativeLayout
+            android:layout_weight="2"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp">
+
+            <TextView
+                android:textColor="#000000"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="18sp"
+                android:layout_marginTop="12dp"
+                android:layout_gravity="top"
+                android:gravity="center"
+                android:text="温馨提示"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+
+            <TextView
+                android:textColor="#737171"
+                android:id="@+id/dddddd"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
+
+        <View
+            android:background="@color/view_bg"
+            android:layout_width="match_parent"
+            android:layout_height="0.8dp"/>
+
+        <LinearLayout
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_width="280dp"
+            android:layout_height="0dp">
+
+            <Button
+                android:text="确定"
+                android:layout_weight="1"
+                android:textSize="14sp"
+                android:id="@+id/queding_xingming"
+                android:textColor="#4b99f7"
+                android:background="@null"
+                android:layout_width="0dp"
+                android:layout_height="32dp" />
+
+            <View
+                android:layout_width="0.8dp"
+                android:id="@+id/quxiao_v"
+                android:background="@color/view_bg"
+                android:layout_height="match_parent"/>
+            <Button
+                android:layout_weight="1"
+                android:text="取消"
+                android:textSize="14sp"
+                android:id="@+id/quxiao"
+                android:textColor="#4b99f7"
+                android:background="@null"
+                android:layout_width="0dp"
+                android:layout_height="32dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -7,6 +7,9 @@ import com.example.ruitongapp.beans.DaoMaster;
 import com.example.ruitongapp.beans.DaoSession;
 import com.example.ruitongapp.cookies.CookiesManager;
 import com.tencent.bugly.Bugly;
+import com.tzutalin.dlib.Constants;
+import com.tzutalin.dlib.FaceDet;
+
 import java.util.concurrent.TimeUnit;
 import okhttp3.OkHttpClient;
 
@@ -15,7 +18,7 @@ import okhttp3.OkHttpClient;
  * Created by tangjun on 14-8-24.
  */
 public class MyApplication extends Application {
-
+	public static FaceDet mFaceDet;
 	private final static String TAG = "CookiesManager";
 	public static MyApplication myAppLaction;
 	public static String zhujidizhi=null;
@@ -34,7 +37,7 @@ public class MyApplication extends Application {
 		try {
 
 			Bugly.init(getApplicationContext(), "e13f717f4e", false);
-
+			mFaceDet = new FaceDet(Constants.getFaceShapeModelPath());
 		} catch (Exception e) {
 			Log.d("gggg", e.getMessage());
 

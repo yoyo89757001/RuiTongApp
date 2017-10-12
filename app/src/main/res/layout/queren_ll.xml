@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="280dp"
+        android:gravity="center"
+        android:id="@+id/jiazai"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:layout_height="220dp">
+        <ProgressBar
+            android:id="@+id/progress"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
+        <TextView
+            android:textColor="@color/lanse"
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"
+            android:text="上传图片中,请稍后..."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:id="@+id/www"
+        android:layout_width="280dp"
+        android:layout_height="220dp">
+
+        <TextView
+            android:id="@+id/title2"
+            android:text="修改识别照片"
+            android:textSize="16sp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp" />
+
+
+
+
+        <TextView
+            android:text="修改照片(相册)"
+            android:textColor="@color/textcolor"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginLeft="22dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="22dp"
+            android:id="@+id/xiangce"
+            android:background="@drawable/jiaohu"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+
+        <TextView
+            android:text="修改照片(拍照)"
+            android:textColor="@color/textcolor"
+            android:textSize="14sp"
+            android:id="@+id/paizhao"
+            android:layout_marginLeft="22dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginRight="22dp"
+            android:gravity="center"
+            android:background="@drawable/jiaohu"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+
+        <TextView
+            android:text="删除照片"
+            android:textColor="@color/red"
+            android:textSize="14sp"
+            android:layout_marginLeft="22dp"
+            android:layout_marginRight="22dp"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:gravity="center"
+            android:id="@+id/shanchu"
+            android:layout_weight="1"
+            android:background="@drawable/jiaohu"
+            android:layout_width="match_parent"
+            android:layout_height="0dp" />
+
+      </LinearLayout>
+</LinearLayout>
