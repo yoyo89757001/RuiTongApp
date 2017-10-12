@@ -1,13 +1,56 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:orientation="vertical"
     android:layout_height="match_parent"
     tools:context="com.example.ruitongapp.fargments.Fragment4">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
+        android:id="@+id/erer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="50dp">
+        <TextView
+            android:text="公告管理"
+            android:textSize="20sp"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/sp_16"
+            android:gravity="center_vertical"
+            android:background="@color/lanse"
+            android:textColor="@color/write"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
-</FrameLayout>
+
+        <TextView
+            android:id="@+id/sousuo"
+            android:layout_width="50dp"
+            android:layout_marginRight="2dp"
+            android:text="发布"
+            android:textColor="@color/write"
+            android:textSize="@dimen/sp_16"
+            android:gravity="center"
+            android:layout_toLeftOf="@+id/tianjia"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/tianjia"
+            android:layout_width="50dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:text="编辑"
+            android:textColor="@color/write"
+            android:textSize="@dimen/sp_16"
+            android:gravity="center"
+            android:layout_marginRight="22dp"
+            android:layout_height="match_parent" />
+
+    </RelativeLayout>
+
+        <com.github.jdsjlzx.recyclerview.LuRecyclerView
+            android:layout_width="match_parent"
+            android:id="@+id/recyclerView"
+            android:layout_height="match_parent"/>
+
+
+
+</LinearLayout>
