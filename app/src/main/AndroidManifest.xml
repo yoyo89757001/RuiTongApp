@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.ruitongapp">
 
-
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
 
     <!-- <uses-feature android:name="android.hardware.camera" /> -->
@@ -18,11 +17,11 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <uses-feature android:name="android.hardware.camera" />
+
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.NFC" />
-
 
     <application
         android:name=".MyApplication"
@@ -54,11 +53,14 @@
         <activity
             android:name=".ui.DatePickActivity"
             android:theme="@style/MyDialogStyleBottom" />
-        <activity android:name=".ui.PaiZhaoActivity"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
-            />
-        <activity android:name=".ui.PaiZhaoActivity2"
-            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+        <activity
+            android:name=".ui.PaiZhaoActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity
+            android:name=".ui.PaiZhaoActivity2"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+        <activity android:name=".ui.SheZhiActivity" />
+        <activity android:name=".ui.XiuGaiMiMaActivity"></activity>
     </application>
 
 </manifest>

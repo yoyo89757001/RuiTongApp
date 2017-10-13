@@ -12,9 +12,16 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
+import com.example.ruitongapp.beans.BaoCunBean;
+import com.example.ruitongapp.beans.BaoCunBeanDao;
+import com.example.ruitongapp.beans.FuWuQiBean;
+import com.example.ruitongapp.beans.FuWuQiBeanDao;
 import com.example.ruitongapp.utils.Utils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +38,13 @@ public class LogingActivity extends Activity {
     Button denglu;
     private ImageView logo;
     private int dw, dh;
+    private BaoCunBeanDao baoCunBeanDao=null;
+    private BaoCunBean baoCunBean=null;
+    private FuWuQiBean fuWuQiBean=null;
+    private List<FuWuQiBean> fuWuQiBeanList=null;
+    private FuWuQiBeanDao fuWuQiBeanDao=null;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +55,19 @@ public class LogingActivity extends Activity {
             SystemBarTintManager tintManager = new SystemBarTintManager(this);
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.titlecolor);
+        }
+        fuWuQiBeanDao= MyApplication.myAppLaction.getDaoSession().getFuWuQiBeanDao();
+        if (fuWuQiBeanDao!=null){
+            fuWuQiBeanList=fuWuQiBeanDao.loadAll();
+            for (int i=0;i<fuWuQiBeanList.size();i++){
+                if (fuWuQiBeanList.get(i).getIsTrue()){
+                    fuWuQiBean=fuWuQiBeanList.get(i);
+                }
+            }
+        }
+        baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+        if (fuWuQiBeanDao!=null){
+            baoCunBean=baoCunBeanDao.load(123456L);
         }
 
         ButterKnife.bind(this);

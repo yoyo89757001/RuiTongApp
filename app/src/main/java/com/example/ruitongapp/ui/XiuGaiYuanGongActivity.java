@@ -65,6 +65,8 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
+
+
 public class XiuGaiYuanGongActivity extends Activity {
     @BindView(R.id.leftim)
     ImageView leftim;
@@ -221,7 +223,6 @@ public class XiuGaiYuanGongActivity extends Activity {
         intentFilter.addAction("paizhang_tx");
         //实例化广播监听器；
         netChangReceiver = new NetChangReceiver();
-
         //将广播监听器和过滤器注册在一起；
         registerReceiver(netChangReceiver, intentFilter);
 

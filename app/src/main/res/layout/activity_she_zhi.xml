@@ -1,45 +1,39 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="#eeeeee"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#eeeeeeee"
-    tools:context="com.example.ruitongapp.fargments.Fragment5">
-    <TextView
-        android:text="我的"
-        android:textSize="20sp"
-        android:paddingLeft="@dimen/sp_16"
-        android:gravity="center_vertical"
-        android:background="@color/lanse"
-        android:textColor="@color/write"
-        android:layout_width="match_parent"
-        android:layout_height="50dp" />
+    tools:context="com.example.ruitongapp.ui.SheZhiActivity">
+
+    <include layout="@layout/base_title"
+        android:id="@+id/op"/>
 
     <RelativeLayout
         android:id="@+id/r1"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_below="@+id/op"
         android:background="@color/write"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="60dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/sp_16"
-            android:text="账号"
             android:textColor="@color/blake"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_16"
+            android:text="切换账号"
+            android:layout_marginLeft="@dimen/sp_16"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <TextView
-            android:id="@+id/zhanghao"
-            android:layout_width="22dp"
-            android:layout_height="22dp"
+        <ImageView
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/sp_16"
-            android:textColor="@color/textcolor"
-            android:textSize="@dimen/sp_16" />
+            android:src="@drawable/ic_go3x"
+            android:layout_width="22dp"
+            android:layout_height="22dp" />
 
 
     </RelativeLayout>
@@ -47,6 +41,7 @@
     <RelativeLayout
         android:layout_marginTop="0.8dp"
         android:id="@+id/r2"
+        android:layout_below="@+id/r1"
         android:background="@color/write"
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -55,7 +50,7 @@
         <TextView
             android:textColor="@color/blake"
             android:textSize="@dimen/sp_16"
-            android:text="密码"
+            android:text="退出"
             android:layout_marginLeft="@dimen/sp_16"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
@@ -69,38 +64,18 @@
             android:layout_width="22dp"
             android:layout_height="22dp" />
 
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/r3"
-        android:layout_marginTop="6dp"
-        android:background="@color/write"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="60dp">
-
-        <TextView
-            android:textColor="@color/blake"
-            android:textSize="@dimen/sp_16"
-            android:text="设置"
-            android:layout_marginLeft="@dimen/sp_16"
-            android:layout_centerVertical="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-        <ImageView
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/sp_16"
-            android:src="@drawable/ic_go3x"
-            android:layout_width="22dp"
-            android:layout_height="22dp" />
-
-
     </RelativeLayout>
 
 
 
+    <TextView
+        android:text="版本:v1.0.0"
+        android:textSize="@dimen/sp_16"
+        android:layout_marginBottom="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/write"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
-</LinearLayout>
+</RelativeLayout>

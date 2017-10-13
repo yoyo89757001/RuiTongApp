@@ -1,6 +1,9 @@
 package com.example.ruitongapp.ui;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +36,11 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
     private List<Fragment> mFragmentList = new ArrayList<>();
     private ImageView tabIm,tabIm2,tabIm3,tabIm4,tabZhong;
     private TextView tabText,tabText2,tabText3,tabText4,tabTextZhong;
+    //定义一个过滤器；
+    private IntentFilter intentFilter;
+    //定义一个广播监听器；
+    private NetChangReceiver netChangReceiver;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +54,14 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
             tintManager.setStatusBarTintResource(R.color.lanse);
         }
 
-
+        //实例化过滤器；
+        intentFilter = new IntentFilter();
+        //添加过滤的Action值；
+        intentFilter.addAction("guanbiyemian");
+        //实例化广播监听器；
+        netChangReceiver = new NetChangReceiver();
+        //将广播监听器和过滤器注册在一起；
+        registerReceiver(netChangReceiver, intentFilter);
 
         initFragmetList();
 
@@ -55,6 +70,17 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
         initView();
         initViewPager();
 
+    }
+
+    private  class NetChangReceiver extends BroadcastReceiver {
+
+        //重写onReceive方法，该方法的实体为，接收到广播后的执行代码；
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("guanbiyemian")){
+                finish();
+            }
+        }
     }
 
     private void initViewPager() {
@@ -199,5 +225,11 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
         public void onPageScrollStateChanged(int state) {
             Log.d("home","onPageScrollStateChanged");
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(netChangReceiver);
     }
 }
