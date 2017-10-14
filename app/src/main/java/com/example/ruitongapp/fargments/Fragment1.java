@@ -117,7 +117,7 @@ public class Fragment1 extends Fragment {
         //设置头部加载颜色
         lRecyclerView.setHeaderViewColor(R.color.colorAccent, R.color.blake ,android.R.color.white);
         lRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
-        lRecyclerView.setFooterViewColor(R.color.colorAccent, R.color.blake ,android.R.color.white);
+        lRecyclerView.setFooterViewColor(R.color.textcolor, R.color.blake ,android.R.color.white);
         //设置底部加载文字提示
         lRecyclerView.setFooterViewHint("拼命加载中","已经全部为你呈现了","网络不给力...");
         lRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
