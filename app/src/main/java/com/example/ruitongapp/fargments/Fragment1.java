@@ -5,20 +5,38 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.YuanGongAdapter;
+import com.example.ruitongapp.beans.BaoCunBean;
+import com.example.ruitongapp.beans.BaoCunBeanDao;
+import com.example.ruitongapp.beans.MoRenFanHuiBean;
 import com.example.ruitongapp.beans.YuanGongBean;
+import com.example.ruitongapp.dialogs.TiJIaoDialog;
 import com.example.ruitongapp.ui.XiuGaiYuanGongActivity;
+import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.view.SideBar;
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
+import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
+import com.github.jdsjlzx.interfaces.OnRefreshListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
 import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
+import com.github.jdsjlzx.recyclerview.ProgressStyle;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.sdsmdg.tastytoast.TastyToast;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,6 +45,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 import opensource.jpinyin.PinyinHelper;
 
 /**
@@ -43,29 +68,30 @@ public class Fragment1 extends Fragment {
     private LinearLayoutManager linearLayoutManager = null;
     private LRecyclerView lRecyclerView;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
-    private List<YuanGongBean> dataList;
+    private List<YuanGongBean.ObjectsBean> dataList;
     private YuanGongAdapter taiZhangAdapter;
+    private TiJIaoDialog jiaZaiDialog=null;
+    private Call call=null;
+    private BaoCunBeanDao baoCunBeanDao=null;
+    private BaoCunBean baoCunBean=null;
+    private String ss=null;
+    private int dangQianYe=1;
+    private int qingQiuYe=1;
 
-    private String[] letterStrings = {"#", "dA", "gB", "tC", "aD", "bE", "hF", "jG", "kH", "lI", "oJ", "pK",
-            "qL", "wM", "dN", "aO", "jP", "bQ", "cR", "zS", "eT", "rU", "uV", "iW", "hX", "jY", "kZ"};
 
     public Fragment1() {
         dataList = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            YuanGongBean bean = new YuanGongBean();
-            bean.setName(letterStrings[i]);
-            dataList.add(bean);
-        }
-
-        chineseToPinyin(dataList);
-        paixu();
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+        if (baoCunBeanDao!=null){
+            baoCunBean=baoCunBeanDao.load(123456L);
+        }
+
         View view = inflater.inflate(R.layout.fragment_fragment1, container, false);
         sideBar = (SideBar) view.findViewById(R.id.side_bar);
         txtShowCurrentLetter = (TextView) view.findViewById(R.id.txt_show_current_letter);
@@ -73,7 +99,7 @@ public class Fragment1 extends Fragment {
 
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerView);
         taiZhangAdapter = new YuanGongAdapter(dataList);
-        taiZhangAdapter.setLetters();
+
         lRecyclerViewAdapter = new LRecyclerViewAdapter(taiZhangAdapter);
 
         linearLayoutManager = new LinearLayoutManager(getContext());
@@ -88,7 +114,13 @@ public class Fragment1 extends Fragment {
                 .setColorResource(R.color.transparent)
                 .build();
         lRecyclerView.addItemDecoration(divider);
-
+        //设置头部加载颜色
+        lRecyclerView.setHeaderViewColor(R.color.colorAccent, R.color.blake ,android.R.color.white);
+        lRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
+        lRecyclerView.setFooterViewColor(R.color.colorAccent, R.color.blake ,android.R.color.white);
+        //设置底部加载文字提示
+        lRecyclerView.setFooterViewHint("拼命加载中","已经全部为你呈现了","网络不给力...");
+        lRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
 
         lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
@@ -99,9 +131,30 @@ public class Fragment1 extends Fragment {
             }
         });
         setCallbackInterface();
+        lRecyclerView.setOnRefreshListener(new OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                //下拉刷新
 
+                dangQianYe=1;
+                qingQiuYe=1;
+                link_liebiao("",qingQiuYe);
+            }
+        });
+
+        lRecyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                qingQiuYe++;
+                //加载更多
+                link_liebiao("",qingQiuYe);
+            }
+        });
 
         unbinder = ButterKnife.bind(this, view);
+
+
+        link_liebiao("",1);
         return view;
     }
 
@@ -133,9 +186,9 @@ public class Fragment1 extends Fragment {
     /**
      * 将中文转化为拼音
      */
-    public static void chineseToPinyin(List<YuanGongBean> list) {
+    public static void chineseToPinyin(List<YuanGongBean.ObjectsBean> list) {
         for (int i = 0; i < list.size(); i++) {
-            YuanGongBean contactsModel1 = list.get(i);
+            YuanGongBean.ObjectsBean contactsModel1 = list.get(i);
             //将汉字转换为拼音
             String pinyinString = PinyinHelper.getShortPinyin(list.get(i).getName());
             //将拼音字符串转换为大写拼音
@@ -155,9 +208,9 @@ public class Fragment1 extends Fragment {
     private void paixu() {
 
         //将联系人列表的标题字母排序
-        Collections.sort(dataList, new Comparator<YuanGongBean>() {
+        Collections.sort(dataList, new Comparator<YuanGongBean.ObjectsBean>() {
             @Override
-            public int compare(YuanGongBean lhs, YuanGongBean rhs) {
+            public int compare(YuanGongBean.ObjectsBean lhs, YuanGongBean.ObjectsBean rhs) {
                 return lhs.getFirstLetter().compareTo(rhs.getFirstLetter());
             }
         });
@@ -180,5 +233,155 @@ public class Fragment1 extends Fragment {
 
                 break;
         }
+    }
+
+    private void link_liebiao(String name,int pageNum) {
+
+//        jiaZaiDialog=new TiJIaoDialog(getActivity());
+//        if (!getActivity().isFinishing()){
+//            jiaZaiDialog.show();
+//        }
+
+        RequestBody body = new FormBody.Builder()
+                .add("accountId",baoCunBean.getSid())
+                .add("subject_type", "0")
+                .add("status","1")
+                .add("name",name )
+                .add("pageNum",pageNum+"")
+                .add("pageSize", "10")
+                .add("token", baoCunBean.getToken())
+                .build();
+
+        Request.Builder requestBuilder = new Request.Builder()
+                // .header("Content-Type", "application/json")
+                .post(body)
+                .url(baoCunBean.getDizhi() + "/querySubjects.do");
+
+
+        // step 3：创建 Call 对象
+        call = MyApplication.getOkHttpClient().newCall(requestBuilder.build());
+
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                        if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
+//                            jiaZaiDialog.dismiss();
+//                        }
+                        Toast tastyToast= TastyToast.makeText(getActivity(),"网络错误!",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                        tastyToast.setGravity(Gravity.CENTER,0,0);
+                        tastyToast.show();
+                    }
+                });
+                Log.d("AllConnects", "请求识别失败"+e.getMessage());
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
+//                            jiaZaiDialog.dismiss();
+//                        }
+//                    }
+//                });
+                Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                //获得返回体
+                try {
+
+                    ResponseBody body = response.body();
+                    // Log.d("AllConnects", "识别结果返回"+response.body().string());
+                    ss=body.string();
+                    Log.d("Fragment1", ss);
+                    JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson=new Gson();
+                    final YuanGongBean zhaoPianBean=gson.fromJson(jsonObject,YuanGongBean.class);
+                    if (qingQiuYe==dangQianYe){
+                        if (dataList.size()!=0){
+                            dataList.clear();
+                        }
+                        dataList.addAll(zhaoPianBean.getObjects());
+                        chineseToPinyin(dataList);
+                        paixu();
+                        taiZhangAdapter.setLetters();
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                taiZhangAdapter.notifyDataSetChanged();
+                                lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
+                            }
+                        });
+
+                    }else {
+                        for (int i=0;i<zhaoPianBean.getObjects().size();i++){
+                            dataList.add(zhaoPianBean.getObjects().get(i));
+                        }
+                        chineseToPinyin(dataList);
+                        paixu();
+                        taiZhangAdapter.setLetters();
+
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                lRecyclerViewAdapter.notifyDataSetChanged();
+                                lRecyclerView.refreshComplete(10);// REQUEST_COUNT为每页加载数量
+                            }
+                        });
+
+                    }
+                    if (zhaoPianBean.getObjects().size()==0){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                lRecyclerView.setNoMore(true);
+                            }
+                        });
+
+                    }
+
+                }catch (Exception e){
+                    try {
+                        JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
+                        Gson gson=new Gson();
+                        final MoRenFanHuiBean zhaoPianBean=gson.fromJson(jsonObject,MoRenFanHuiBean.class);
+                        if (zhaoPianBean.getDtoResult()==-33){
+                            //登陆过期
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+//                                    if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
+//                                        jiaZaiDialog.dismiss();
+//                                    }
+                                    Toast tastyToast= TastyToast.makeText(getActivity(),"登陆过期,或账号在其它机器登陆,请重新登陆",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                                    tastyToast.setGravity(Gravity.CENTER,0,0);
+                                    tastyToast.show();
+                                }
+                            });
+                        }
+                    }catch (Exception e1){
+                        Log.d("Fragment1", "e1:" + e1);
+                    }
+
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+//                            if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
+//                                jiaZaiDialog.dismiss();
+//                            }
+                            Toast tastyToast= TastyToast.makeText(getActivity(),"网络错误!",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                            tastyToast.setGravity(Gravity.CENTER,0,0);
+                            tastyToast.show();
+                        }
+                    });
+
+                    Log.d("WebsocketPushMsg", e.getMessage());
+                }
+            }
+        });
     }
 }

@@ -21,7 +21,7 @@ import java.util.Map;
  */
 
 public class FangKeAdapter extends RecyclerView.Adapter<FangKeAdapter.ViewHolder> {
-    private List<YuanGongBean> datas;
+    private List<YuanGongBean.ObjectsBean> datas;
     private ClickIntface clickIntface;
     //是否第一个Item的
     private boolean isFirstItemLetter = true;
@@ -33,7 +33,7 @@ public class FangKeAdapter extends RecyclerView.Adapter<FangKeAdapter.ViewHolder
         this.clickIntface=clickIntface;
     }
 
-    public FangKeAdapter(List<YuanGongBean> datas) {
+    public FangKeAdapter(List<YuanGongBean.ObjectsBean> datas) {
         this.datas = datas;
         map = new HashMap<>();
     }

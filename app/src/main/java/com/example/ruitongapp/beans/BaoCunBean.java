@@ -15,11 +15,18 @@ public class BaoCunBean {
     private Long id;
     private String zhanghao;
     private String mima;
-    @Generated(hash = 1822532978)
-    public BaoCunBean(@NotNull Long id, String zhanghao, String mima) {
+    private String sid;
+    private String token;
+    private String dizhi;
+    @Generated(hash = 948468976)
+    public BaoCunBean(@NotNull Long id, String zhanghao, String mima, String sid,
+            String token, String dizhi) {
         this.id = id;
         this.zhanghao = zhanghao;
         this.mima = mima;
+        this.sid = sid;
+        this.token = token;
+        this.dizhi = dizhi;
     }
     @Generated(hash = 1469853663)
     public BaoCunBean() {
@@ -42,5 +49,26 @@ public class BaoCunBean {
     public void setMima(String mima) {
         this.mima = mima;
     }
+    public String getSid() {
+        return this.sid;
+    }
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
+    public String getToken() {
+        return this.token;
+    }
+    public void setToken(String token) {
+        this.token = token;
+    }
+    public String getDizhi() {
+        return this.dizhi;
+    }
+    public void setDizhi(String dizhi) {
+        this.dizhi = dizhi;
+    }
+
+    
+
 
 }

@@ -1,6 +1,7 @@
 package com.example.ruitongapp.adapters;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ import java.util.Map;
  */
 
 public class YuanGongAdapter extends RecyclerView.Adapter<YuanGongAdapter.ViewHolder> {
-    private List<YuanGongBean> datas;
+    private List<YuanGongBean.ObjectsBean> datas;
     private ClickIntface clickIntface;
     //是否第一个Item的
     private boolean isFirstItemLetter = true;
@@ -31,7 +32,7 @@ public class YuanGongAdapter extends RecyclerView.Adapter<YuanGongAdapter.ViewHo
         this.clickIntface=clickIntface;
     }
 
-    public YuanGongAdapter(List<YuanGongBean> datas) {
+    public YuanGongAdapter(List<YuanGongBean.ObjectsBean> datas) {
         this.datas = datas;
         map = new HashMap<>();
     }

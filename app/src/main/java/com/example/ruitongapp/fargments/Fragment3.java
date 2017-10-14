@@ -44,7 +44,7 @@ public class Fragment3 extends Fragment {
     private LinearLayoutManager linearLayoutManager = null;
     private LRecyclerView lRecyclerView;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
-    private List<YuanGongBean> dataList;
+    private List<YuanGongBean.ObjectsBean> dataList;
     private HeiMingDanAdapter taiZhangAdapter;
     private TextView txtShowCurrentLetter;
     private SideBar sideBar;
@@ -55,11 +55,7 @@ public class Fragment3 extends Fragment {
 
     public Fragment3() {
         dataList = new ArrayList<>();
-        for (int i = 0; i < 25; i++) {
-            YuanGongBean bean = new YuanGongBean();
-            bean.setName(letterStrings[i]);
-            dataList.add(bean);
-        }
+
 
         chineseToPinyin(dataList);
         paixu();
@@ -137,9 +133,9 @@ public class Fragment3 extends Fragment {
     /**
      * 将中文转化为拼音
      */
-    public static void chineseToPinyin(List<YuanGongBean> list) {
+    public static void chineseToPinyin(List<YuanGongBean.ObjectsBean> list) {
         for (int i = 0; i < list.size(); i++) {
-            YuanGongBean contactsModel1 = list.get(i);
+            YuanGongBean.ObjectsBean contactsModel1 = list.get(i);
             //将汉字转换为拼音
             String pinyinString = PinyinHelper.getShortPinyin(list.get(i).getName());
             //将拼音字符串转换为大写拼音
@@ -159,9 +155,9 @@ public class Fragment3 extends Fragment {
     private void paixu() {
 
         //将联系人列表的标题字母排序
-        Collections.sort(dataList, new Comparator<YuanGongBean>() {
+        Collections.sort(dataList, new Comparator<YuanGongBean.ObjectsBean>() {
             @Override
-            public int compare(YuanGongBean lhs, YuanGongBean rhs) {
+            public int compare(YuanGongBean.ObjectsBean lhs, YuanGongBean.ObjectsBean rhs) {
                 return lhs.getFirstLetter().compareTo(rhs.getFirstLetter());
             }
         });

@@ -21,7 +21,7 @@ import java.util.Map;
  */
 
 public class HeiMingDanAdapter extends RecyclerView.Adapter<HeiMingDanAdapter.ViewHolder> {
-    private List<YuanGongBean> datas;
+    private List<YuanGongBean.ObjectsBean> datas;
     private ClickIntface clickIntface;
     //是否第一个Item的
     private boolean isFirstItemLetter = true;
@@ -33,7 +33,7 @@ public class HeiMingDanAdapter extends RecyclerView.Adapter<HeiMingDanAdapter.Vi
         this.clickIntface=clickIntface;
     }
 
-    public HeiMingDanAdapter(List<YuanGongBean> datas) {
+    public HeiMingDanAdapter(List<YuanGongBean.ObjectsBean> datas) {
         this.datas = datas;
         map = new HashMap<>();
     }

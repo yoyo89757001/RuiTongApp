@@ -8,7 +8,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
+import com.example.ruitongapp.beans.BaoCunBean;
+import com.example.ruitongapp.beans.BaoCunBeanDao;
 import com.example.ruitongapp.dialogs.QueRenDialog;
 
 import butterknife.BindView;
@@ -25,13 +28,18 @@ public class SheZhiActivity extends Activity {
     RelativeLayout r1;
     @BindView(R.id.r2)
     RelativeLayout r2;
+    private BaoCunBeanDao baoCunBeanDao=null;
+    private BaoCunBean baoCunBean=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_she_zhi);
         ButterKnife.bind(this);
-
+        baoCunBeanDao= MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+        if (baoCunBeanDao!=null){
+            baoCunBean=baoCunBeanDao.load(123456L);
+        }
 
     }
 
@@ -72,6 +80,7 @@ public class SheZhiActivity extends Activity {
                 dialog2.setOnPositiveListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        baoCunBeanDao.deleteByKey(123456L);
                         sendBroadcast(new Intent("guanbiyemian"));
                         finish();
                         dialog2.dismiss();
