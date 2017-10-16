@@ -30,6 +30,7 @@ public class DatePickActivity extends Activity {
 	private TimePicker timePicker;
 	private String datestrold;
 	private String datestr;
+	private int yyy=0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +38,7 @@ public class DatePickActivity extends Activity {
 		setContentView(R.layout.activity_date_pick);
 		datePicker= (DatePicker) findViewById(R.id.date_picker);
 		timePicker= (TimePicker) findViewById(R.id.time_picker);
+		yyy=getIntent().getIntExtra("yyy",0);
 
 		init();
 	}
@@ -172,6 +174,7 @@ public class DatePickActivity extends Activity {
 //				if (!compare(date))
 //					return;
 				intent.putExtra("date", datestr);
+				intent.putExtra("yyy", yyy);
 				setResult(Activity.RESULT_OK, intent);
 			} catch (Exception e) {
 				e.printStackTrace();

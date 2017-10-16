@@ -19,9 +19,12 @@ import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.YuanGongAdapter;
 import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
+import com.example.ruitongapp.beans.BenDiYuanGong;
+import com.example.ruitongapp.beans.BenDiYuanGongDao;
 import com.example.ruitongapp.beans.MoRenFanHuiBean;
 import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.dialogs.TiJIaoDialog;
+import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiYuanGongActivity;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.view.SideBar;
@@ -77,6 +80,9 @@ public class Fragment1 extends Fragment {
     private String ss=null;
     private int dangQianYe=1;
     private int qingQiuYe=1;
+    private BenDiYuanGongDao benDiYuanGongDao=null;
+    private BenDiYuanGong benDiYuanGongBean=null;
+
 
 
     public Fragment1() {
@@ -88,6 +94,7 @@ public class Fragment1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+        benDiYuanGongDao=MyApplication.myAppLaction.getDaoSession().getBenDiYuanGongDao();
         if (baoCunBeanDao!=null){
             baoCunBean=baoCunBeanDao.load(123456L);
         }
@@ -119,14 +126,14 @@ public class Fragment1 extends Fragment {
         lRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
         lRecyclerView.setFooterViewColor(R.color.textcolor, R.color.blake ,android.R.color.white);
         //设置底部加载文字提示
-        lRecyclerView.setFooterViewHint("拼命加载中","已经全部为你呈现了","网络不给力...");
+        lRecyclerView.setFooterViewHint("拼命加载中","--------我是有底线的--------","网络不给力...");
         lRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
 
         lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
 
-                startActivity(new Intent(getContext(),XiuGaiYuanGongActivity.class).putExtra("type",2));
+                startActivity(new Intent(getContext(),XiuGaiYuanGongActivity.class).putExtra("type",2).putExtra("idid",dataList.get(position).getId()));
 
             }
         });
@@ -154,7 +161,7 @@ public class Fragment1 extends Fragment {
         unbinder = ButterKnife.bind(this, view);
 
 
-        link_liebiao("",1);
+        lRecyclerView.forceToRefresh();
         return view;
     }
 
@@ -230,7 +237,7 @@ public class Fragment1 extends Fragment {
 
                 break;
             case R.id.sousuo:
-
+                startActivity(new Intent(getContext(),SouSuoActivity.class));
                 break;
         }
     }
@@ -241,6 +248,8 @@ public class Fragment1 extends Fragment {
 //        if (!getActivity().isFinishing()){
 //            jiaZaiDialog.show();
 //        }
+
+        try {
 
         RequestBody body = new FormBody.Builder()
                 .add("accountId",baoCunBean.getSid())
@@ -271,7 +280,14 @@ public class Fragment1 extends Fragment {
 //                        if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
 //                            jiaZaiDialog.dismiss();
 //                        }
-                        Toast tastyToast= TastyToast.makeText(getActivity(),"网络错误!",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                lRecyclerViewAdapter.notifyDataSetChanged();
+                                lRecyclerView.refreshComplete(10);// REQUEST_COUNT为每页加载数量
+                            }
+                        });
+                        Toast tastyToast= TastyToast.makeText(getActivity(),"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
                         tastyToast.setGravity(Gravity.CENTER,0,0);
                         tastyToast.show();
                     }
@@ -316,9 +332,44 @@ public class Fragment1 extends Fragment {
                                 lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
                             }
                         });
+                        int size=zhaoPianBean.getObjects().size();
+                        for (int i=0;i<size;i++){
+                            BenDiYuanGong benDiYuanGong=new BenDiYuanGong();
+                            benDiYuanGong.setId(zhaoPianBean.getObjects().get(i).getId());
+                            benDiYuanGong.setAccountId(zhaoPianBean.getObjects().get(i).getAccountId());
+                            benDiYuanGong.setAvatar(zhaoPianBean.getObjects().get(i).getAvatar());
+                            benDiYuanGong.setAccountName(zhaoPianBean.getObjects().get(i).getAccountName());
+                            benDiYuanGong.setCreateTime(zhaoPianBean.getObjects().get(i).getCreateTime());
+                            benDiYuanGong.setDepartment(zhaoPianBean.getObjects().get(i).getDepartment());
+                            benDiYuanGong.setDescription(zhaoPianBean.getObjects().get(i).getDescription());
+                            benDiYuanGong.setDtoResult(zhaoPianBean.getObjects().get(i).getDtoResult());
+                            benDiYuanGong.setGender(zhaoPianBean.getObjects().get(i).getGender());
+                            benDiYuanGong.setJob_number(zhaoPianBean.getObjects().get(i).getJob_number());
+                            benDiYuanGong.setModifyTime(zhaoPianBean.getObjects().get(i).getModifyTime());
+                            benDiYuanGong.setName(zhaoPianBean.getObjects().get(i).getName());
+                            benDiYuanGong.setPageNum(zhaoPianBean.getObjects().get(i).getPageNum());
+                            benDiYuanGong.setPageSize(zhaoPianBean.getObjects().get(i).getPageSize());
+                            benDiYuanGong.setPhone(zhaoPianBean.getObjects().get(i).getPhone());
+                            benDiYuanGong.setPhoto_ids(zhaoPianBean.getObjects().get(i).getPhoto_ids());
+                            benDiYuanGong.setRemark(zhaoPianBean.getObjects().get(i).getRemark());
+                            benDiYuanGong.setSid(zhaoPianBean.getObjects().get(i).getSid());
+                            benDiYuanGong.setStatus(zhaoPianBean.getObjects().get(i).getStatus());
+                            benDiYuanGong.setSubject_type(zhaoPianBean.getObjects().get(i).getSubject_type());
+                            benDiYuanGong.setTitle(zhaoPianBean.getObjects().get(i).getTitle());
+                            benDiYuanGong.setEntry_date2(zhaoPianBean.getObjects().get(i).getEntry_date2());
+                            benDiYuanGong.setBirthday2(zhaoPianBean.getObjects().get(i).getBirthday2());
+                            if (benDiYuanGongDao.load(zhaoPianBean.getObjects().get(i).getId())==null){
+                                benDiYuanGongDao.insert(benDiYuanGong);
+                            }else {
+                                benDiYuanGongDao.update(benDiYuanGong);
+                            }
+
+                        }
+
 
                     }else {
-                        for (int i=0;i<zhaoPianBean.getObjects().size();i++){
+                        int size=zhaoPianBean.getObjects().size();
+                        for (int i=0;i<size;i++){
                             dataList.add(zhaoPianBean.getObjects().get(i));
                         }
                         chineseToPinyin(dataList);
@@ -332,6 +383,37 @@ public class Fragment1 extends Fragment {
                                 lRecyclerView.refreshComplete(10);// REQUEST_COUNT为每页加载数量
                             }
                         });
+
+                        for (int i=0;i<size;i++){
+                            BenDiYuanGong benDiYuanGong=new BenDiYuanGong();
+                            benDiYuanGong.setId(zhaoPianBean.getObjects().get(i).getId());
+                            benDiYuanGong.setAccountId(zhaoPianBean.getObjects().get(i).getAccountId());
+                            benDiYuanGong.setAccountName(zhaoPianBean.getObjects().get(i).getAccountName());
+                            benDiYuanGong.setCreateTime(zhaoPianBean.getObjects().get(i).getCreateTime());
+                            benDiYuanGong.setDepartment(zhaoPianBean.getObjects().get(i).getDepartment());
+                            benDiYuanGong.setDescription(zhaoPianBean.getObjects().get(i).getDescription());
+                            benDiYuanGong.setDtoResult(zhaoPianBean.getObjects().get(i).getDtoResult());
+                            benDiYuanGong.setGender(zhaoPianBean.getObjects().get(i).getGender());
+                            benDiYuanGong.setJob_number(zhaoPianBean.getObjects().get(i).getJob_number());
+                            benDiYuanGong.setModifyTime(zhaoPianBean.getObjects().get(i).getModifyTime());
+                            benDiYuanGong.setName(zhaoPianBean.getObjects().get(i).getName());
+                            benDiYuanGong.setPageNum(zhaoPianBean.getObjects().get(i).getPageNum());
+                            benDiYuanGong.setPageSize(zhaoPianBean.getObjects().get(i).getPageSize());
+                            benDiYuanGong.setPhone(zhaoPianBean.getObjects().get(i).getPhone());
+                            benDiYuanGong.setPhoto_ids(zhaoPianBean.getObjects().get(i).getPhoto_ids());
+                            benDiYuanGong.setRemark(zhaoPianBean.getObjects().get(i).getRemark());
+                            benDiYuanGong.setSid(zhaoPianBean.getObjects().get(i).getSid());
+                            benDiYuanGong.setStatus(zhaoPianBean.getObjects().get(i).getStatus());
+                            benDiYuanGong.setSubject_type(zhaoPianBean.getObjects().get(i).getSubject_type());
+                            benDiYuanGong.setTitle(zhaoPianBean.getObjects().get(i).getTitle());
+                            if (benDiYuanGongDao.load(zhaoPianBean.getObjects().get(i).getId())==null){
+                                benDiYuanGongDao.insert(benDiYuanGong);
+                            }else {
+                                benDiYuanGongDao.update(benDiYuanGong);
+                            }
+
+                        }
+
 
                     }
                     if (zhaoPianBean.getObjects().size()==0){
@@ -373,7 +455,7 @@ public class Fragment1 extends Fragment {
 //                            if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
 //                                jiaZaiDialog.dismiss();
 //                            }
-                            Toast tastyToast= TastyToast.makeText(getActivity(),"网络错误!",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                            Toast tastyToast= TastyToast.makeText(getActivity(),"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
                             tastyToast.setGravity(Gravity.CENTER,0,0);
                             tastyToast.show();
                         }
@@ -383,5 +465,11 @@ public class Fragment1 extends Fragment {
                 }
             }
         });
+
+        }catch (Exception e){
+            Log.d("Fragment1", e.getMessage()+"");
+        }
     }
+
+
 }

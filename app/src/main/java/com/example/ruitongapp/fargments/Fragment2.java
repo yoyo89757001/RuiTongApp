@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.YuanGongAdapter;
 import com.example.ruitongapp.beans.YuanGongBean;
+import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiFangKeActivity;
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
@@ -147,7 +148,7 @@ public class Fragment2 extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.sousuo:
-
+                startActivity(new Intent(getContext(),SouSuoActivity.class));
                 break;
             case R.id.tianjia:
                 startActivity(new Intent(getContext(), XiuGaiFangKeActivity.class).putExtra("type", 1));

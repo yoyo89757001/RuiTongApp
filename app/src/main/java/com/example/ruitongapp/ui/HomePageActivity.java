@@ -7,11 +7,14 @@ import android.content.IntentFilter;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -25,6 +28,8 @@ import com.example.ruitongapp.fargments.Fragment4;
 import com.example.ruitongapp.fargments.Fragment5;
 import com.example.ruitongapp.view.ViewPagerFragmentAdapter;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.sdsmdg.tastytoast.TastyToast;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +45,18 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
     private IntentFilter intentFilter;
     //定义一个广播监听器；
     private NetChangReceiver netChangReceiver;
+    // 定义一个变量，来标识是否退出
+    private static boolean isExit = false;
 
+
+    Handler mHandler = new Handler() {
+
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            isExit = false;
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,7 +227,10 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
         }
 
     }
-   private class ViewPagetOnPagerChangedLisenter implements ViewPager.OnPageChangeListener {
+
+
+
+    private class ViewPagetOnPagerChangedLisenter implements ViewPager.OnPageChangeListener {
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 //            Log.d(TAG,"onPageScrooled");
@@ -232,4 +251,26 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
         super.onDestroy();
         unregisterReceiver(netChangReceiver);
     }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return false;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void exit() {
+        if (!isExit) {
+            isExit = true;
+            TastyToast.makeText(getApplicationContext(), "再按一次退出程序",TastyToast.LENGTH_SHORT,TastyToast.INFO).show();
+            // 利用handler延迟发送更改状态信息
+            mHandler.sendEmptyMessageDelayed(0, 2000);
+        } else {
+            finish();
+            System.exit(0);
+        }
+    }
+
 }

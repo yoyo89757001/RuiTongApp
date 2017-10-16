@@ -9,6 +9,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.FaceDetector;
 import android.net.Uri;
 import android.os.Build;
@@ -29,27 +30,36 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
-import com.example.ruitongapp.beans.EmployeesInfoBean;
+import com.example.ruitongapp.beans.BaoCunBean;
+import com.example.ruitongapp.beans.BaoCunBeanDao;
+import com.example.ruitongapp.beans.BenDiYuanGong;
+import com.example.ruitongapp.beans.BenDiYuanGongDao;
 import com.example.ruitongapp.beans.FuWuQiBean;
 import com.example.ruitongapp.beans.FuWuQiBeanDao;
+import com.example.ruitongapp.beans.ShouFangBean;
 import com.example.ruitongapp.dialogs.PaiZhaoDialog;
 import com.example.ruitongapp.dialogs.PaiZhaoDialog2;
+import com.example.ruitongapp.dialogs.TiJIaoDialog;
 import com.example.ruitongapp.dialogs.UpdataTouXiangDialog;
 import com.example.ruitongapp.utils.DateUtils;
+import com.example.ruitongapp.utils.GlideCircleTransform;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.view.DividerItemDecoration;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sdsmdg.tastytoast.TastyToast;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,7 +74,6 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-
 
 
 public class XiuGaiYuanGongActivity extends Activity {
@@ -107,7 +116,7 @@ public class XiuGaiYuanGongActivity extends Activity {
     @BindView(R.id.shanchu)
     Button shanchu;
     private int type;
-    private boolean isNV=true;
+    private boolean isNV = true;
 
     //定义一个过滤器；
     private IntentFilter intentFilter;
@@ -115,53 +124,56 @@ public class XiuGaiYuanGongActivity extends Activity {
     private NetChangReceiver netChangReceiver;
     private SwipeRefreshLayout swipeRefreshLayout;
     private int id;
-    private EmployeesInfoBean vipBean=null;
-    private List<String> photosLists=new ArrayList<>();
-    private int photoSize=0;
+    private TiJIaoDialog tiJIaoDialog;
+    private BenDiYuanGong vipBean = null;
+    private List<String> photosLists = new ArrayList<>();
+    private int photoSize = 0;
     public final static int ALBUM_REQUEST_CODE = 1;
     public final static int ALBUM_REQUEST_CODE2 = 4;
-    String cameraPath=null;
+    String cameraPath = null;
     private RecyclerView recyclerView;
-    private PaiZhaoDialog dialog=null;
-    private PaiZhaoDialog2 dialog2=null;
+    private PaiZhaoDialog dialog = null;
+    private PaiZhaoDialog2 dialog2 = null;
     private int wz;
-    private MyAdapter adapter=null;
+    private MyAdapter adapter = null;
     private File mFile;
-    private static final int PHOTO_REQUEST_CUT=9;
-    private static final int PHOTO_REQUEST_CUT2=6;
-    private UpdataTouXiangDialog dialog88=null;
-    private ImageView nan,nv;
-    private FuWuQiBeanDao fuWuQiBeanDao=null;
-    private List<FuWuQiBean> fuWuQiBeanList=null;
-    private FuWuQiBean fuWuQiBean=null;
+    private static final int PHOTO_REQUEST_CUT = 9;
+    private static final int PHOTO_REQUEST_CUT2 = 6;
+    private UpdataTouXiangDialog dialog88 = null;
+    private ImageView nan, nv;
+    private FuWuQiBeanDao fuWuQiBeanDao = null;
+    private List<FuWuQiBean> fuWuQiBeanList = null;
+    private FuWuQiBean fuWuQiBean = null;
+    private Long idid;
+    private BenDiYuanGongDao benDiYuanGongDao = null;
+    private BenDiYuanGong benDiYuanGong = null;
+    private int nannv = 0;
+    private String touxiangPath=null;
+    private String shibiePaths=null;
+    private BaoCunBeanDao baoCunBeanDao=null;
+    private BaoCunBean baoCunBean=null;
+    private boolean isTiJiao=false;
 
 
-    Handler handler=new Handler(new Handler.Callback() {
+
+    Handler handler = new Handler(new Handler.Callback() {
         @Override
         public boolean handleMessage(Message msg) {
-            if (msg.what==3) {
-                if (dialog!=null){
+            if (msg.what == 3) {
+                if (dialog != null) {
                     dialog.dismiss();
-                    dialog=null;
+                    dialog = null;
                 }
-                if (dialog2!=null){
+                if (dialog2 != null) {
                     dialog2.dismiss();
-                    dialog2=null;
+                    dialog2 = null;
                 }
 
-                if (dialog88!=null){
+                if (dialog88 != null) {
                     dialog88.dismiss();
-                    dialog88=null;
+                    dialog88 = null;
                 }
 
-                vipBean = (EmployeesInfoBean) msg.obj;
-                //设置资料
-                //setContent(vipBean);
-
-              //  title.setText(vipBean.getName());
-
-
-                adapter.notifyDataSetChanged();
 
             }
 
@@ -180,31 +192,40 @@ public class XiuGaiYuanGongActivity extends Activity {
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.titlecolor);
         }
-        fuWuQiBeanDao=MyApplication.myAppLaction.getDaoSession().getFuWuQiBeanDao();
-        if (fuWuQiBeanDao!=null){
-            fuWuQiBeanList=fuWuQiBeanDao.loadAll();
-            for (int i=0;i<fuWuQiBeanList.size();i++){
-                if (fuWuQiBeanList.get(i).getIsTrue()){
-                    fuWuQiBean=fuWuQiBeanList.get(i);
+        benDiYuanGongDao = MyApplication.myAppLaction.getDaoSession().getBenDiYuanGongDao();
+        baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+        if (baoCunBeanDao!=null){
+            baoCunBean=baoCunBeanDao.load(123456L);
+        }
+
+        fuWuQiBeanDao = MyApplication.myAppLaction.getDaoSession().getFuWuQiBeanDao();
+        if (fuWuQiBeanDao != null) {
+            fuWuQiBeanList = fuWuQiBeanDao.loadAll();
+            for (int i = 0; i < fuWuQiBeanList.size(); i++) {
+                if (fuWuQiBeanList.get(i).getIsTrue()) {
+                    fuWuQiBean = fuWuQiBeanList.get(i);
                 }
             }
         }
-
+        idid = getIntent().getLongExtra("idid", 0L);
+        if (benDiYuanGongDao != null) {
+            benDiYuanGong = benDiYuanGongDao.load(idid);
+        }
         type = getIntent().getIntExtra("type", 0);
         if (type == 1) {
             title.setText("添加员工");
 
-            for (int i=3;i>0;i--){
+            for (int i = 3; i > 0; i--) {
 
-                photosLists.add("http://192.168.168.168");
-                if (photosLists.size()==3){
+                photosLists.add("http://192.168.168.168.rui");
+                if (photosLists.size() == 3) {
                     break;
                 }
             }
 
-            Message message=new Message();
-            message.what=3;
-            message.obj=vipBean;
+            Message message = new Message();
+            message.what = 3;
+            message.obj = vipBean;
             handler.sendMessage(message);
 
         } else {
@@ -226,16 +247,16 @@ public class XiuGaiYuanGongActivity extends Activity {
         //将广播监听器和过滤器注册在一起；
         registerReceiver(netChangReceiver, intentFilter);
 
-        recyclerView= (RecyclerView) findViewById(R.id.recylerview);
-        adapter=new MyAdapter(R.layout.fggg,photosLists);
+        recyclerView = (RecyclerView) findViewById(R.id.recylerview);
+        adapter = new MyAdapter(R.layout.fggg, photosLists);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                wz=position;
+            public void onItemClick(final BaseQuickAdapter adapter, View view, int position) {
+                wz = position;
                 // 有-1表示是空白照片的项。
-                if (photosLists.get(position).equals("http://192.168.168.168")){
-                    dialog2=new PaiZhaoDialog2(XiuGaiYuanGongActivity.this);
+                if (photosLists.get(position).equals("http://192.168.168.168.rui")) {
+                    dialog2 = new PaiZhaoDialog2(XiuGaiYuanGongActivity.this);
                     dialog2.setOnUpdataXiangceListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -246,14 +267,14 @@ public class XiuGaiYuanGongActivity extends Activity {
                         @Override
                         public void onClick(View v) {
                             // paizhao();
-                            startActivity(new Intent(XiuGaiYuanGongActivity.this,PaiZhaoActivity.class));
+                            startActivity(new Intent(XiuGaiYuanGongActivity.this, PaiZhaoActivity.class));
                         }
                     });
 
                     dialog2.show();
-                }else {
+                } else {
                     //有照片的项。
-                    dialog=new PaiZhaoDialog(XiuGaiYuanGongActivity.this);
+                    dialog = new PaiZhaoDialog(XiuGaiYuanGongActivity.this);
                     dialog.setOnUpdataXiangceListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -264,35 +285,55 @@ public class XiuGaiYuanGongActivity extends Activity {
                         @Override
                         public void onClick(View v) {
                             //  paizhao();
-                            startActivity(new Intent(XiuGaiYuanGongActivity.this,PaiZhaoActivity.class));
+
+                            startActivity(new Intent(XiuGaiYuanGongActivity.this, PaiZhaoActivity.class));
                         }
                     });
                     dialog.setOnDeleterListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             //删除照片
-                            int pp=photosLists.size();
-                            for (int i=0;i<pp;i++){
-                                if (wz==i){
+                            int pp = photosLists.size();
+                            for (int i = 0; i < pp; i++) {
+                                if (wz == i) {
                                     photosLists.remove(wz);
                                     break;
                                 }
                             }
-                            StringBuilder buffer=new StringBuilder();
-                            for (int i=0;i<photosLists.size();i++){
+                            StringBuilder buffer = new StringBuilder();
+                            for (int i = 0; i < photosLists.size(); i++) {
                                 buffer.append(photosLists.get(i));
                                 buffer.append(",");
                             }
-                            String str=buffer.toString();
+                            String str = buffer.toString();
                             int indx = str.lastIndexOf(",");
-                            if(indx!=-1){
-                                str = str.substring(0,indx)+str.substring(indx+1,str.length());
+                            if (indx != -1) {
+                                str = str.substring(0, indx) + str.substring(indx + 1, str.length());
                             }
-                            Log.d("UserInfoActivity", str+"删除得得得");
-                            vipBean.setPhoto_ids(str);
+                            Log.d("UserInfoActivity", str + "删除得得得");
+                            shibiePaths=str;
+                            String s[] =shibiePaths.split(",");
+                            int sss=s.length;
+                            if (photosLists.size()!=0){
+                                photosLists.clear();
+                            }
+                            if (sss<3){
+                                for (int k=0;k<3;k++){
+                                    if (k<=sss-1){
+                                        photosLists.add(s[k]);
+                                    }else {
+                                        photosLists.add("http://192.168.168.168.rui");
+                                    }
+                                }
+                                adapter.notifyDataSetChanged();
+                                dialog.dismiss();
 
-                            link_gengxinTuPian();
-                            //updataPhoto(null,3);
+                            }else {
+
+                                Collections.addAll(photosLists, s);
+                                adapter.notifyDataSetChanged();
+                                dialog.dismiss();
+                            }
                         }
                     });
                     dialog.show();
@@ -308,70 +349,126 @@ public class XiuGaiYuanGongActivity extends Activity {
         //  recyclerView.addItemDecoration(new MyDecoration(this,LinearLayoutManager.HORIZONTAL));
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.HORIZONTAL));
 
+        if (benDiYuanGong != null) {
+            name.setText(benDiYuanGong.getName());
+            if (benDiYuanGong.getGender() == 0) {
+                xingbie.setImageResource(R.drawable.ic_select);
+                xingbie2.setImageResource(R.drawable.ic_select);
+            } else if (benDiYuanGong.getGender() == 1) {
+                xingbie.setImageResource(R.drawable.ic_selected);
+                xingbie2.setImageResource(R.drawable.ic_select);
+            } else {
+                xingbie.setImageResource(R.drawable.ic_select);
+                xingbie2.setImageResource(R.drawable.ic_selected);
+            }
+            gonghao.setText(benDiYuanGong.getJob_number());
+            bumen.setText(benDiYuanGong.getDepartment());
+            zhiwei.setText(benDiYuanGong.getTitle());
+            dianhua.setText(benDiYuanGong.getPhone());
+            beizhu.setText(benDiYuanGong.getRemark());
+            ruzhishijian.setText(benDiYuanGong.getEntry_date2());
+            if (benDiYuanGong.getAvatar()!=null && !benDiYuanGong.getAvatar().equals("")){
+                Glide.with(XiuGaiYuanGongActivity.this)
+                        .load(fuWuQiBean.getDizhi() + "/upload/avatar/" + benDiYuanGong.getAvatar())
+                        .transform(new GlideCircleTransform(XiuGaiYuanGongActivity.this, 0.6f, Color.parseColor("#ffffffff")))
+                        .into(touxiang);
+            }else {
+                Glide.with(XiuGaiYuanGongActivity.this)
+                        .load(R.drawable.tuijianyisheng)
+                        .transform(new GlideCircleTransform(XiuGaiYuanGongActivity.this, 0.6f, Color.parseColor("#ffffffff")))
+                        .into(touxiang);
+            }
+            youxiang.setText(benDiYuanGong.getEmail());
+            if (!benDiYuanGong.getPhoto_ids().equals("")){
+                String s[] =benDiYuanGong.getPhoto_ids().split(",");
+                int ss=s.length;
+                if (ss<3){
+                    for (int k=0;k<3;k++){
+                        if (k<=ss-1){
+                            photosLists.add(s[k]);
+                        }else {
+                            photosLists.add("http://192.168.168.168.rui");
+                        }
+                    }
 
-        id=getIntent().getIntExtra("id",0);
-        if (id!=0){
-            link(id);
+                    adapter.notifyDataSetChanged();
+                }else {
+
+                    Collections.addAll(photosLists, s);
+                    adapter.notifyDataSetChanged();
+                }
+                shibiePaths=benDiYuanGong.getPhoto_ids();
+                touxiangPath=benDiYuanGong.getAvatar();
+                yuangongshengri.setText(benDiYuanGong.getBirthday2());
+
+
+            }
+
         }
 
     }
 
-    private  class NetChangReceiver extends BroadcastReceiver {
+
+
+    private class NetChangReceiver extends BroadcastReceiver {
 
         //重写onReceive方法，该方法的实体为，接收到广播后的执行代码；
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (intent.getAction().equals("shangchuanzhaopian")){
-                cameraPath=intent.getStringExtra("path");
+            if (intent.getAction().equals("shangchuanzhaopian")) {
+                cameraPath = intent.getStringExtra("path");
                 addPhoto(1);
-            }else if (intent.getAction().equals("shangchuanzhaopian2")){
-                cameraPath=intent.getStringExtra("path");
+            } else if (intent.getAction().equals("shangchuanzhaopian2")) {
+                cameraPath = intent.getStringExtra("path");
                 addPhoto222(1);
             }
-            if (intent.getAction().equals("paizhang_sb")){
-                cameraPath=intent.getStringExtra("path");
+            if (intent.getAction().equals("paizhang_sb")) {
+                cameraPath = intent.getStringExtra("path");
                 addPhoto(1);
             }
-            if (intent.getAction().equals("paizhang_tx")){
-                cameraPath=intent.getStringExtra("path");
+            if (intent.getAction().equals("paizhang_tx")) {
+                cameraPath = intent.getStringExtra("path");
                 addPhoto222(1);
             }
         }
     }
 
 
-    @OnClick({R.id.xingbie2, R.id.xingbie, R.id.ruzhi, R.id.shengri, R.id.r6,R.id.leftim, R.id.righttv})
+    @OnClick({R.id.xingbie2, R.id.xingbie, R.id.ruzhi, R.id.shengri, R.id.r6, R.id.leftim, R.id.righttv,R.id.shanchu})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.xingbie2: //女
-                isNV=false;
+                isNV = false;
+                nannv = 2;
                 xingbie.setImageResource(R.drawable.ic_select);
                 xingbie2.setImageResource(R.drawable.ic_selected);
 
                 break;
             case R.id.xingbie:
-                isNV=true;
+                isNV = true;
+                nannv = 1;
                 xingbie2.setImageResource(R.drawable.ic_select);
                 xingbie.setImageResource(R.drawable.ic_selected);
 
                 break;
             case R.id.ruzhi:
 
-                Intent intent = new Intent(XiuGaiYuanGongActivity.this, DatePickActivity.class);
-                startActivityForResult(intent,2);
+                Intent intent = new Intent(XiuGaiYuanGongActivity.this, DatePickActivity.class).putExtra("yyy",1);
+                startActivityForResult(intent, 2);
 
                 break;
             case R.id.shengri:
-
+                Intent intent2 = new Intent(XiuGaiYuanGongActivity.this, DatePickActivity.class).putExtra("yyy",2);
+                startActivityForResult(intent2, 2);
 
                 break;
             case R.id.r6: //头像
 
-                dialog88=new UpdataTouXiangDialog(XiuGaiYuanGongActivity.this);
+                dialog88 = new UpdataTouXiangDialog(XiuGaiYuanGongActivity.this);
                 dialog88.setOnUpdataPaiZhaoListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) { //拍照
-                        startActivity(new Intent(XiuGaiYuanGongActivity.this,PaiZhaoActivity2.class));
+                        startActivity(new Intent(XiuGaiYuanGongActivity.this, PaiZhaoActivity2.class));
                     }
                 });
                 dialog88.setOnUpdataXiangceListener(new View.OnClickListener() {
@@ -386,12 +483,19 @@ public class XiuGaiYuanGongActivity extends Activity {
                 finish();
                 break;
             case R.id.righttv:
+                //保存
+                link_gengxinTuPian();
+
+                break;
+            case R.id.shanchu:
+                //删除
+               link_delect();
 
                 break;
         }
     }
 
-    private   class MyAdapter extends BaseQuickAdapter<String,BaseViewHolder>  {
+    private class MyAdapter extends BaseQuickAdapter<String, BaseViewHolder> {
 
 
         private MyAdapter(int layoutResId, List<String> data) {
@@ -403,18 +507,19 @@ public class XiuGaiYuanGongActivity extends Activity {
         @Override
         protected void convert(BaseViewHolder helper, String item) {
 
-            if (item.equals("http://192.168.168.168")){
-                helper.setText(R.id.fffff,"添加照片");
+            if (item.equals("http://192.168.168.168.rui")) {
+                helper.setText(R.id.fffff, "添加照片");
 
                 Glide.with(XiuGaiYuanGongActivity.this)
                         .load(R.drawable.tuijianyisheng)
 //                    .bitmapTransform(new GlideCircleTransform(MyApplication.getAppContext()))
                         .into((ImageView) helper.getView(R.id.mmmmm));
 
-            }else {
-                helper.setText(R.id.fffff,"修改照片");
+            } else {
+                Log.d(TAG, fuWuQiBean.getDizhi() + "/upload/compare/" + item);
+                helper.setText(R.id.fffff, "修改照片");
                 Glide.with(XiuGaiYuanGongActivity.this)
-                        .load(MyApplication.zhujidizhi +"/upload/compare/"+item)
+                        .load(fuWuQiBean.getDizhi() + "/upload/compare/" + item)
 //                    .bitmapTransform(new GlideCircleTransform(MyApplication.getAppContext()))
                         .error(R.drawable.tuijianyisheng)
                         .into((ImageView) helper.getView(R.id.mmmmm));
@@ -425,19 +530,19 @@ public class XiuGaiYuanGongActivity extends Activity {
 
     }
 
-    private void link(int id){
+    private void link(int id) {
 
-        final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
 
-        OkHttpClient okHttpClient= new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient();
 
         RequestBody body = new FormBody.Builder()
-                .add("id",id+"")
+                .add("id", id + "")
                 .build();
         Request.Builder requestBuilder = new Request.Builder()
                 // .header("Content-Type", "application/json")
                 .post(body)
-                .url(fuWuQiBean.getDizhi()+"/getSubject.do");
+                .url(fuWuQiBean.getDizhi() + "/getSubject.do");
         //    .url(HOST+"/mobile-admin/subjects");
 
         // step 3：创建 Call 对象
@@ -447,7 +552,7 @@ public class XiuGaiYuanGongActivity extends Activity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d("AllConnects", "请求失败"+e.getMessage());
+                Log.d("AllConnects", "请求失败" + e.getMessage());
 
             }
 
@@ -455,46 +560,46 @@ public class XiuGaiYuanGongActivity extends Activity {
             public void onResponse(Call call, Response response) throws IOException {
                 try {
 
-                    Log.d("AllConnects", "请求成功"+call.request().toString());
+                    Log.d("AllConnects", "请求成功" + call.request().toString());
                     //获得返回体
                     ResponseBody body = response.body();
 
-                    String ss=body.string();
+                    String ss = body.string();
                     Log.d("AllConnects", ss);
-                    JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
-                    Gson gson=new Gson();
-                    if (photosLists.size()>0){
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                    if (photosLists.size() > 0) {
                         photosLists.clear();
                     }
 
-                    vipBean=gson.fromJson(jsonObject,EmployeesInfoBean.class);
-                    String s=vipBean.getPhoto_ids();
-                    if (null!=s && !s.equals("")){
-                        String p[]= s.split(",");
-                        photoSize=p.length;
-                        for (int i=0;i<photoSize;i++){
+                    //vipBean=gson.fromJson(jsonObject,EmployeesInfoBean.class);
+                    String s = vipBean.getPhoto_ids();
+                    if (null != s && !s.equals("")) {
+                        String p[] = s.split(",");
+                        photoSize = p.length;
+                        for (int i = 0; i < photoSize; i++) {
                             photosLists.add(p[i]);
                         }
                     }
-                    int pp=photosLists.size();
-                    if (pp<3){
-                        for (int i=3;i>pp;i--){
+                    int pp = photosLists.size();
+                    if (pp < 3) {
+                        for (int i = 3; i > pp; i--) {
 
                             photosLists.add("http://192.168.168.168");
-                            if (photosLists.size()==3){
+                            if (photosLists.size() == 3) {
                                 break;
                             }
                         }
                     }
 
 
-                    Message message=new Message();
-                    message.what=3;
-                    message.obj=vipBean;
+                    Message message = new Message();
+                    message.what = 3;
+                    message.obj = vipBean;
                     handler.sendMessage(message);
 
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -503,149 +608,29 @@ public class XiuGaiYuanGongActivity extends Activity {
 
     }
 
-    private void addPhoto(final int type){
+    private void addPhoto(final int type) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                if (dialog!=null){
+                if (dialog != null) {
                     dialog.setL1Gone();
                 }
-                if (dialog2!=null){
+                if (dialog2 != null) {
                     dialog2.setL1Gone();
                 }
-            }
-        });
-
-    OkHttpClient okHttpClient= new OkHttpClient();
-    RequestBody fileBody1=null;
-    String file1Name = null;
-         /* 第一个要上传的file */
-         if (cameraPath!=null){
-        File file1 = new File(cameraPath);
-        fileBody1= RequestBody.create(MediaType.parse("application/octet-stream") , file1);
-        //  file1Name = System.currentTimeMillis()+"testFile1.jpg";
-        file1Name = System.currentTimeMillis()+"testFile1.jpg";
-    }
-
-//    /* 第二个要上传的文件,这里偷懒了,和file1用的一个图片 */
-//        File file2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/a.jpg");
-//        RequestBody fileBody2 = RequestBody.create(MediaType.parse("application/octet-stream") , file2);
-//        String file2Name = "testFile2.txt";
-
-
-//    /* form的分割线,自己定义 */
-//        String boundary = "xx--------------------------------------------------------------xx";
-
-    MultipartBody mBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-            /* 底下是上传了两个文件 */
-            .addFormDataPart("voiceFile" , file1Name , fileBody1)
-                  /* 上传一个普通的String参数 */
-            //  .addFormDataPart("subject_id" , subject_id+"")
-//                .addFormDataPart("file" , file2Name , fileBody2)
-            .build();
-    Request.Builder requestBuilder = new Request.Builder()
-            //  .header("Content-Type", "application/json")
-            .post(mBody)
-            .url(fuWuQiBean.getDizhi()+"/AppFileUploadServlet?FilePathPath=compareFilePath&AllowFileType=.jpg,.gif,.jpeg,.bmp,.png&MaxFileSize=10");
-    //    .url(HOST+"/mobile-admin/subjects");
-
-    // step 3：创建 Call 对象
-    Call call = okHttpClient.newCall(requestBuilder.build());
-    //step 4: 开始异步请求
-        call.enqueue(new Callback() {
-        @Override
-        public void onFailure(Call call, IOException e) {
-            Log.d("AllConnects", "照片上传失败"+e.getMessage());
-            cameraPath=null;
-        }
-
-        @Override
-        public void onResponse(Call call, Response response) throws IOException { //识别照片
-            Log.d("AllConnects", "照片上传成功"+call.request().toString());
-            cameraPath=null;
-            //获得返回体
-            ResponseBody body = response.body();
-            // Log.d("AllConnects", "aa   "+response.body().string());
-            JsonObject jsonObject= GsonUtil.parse(body.string()).getAsJsonObject();
-            // Gson gson=new Gson();
-            int code=jsonObject.get("exId").getAsInt();
-            if (code==0){
-                String array=jsonObject.get("exDesc").getAsString();
-                int sz=photosLists.size();
-                StringBuilder buffer=new StringBuilder();
-
-                for (int i=0;i<sz;i++){
-                    if (photosLists.get(i).contains(".jpg") && wz!=i){
-                        buffer.append(photosLists.get(i));
-                        buffer.append(",");
-                    }else {
-                        if (wz==i){
-                            buffer.append(array);
-                            buffer.append(",");
-                        }
-                    }
-
-                }
-                String str=buffer.toString();
-                int indx = str.lastIndexOf(",");
-                if(indx!=-1){
-                    str = str.substring(0,indx)+str.substring(indx+1,str.length());
-                }
-                Log.d("UserInfoActivity", str);
-                vipBean.setPhoto_ids(str);
-
-                link_gengxinTuPian();
-
-            }else {
-
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (dialog!=null){
-                            dialog.dismiss();
-                            dialog=null;
-                        }
-                        if (dialog2!=null){
-                            dialog2.dismiss();
-                            dialog2=null;
-                        }
-                        TastyToast.makeText(getApplicationContext(),
-                                "图片不符合规范,请重新上传", TastyToast.LENGTH_LONG, TastyToast.ERROR);
-                    }
-                });
-
-
-            }
-
-
-        }
-    });
-
-}
-
-
-    private void addPhoto222(final int type){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                if (dialog88!=null){
-                    dialog88.setL1Gone();
-                    dialog88.show();
-                }
 
             }
         });
 
-
-        OkHttpClient okHttpClient= new OkHttpClient();
-        RequestBody fileBody1=null;
+        OkHttpClient okHttpClient = new OkHttpClient();
+        RequestBody fileBody1 = null;
         String file1Name = null;
          /* 第一个要上传的file */
-        if (cameraPath!=null){
+        if (cameraPath != null) {
             File file1 = new File(cameraPath);
-            fileBody1= RequestBody.create(MediaType.parse("application/octet-stream") , file1);
-            file1Name = System.currentTimeMillis()+"testFile1.jpg";
+            fileBody1 = RequestBody.create(MediaType.parse("application/octet-stream"), file1);
+            //  file1Name = System.currentTimeMillis()+"testFile1.jpg";
+            file1Name = System.currentTimeMillis() + "testFile1.jpg";
         }
 
 //    /* 第二个要上传的文件,这里偷懒了,和file1用的一个图片 */
@@ -659,15 +644,15 @@ public class XiuGaiYuanGongActivity extends Activity {
 
         MultipartBody mBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
             /* 底下是上传了两个文件 */
-                .addFormDataPart("voiceFile" , file1Name , fileBody1)
+                .addFormDataPart("voiceFile", file1Name, fileBody1)
                   /* 上传一个普通的String参数 */
-                // .addFormDataPart("subject_id" , id+"")
+                //  .addFormDataPart("subject_id" , subject_id+"")
 //                .addFormDataPart("file" , file2Name , fileBody2)
                 .build();
         Request.Builder requestBuilder = new Request.Builder()
-                // .header("Content-Type", "application/json")
+                //  .header("Content-Type", "application/json")
                 .post(mBody)
-                .url(fuWuQiBean.getDizhi()+"/AppFileUploadServlet?FilePathPath=avatarFilePath&AllowFileType=.jpg,.gif,.jpeg,.bmp,.png&MaxFileSize=10");
+                .url(fuWuQiBean.getDizhi() + "/AppFileUploadServlet?FilePathPath=compareFilePath&AllowFileType=.jpg,.gif,.jpeg,.bmp,.png&MaxFileSize=10");
         //    .url(HOST+"/mobile-admin/subjects");
 
         // step 3：创建 Call 对象
@@ -676,38 +661,71 @@ public class XiuGaiYuanGongActivity extends Activity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d("AllConnects", "头像上传失败"+e.getMessage());
-                cameraPath=null;
+                Log.d("AllConnects", "照片上传失败" + e.getMessage());
+                cameraPath = null;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (dialog != null) {
+                            dialog.dismiss();
+                            dialog = null;
+                        }
+                        if (dialog2 != null) {
+                            dialog2.dismiss();
+                            dialog2 = null;
+                        }
+
+                    }
+                });
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                Log.d("AllConnects", "头像上传成功"+call.request().toString());
-                cameraPath=null;
+            public void onResponse(Call call, Response response) throws IOException { //识别照片
+                Log.d("AllConnects", "照片上传成功" + call.request().toString());
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        if (dialog != null) {
+                            dialog.dismiss();
+                            dialog = null;
+                        }
+                        if (dialog2 != null) {
+                            dialog2.dismiss();
+                            dialog2 = null;
+                        }
+
+                    }
+                });
+                cameraPath = null;
                 //获得返回体
                 ResponseBody body = response.body();
-                //  Log.d("AllConnects", "aa   "+response.body().string());
-                JsonObject jsonObject= GsonUtil.parse(body.string()).getAsJsonObject();
-                Gson gson=new Gson();
-                int code=jsonObject.get("exId").getAsInt();
-                if (code==0){
-                    String array=jsonObject.get("exDesc").getAsString();
-                    vipBean.setAvatar(array);
-                    link_gengxinTuPian();
+                String ss=body.string();
+                 Log.d("AllConnects", "aa   "+ss);
+                JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                // Gson gson=new Gson();
+                int code = jsonObject.get("exId").getAsInt();
+                if (code == 0) {
+                    String array = jsonObject.get("exDesc").getAsString();
+                    link_zhiliang(array);
 
-                }else {
-
+                } else {
 
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
 
-                            if (dialog88!=null){
-                                dialog88.dismiss();
-                                dialog88=null;
+                            if (dialog != null) {
+                                dialog.dismiss();
+                                dialog = null;
+                            }
+                            if (dialog2 != null) {
+                                dialog2.dismiss();
+                                dialog2 = null;
                             }
                             TastyToast.makeText(getApplicationContext(),
-                                    "图片不符合规范,请重新上传", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                    "上传失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
                         }
                     });
 
@@ -718,41 +736,198 @@ public class XiuGaiYuanGongActivity extends Activity {
 
     }
 
-    private void link_gengxinTuPian(){
 
-        final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+    private void addPhoto222(final int type) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (dialog88 != null) {
+                    dialog88.setL1Gone();
+                    dialog88.show();
+                }
 
-        OkHttpClient okHttpClient= new OkHttpClient();
+            }
+        });
 
-        if (null!=vipBean.getEntry_date() && !vipBean.getEntry_date().equals("") && !vipBean.getEntry_date().contains("-")){
-            vipBean.setEntry_date(DateUtils.timet(vipBean.getEntry_date()));
+
+        OkHttpClient okHttpClient = new OkHttpClient();
+        RequestBody fileBody1 = null;
+        String file1Name = null;
+         /* 第一个要上传的file */
+        if (cameraPath != null) {
+            File file1 = new File(cameraPath);
+            fileBody1 = RequestBody.create(MediaType.parse("application/octet-stream"), file1);
+            file1Name = System.currentTimeMillis() + "testFile1.jpg";
         }
-        if (null!=vipBean.getBirthday() && !vipBean.getBirthday().equals("") && !vipBean.getBirthday().contains("-")){
-            vipBean.setBirthday(DateUtils.timet(vipBean.getBirthday()));
-        }
 
-        RequestBody body = new FormBody.Builder()
-                .add("id",id+"")
-                .add("name",vipBean.getName()+"")
-                .add("subject_type",0+"")
-                .add("department",vipBean.getDepartment()+"")
-                .add("title",vipBean.getTitle()+"")
-                .add("email",vipBean.getEmail()+"")
-                .add("job_number",vipBean.getJob_number()+"")
-                .add("phone",vipBean.getPhone()+"")
-                .add("entry_date",vipBean.getEntry_date()+"")
-                .add("birthday",vipBean.getBirthday()+"")
-                .add("description",vipBean.getDescription()+"")
-                .add("remark",vipBean.getRemark()+"")
-                .add("gender",vipBean.getGender()+"")
-                .add("avatar",vipBean.getAvatar()+"")
-                .add("photo_ids",vipBean.getPhoto_ids()+"")
+//    /* 第二个要上传的文件,这里偷懒了,和file1用的一个图片 */
+//        File file2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/a.jpg");
+//        RequestBody fileBody2 = RequestBody.create(MediaType.parse("application/octet-stream") , file2);
+//        String file2Name = "testFile2.txt";
+
+
+//    /* form的分割线,自己定义 */
+//        String boundary = "xx--------------------------------------------------------------xx";
+
+        MultipartBody mBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+            /* 底下是上传了两个文件 */
+                .addFormDataPart("voiceFile", file1Name, fileBody1)
+                  /* 上传一个普通的String参数 */
+                // .addFormDataPart("subject_id" , id+"")
+//                .addFormDataPart("file" , file2Name , fileBody2)
                 .build();
+        Request.Builder requestBuilder = new Request.Builder()
+                // .header("Content-Type", "application/json")
+                .post(mBody)
+                .url(fuWuQiBean.getDizhi() + "/AppFileUploadServlet?FilePathPath=avatarFilePath&AllowFileType=.jpg,.gif,.jpeg,.bmp,.png&MaxFileSize=10");
+        //    .url(HOST+"/mobile-admin/subjects");
+
+        // step 3：创建 Call 对象
+        Call call = okHttpClient.newCall(requestBuilder.build());
+        //step 4: 开始异步请求
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d("AllConnects", "头像上传失败" + e.getMessage());
+                cameraPath = null;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!XiuGaiYuanGongActivity.this.isFinishing() && dialog88!=null && dialog88.isShowing()){
+                            dialog88.dismiss();
+                            dialog88=null;
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (!XiuGaiYuanGongActivity.this.isFinishing() && dialog88!=null && dialog88.isShowing()){
+                            dialog88.dismiss();
+                            dialog88=null;
+                        }
+                    }
+                });
+                Log.d("AllConnects", "头像上传成功" + call.request().toString());
+                cameraPath = null;
+                //获得返回体
+                ResponseBody body = response.body();
+                String ss = body.string();
+                Log.d("AllConnects", "aa   " + ss);
+                JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                Gson gson = new Gson();
+                int code = jsonObject.get("exId").getAsInt();
+                if (code == 0) {
+
+                    touxiangPath= jsonObject.get("exDesc").getAsString();
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Glide.with(XiuGaiYuanGongActivity.this)
+                                    .load(fuWuQiBean.getDizhi() + "/upload/avatar/" + touxiangPath)
+                                    .transform(new GlideCircleTransform(XiuGaiYuanGongActivity.this, 0.6f, Color.parseColor("#ffffffff")))
+                                    .into(touxiang);
+                        }
+                    });
+
+                    //link_gengxinTuPian();
+
+                } else {
+
+
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (!XiuGaiYuanGongActivity.this.isFinishing() && dialog88!=null && dialog88.isShowing()){
+                                        dialog88.dismiss();
+                                        dialog88=null;
+                                    }
+                                }
+                            });
+                            TastyToast.makeText(getApplicationContext(),
+                                    "上传头像失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                        }
+                    });
+                }
+
+            }
+        });
+
+    }
+
+    private void link_gengxinTuPian() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (tiJIaoDialog==null && !XiuGaiYuanGongActivity.this.isFinishing()){
+                    tiJIaoDialog=new TiJIaoDialog(XiuGaiYuanGongActivity.this);
+                    tiJIaoDialog.show();
+                }
+            }
+        });
+//        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        OkHttpClient okHttpClient = new OkHttpClient();
+
+        RequestBody body=null;
+        if (type==1){
+             //添加
+            body= new FormBody.Builder()
+                    .add("name", name.getText().toString().trim())
+                    .add("subject_type", 0 + "")
+                    .add("department", bumen.getText().toString().trim())
+                    .add("title", zhiwei.getText().toString().trim())
+                    .add("email", youxiang.getText().toString().trim())
+                    .add("job_number",gonghao.getText().toString().trim())
+                    .add("phone", dianhua.getText().toString().trim())
+                    .add("entry_date2", ruzhishijian.getText().toString().trim())
+                    .add("birthday2",yuangongshengri.getText().toString().trim())
+                    //.add("description", beizhu.getText().toString().trim())
+                    .add("remark", beizhu.getText().toString().trim())
+                    .add("gender", nannv+"")
+                    .add("avatar", touxiangPath==null?"":touxiangPath)
+                    .add("photo_ids", shibiePaths + "")
+                    .add("token",baoCunBean.getToken())
+                    .add("accountId",baoCunBean.getSid())
+                    .build();
+            Log.d("XiuGaiYuanGongActivity", "添加");
+        }else {
+            //修改
+             body = new FormBody.Builder()
+                    .add("id", benDiYuanGong.getId()+"")
+                    .add("name", name.getText().toString().trim())
+                    .add("subject_type", 0 + "")
+                    .add("department", bumen.getText().toString().trim())
+                    .add("title", zhiwei.getText().toString().trim())
+                    .add("email", youxiang.getText().toString().trim())
+                    .add("job_number",gonghao.getText().toString().trim())
+                    .add("phone", dianhua.getText().toString().trim())
+                    .add("entry_date2", ruzhishijian.getText().toString().trim())
+                    .add("birthday2",yuangongshengri.getText().toString().trim())
+                    //.add("description", beizhu.getText().toString().trim())
+                    .add("remark", beizhu.getText().toString().trim())
+                    .add("gender", nannv+"")
+                    .add("avatar", touxiangPath+ "")
+                    .add("photo_ids", shibiePaths+ "")
+                     .add("token",baoCunBean.getToken())
+                     .add("accountId",baoCunBean.getSid())
+                    .build();
+            Log.d("XiuGaiYuanGongActivity", "修改");
+        }
+
 
         Request.Builder requestBuilder = new Request.Builder()
                 // .header("Content-Type", "application/json")
                 .post(body)
-                .url(fuWuQiBean.getDizhi()+"/addSubject.do");
+                .url(fuWuQiBean.getDizhi() + "/addSubject.do");
 
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
@@ -761,46 +936,71 @@ public class XiuGaiYuanGongActivity extends Activity {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.d("AllConnects", "请求失败"+e.getMessage());
+                Log.d("AllConnects", "请求失败" + e.getMessage());
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        TastyToast.makeText(XiuGaiYuanGongActivity.this, "网络错误，请求失败", Toast.LENGTH_LONG,TastyToast.INFO).show();
+                        TastyToast.makeText(XiuGaiYuanGongActivity.this, "网络错误,请求失败", Toast.LENGTH_LONG, TastyToast.INFO).show();
+                        if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing() && tiJIaoDialog.isShowing()) {
+                            tiJIaoDialog.dismiss();
+                            tiJIaoDialog = null;
+                        }
                     }
                 });
+
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.d("AllConnects", "请求成功"+call.request().toString());
+                Log.d("AllConnects", "请求成功" + call.request().toString());
                 try {
-
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing() && tiJIaoDialog.isShowing()) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
 
                     //获得返回体
                     ResponseBody body = response.body();
-                    //  Log.d("AllConnects", "aa   "+response.body().string());
-                    JsonObject jsonObject= GsonUtil.parse(body.string()).getAsJsonObject();
+                    String ss=body.string();
+                      Log.d("AllConnects", "aa   "+ss);
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
 //                Gson gson=new Gson();
-                    int code=jsonObject.get("dtoResult").getAsInt();
-                    if (code==0){
-                        link(id);
+                    int code = jsonObject.get("dtoResult").getAsInt();
+                    if (code == 0) {
+
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                TastyToast.makeText(XiuGaiYuanGongActivity.this, "修改成功！", Toast.LENGTH_LONG,TastyToast.INFO).show();
+                                TastyToast.makeText(XiuGaiYuanGongActivity.this, "修改成功！", Toast.LENGTH_LONG, TastyToast.INFO).show();
+                                finish();
                             }
                         });
-                    }else {
+                    } else {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                TastyToast.makeText(XiuGaiYuanGongActivity.this, "请求失败", Toast.LENGTH_LONG,TastyToast.INFO).show();
+                                TastyToast.makeText(XiuGaiYuanGongActivity.this, "修改失败", Toast.LENGTH_LONG, TastyToast.INFO).show();
                             }
                         });
                     }
 
-                }catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            TastyToast.makeText(XiuGaiYuanGongActivity.this, "发生未知错误", Toast.LENGTH_LONG, TastyToast.INFO).show();
+                            if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing() && tiJIaoDialog.isShowing()) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
                 }
 
             }
@@ -814,7 +1014,7 @@ public class XiuGaiYuanGongActivity extends Activity {
         handler.removeCallbacksAndMessages(null);
         //销毁Activity时取消注册广播监听器；
         unregisterReceiver(netChangReceiver);
-        Intent intent=new Intent("gengxin1");
+        Intent intent = new Intent("gengxin1");
         sendBroadcast(intent);
 
         super.onDestroy();
@@ -827,39 +1027,31 @@ public class XiuGaiYuanGongActivity extends Activity {
         if (resultCode == Activity.RESULT_OK && requestCode == 2) {
             // 选择预约时间的页面被关闭
             String date = data.getStringExtra("date");
-            ruzhishijian.setText(date);
+            int yyy=data.getIntExtra("yyy",0);
+            if (yyy==1){
+                ruzhishijian.setText(date);
+            }else {
+                yuangongshengri.setText(date);
+            }
+
         }
 
-        if (resultCode == Activity.RESULT_OK && requestCode == 1111) {
-            // 选择预约时间的页面被关闭
-            String date = data.getStringExtra("date");
-            Log.d("UserInfoActivity", "dat2222a:" + date);
-            vipBean.setEntry_date(date);
-            link_gengxinTuPian();
-        }
-        if (resultCode == Activity.RESULT_OK && requestCode == 2222) {
-            // 选择预约时间的页面被关闭
-            String date = data.getStringExtra("date");
-            Log.d("UserInfoActivity", "data:" + date);
-            vipBean.setBirthday(date);
-            Log.d("UserInfoActivity", vipBean.getBirthday()+"dddd");
-            link_gengxinTuPian();
-        }
+
 
         //相册，更新识别照片
-        if (requestCode==ALBUM_REQUEST_CODE){
+        if (requestCode == ALBUM_REQUEST_CODE) {
             try {
                 Uri uri = data.getData();
-                final String absolutePath= getAbsolutePath(XiuGaiYuanGongActivity.this, uri);
-                if (absolutePath!=null){
-                    cameraPath=absolutePath;
-                    Intent intent= new Intent("com.android.camera.action.CROP");
-                    intent.setDataAndType(uri,"image/*");
+                final String absolutePath = getAbsolutePath(XiuGaiYuanGongActivity.this, uri);
+                if (absolutePath != null) {
+                    cameraPath = absolutePath;
+                    Intent intent = new Intent("com.android.camera.action.CROP");
+                    intent.setDataAndType(uri, "image/*");
                     //下面这个crop=true是设置在开启的Intent中设置显示的view可裁剪
-                    intent.putExtra("crop","true");
+                    intent.putExtra("crop", "true");
                     // aspectX aspectY 是宽高的比例
-                    intent.putExtra("aspectX",1);
-                    intent.putExtra("aspectY",1);
+                    intent.putExtra("aspectX", 1);
+                    intent.putExtra("aspectY", 1);
                     // outputX outputY 是裁剪图片宽高
                     intent.putExtra("outputX", 600);
                     intent.putExtra("outputY", 600);
@@ -869,14 +1061,14 @@ public class XiuGaiYuanGongActivity extends Activity {
                     intent.putExtra("scale", true);
                     intent.putExtra("scaleUpIfNeeded", true);
                     // intent.putExtra("noFaceDetection", false);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(mFile));
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));
                     intent.putExtra("outputFormat", "JPEG");// 返回格式
-                    startActivityForResult(intent,PHOTO_REQUEST_CUT);
+                    startActivityForResult(intent, PHOTO_REQUEST_CUT);
 
                     // addPhoto(1);
-                }else {
+                } else {
                     TastyToast.makeText(getApplicationContext(),
-                            "请选择(系统图库)", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                            "请选择(相册图库)", TastyToast.LENGTH_LONG, TastyToast.ERROR);
                 }
 
                 // Log.d("dddd","path=" + absolutePath);
@@ -887,19 +1079,19 @@ public class XiuGaiYuanGongActivity extends Activity {
         }
 
         //相册，更新头像
-        if (requestCode==ALBUM_REQUEST_CODE2){
+        if (requestCode == ALBUM_REQUEST_CODE2) {
             try {
                 Uri uri = data.getData();
-                final String absolutePath= getAbsolutePath(XiuGaiYuanGongActivity.this, uri);
-                if (absolutePath!=null){
-                    cameraPath=absolutePath;
-                    Intent intent= new Intent("com.android.camera.action.CROP");
-                    intent.setDataAndType(uri,"image/*");
+                final String absolutePath = getAbsolutePath(XiuGaiYuanGongActivity.this, uri);
+                if (absolutePath != null) {
+                    cameraPath = absolutePath;
+                    Intent intent = new Intent("com.android.camera.action.CROP");
+                    intent.setDataAndType(uri, "image/*");
                     //下面这个crop=true是设置在开启的Intent中设置显示的view可裁剪
-                    intent.putExtra("crop","true");
+                    intent.putExtra("crop", "true");
                     // aspectX aspectY 是宽高的比例
-                    intent.putExtra("aspectX",1);
-                    intent.putExtra("aspectY",1);
+                    intent.putExtra("aspectX", 1);
+                    intent.putExtra("aspectY", 1);
                     // outputX outputY 是裁剪图片宽高
                     intent.putExtra("outputX", 800);
                     intent.putExtra("outputY", 800);
@@ -909,13 +1101,13 @@ public class XiuGaiYuanGongActivity extends Activity {
                     intent.putExtra("scale", true);
                     intent.putExtra("scaleUpIfNeeded", true);
                     // intent.putExtra("noFaceDetection", false);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT,Uri.fromFile(mFile));
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));
                     intent.putExtra("outputFormat", "JPEG");// 返回格式
-                    startActivityForResult(intent,PHOTO_REQUEST_CUT2);
+                    startActivityForResult(intent, PHOTO_REQUEST_CUT2);
 
-                }else {
+                } else {
                     TastyToast.makeText(getApplicationContext(),
-                            "请选择(系统图库)", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                            "请选择(相册图库)", TastyToast.LENGTH_LONG, TastyToast.ERROR);
                 }
 
             } catch (Exception e) {
@@ -923,9 +1115,9 @@ public class XiuGaiYuanGongActivity extends Activity {
             }
         }
         //裁剪识别照片
-        if(requestCode == PHOTO_REQUEST_CUT && resultCode == RESULT_OK && data != null){ //裁剪
+        if (requestCode == PHOTO_REQUEST_CUT && resultCode == RESULT_OK && data != null) { //裁剪
             //imagview来显示裁剪后的图片
-            if (mFile!=null){
+            if (mFile != null) {
 
                 //因为这是一个耗时的操作，所以放到另一个线程中运行
                 new Thread(new Runnable() {
@@ -940,17 +1132,17 @@ public class XiuGaiYuanGongActivity extends Activity {
                         bmp = null;
                         //  Log.e("tag", "识别的人脸数:" + faceCount);
 
-                        if (faceCount <=0) {
+                        if (faceCount <= 0) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this,"没有检测到人脸,请重新选择",TastyToast.LENGTH_LONG,TastyToast.ERROR);
-                                    tastyToast.setGravity(Gravity.CENTER,0,0);
+                                    Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "没有检测到人脸,请重新选择", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                    tastyToast.setGravity(Gravity.CENTER, 0, 0);
                                     tastyToast.show();
                                 }
                             });
-                        }else {
-                            cameraPath=mFile.getAbsolutePath();
+                        } else {
+                            cameraPath = mFile.getAbsolutePath();
                             addPhoto(1);
                         }
                     }
@@ -960,11 +1152,11 @@ public class XiuGaiYuanGongActivity extends Activity {
         }
 
         //裁剪头像
-        if(requestCode == PHOTO_REQUEST_CUT2 && resultCode == RESULT_OK && data != null){ //裁剪
+        if (requestCode == PHOTO_REQUEST_CUT2 && resultCode == RESULT_OK && data != null) { //裁剪
 
-            if (mFile!=null){
+            if (mFile != null) {
 
-                cameraPath=mFile.getAbsolutePath();
+                cameraPath = mFile.getAbsolutePath();
                 addPhoto222(1);
 
             }
@@ -997,17 +1189,17 @@ public class XiuGaiYuanGongActivity extends Activity {
 //        }
 //    }
 
-    private void xiangce(int type){
-        if (type==99){
+    private void xiangce(int type) {
+        if (type == 99) {
             //更新头像
-            Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, ALBUM_REQUEST_CODE2);
 
-        }else {
+        } else {
             //更新识别照片
-            Intent intent = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, ALBUM_REQUEST_CODE);
@@ -1039,4 +1231,320 @@ public class XiuGaiYuanGongActivity extends Activity {
         }
         return data;
     }
+
+    private void link_zhiliang(final String path) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (tiJIaoDialog==null && !XiuGaiYuanGongActivity.this.isFinishing()){
+                    tiJIaoDialog=new TiJIaoDialog(XiuGaiYuanGongActivity.this);
+                    tiJIaoDialog.show();
+                }
+            }
+        });
+
+
+        //final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        //http://192.168.2.4:8080/sign?cmd=getUnSignList&subjectId=jfgsdf
+        OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
+
+        if (null!=baoCunBean.getSid()) {
+
+
+            //    /* form的分割线,自己定义 */
+            //        String boundary = "xx--------------------------------------------------------------xx";
+            RequestBody body = new FormBody.Builder()
+                    .add("scanPhoto", path)
+                    .add("accountId", baoCunBean.getSid())
+                    .build();
+
+
+            Request.Builder requestBuilder = new Request.Builder()
+                    // .header("Content-Type", "application/json")
+                    .post(body)
+                    .url(baoCunBean.getDizhi() + "/faceQuality.do");
+
+            // step 3：创建 Call 对象
+            Call call = okHttpClient.newCall(requestBuilder.build());
+
+            //step 4: 开始异步请求
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing() && tiJIaoDialog.isShowing()) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tiJIaoDialog != null) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
+                    Log.d("AllConnects", "请求识别成功" + call.request().toString());
+                    //获得返回体
+                    try {
+
+                        ResponseBody body = response.body();
+                        String ss = body.string().trim();
+                        Log.d("DengJiActivity", ss);
+
+                        JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                        Gson gson = new Gson();
+                        ShouFangBean zhaoPianBean = gson.fromJson(jsonObject, ShouFangBean.class);
+
+                        if (zhaoPianBean.getDtoResult() != 0) {
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if (!XiuGaiYuanGongActivity.this.isFinishing()) {
+                                        Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "照片质量不符合入库要求,请拍正面照!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                        tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                        tastyToast.show();
+                                    }
+
+
+                                }
+                            });
+
+                        } else {
+                            int sz = photosLists.size();
+                            StringBuilder buffer = new StringBuilder();
+
+                            for (int i = 0; i < sz; i++) {
+                                if (photosLists.get(i).contains(".jpg") && wz != i) {
+                                    buffer.append(photosLists.get(i));
+                                    buffer.append(",");
+                                } else {
+                                    if (wz == i) {
+                                        buffer.append(path);
+                                        buffer.append(",");
+                                    }
+                                }
+
+                            }
+                            String str = buffer.toString();
+                            int indx = str.lastIndexOf(",");
+                            if (indx != -1) {
+                                str = str.substring(0, indx) + str.substring(indx + 1, str.length());
+                            }
+                            shibiePaths=str;
+
+                                String s[] =shibiePaths.split(",");
+                                int sss=s.length;
+                            if (photosLists.size()!=0){
+                                photosLists.clear();
+                            }
+                                if (sss<3){
+                                    for (int k=0;k<3;k++){
+                                        if (k<=sss-1){
+                                            photosLists.add(s[k]);
+                                        }else {
+                                            photosLists.add("http://192.168.168.168.rui");
+                                        }
+                                    }
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+
+                                }else {
+
+                                    Collections.addAll(photosLists, s);
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    });
+
+                                }
+                            Log.d("UserInfoActivity", str);
+                            isTiJiao = true;
+                        }
+
+                    } catch (Exception e) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (tiJIaoDialog != null) {
+                                    tiJIaoDialog.dismiss();
+                                    tiJIaoDialog = null;
+                                }
+                            }
+                        });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "提交失败,请检查网络", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                tastyToast.show();
+
+                            }
+                        });
+                        Log.d("WebsocketPushMsg", e.getMessage());
+                    }
+                }
+            });
+        }else {
+            Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "账户ID为空!,请设置帐户ID", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            tastyToast.setGravity(Gravity.CENTER, 0, 0);
+            tastyToast.show();
+        }
+
+
+    }
+
+    private void link_delect() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (tiJIaoDialog==null && !XiuGaiYuanGongActivity.this.isFinishing()){
+                    tiJIaoDialog=new TiJIaoDialog(XiuGaiYuanGongActivity.this);
+                    tiJIaoDialog.show();
+                }
+            }
+        });
+
+
+        //final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        //http://192.168.2.4:8080/sign?cmd=getUnSignList&subjectId=jfgsdf
+        OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
+
+        if (null!=baoCunBean.getSid()) {
+
+
+            //    /* form的分割线,自己定义 */
+            //        String boundary = "xx--------------------------------------------------------------xx";
+            RequestBody body = new FormBody.Builder()
+                    .add("id", benDiYuanGong.getId()+"")
+                    .add("token",baoCunBean.getToken())
+                    .add("accountId",baoCunBean.getSid())
+                    .build();
+
+            Request.Builder requestBuilder = new Request.Builder()
+                    // .header("Content-Type", "application/json")
+                    .post(body)
+                    .url(baoCunBean.getDizhi() + "/delSubject.do");
+
+            // step 3：创建 Call 对象
+            Call call = okHttpClient.newCall(requestBuilder.build());
+
+            //step 4: 开始异步请求
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing() && tiJIaoDialog.isShowing()) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tiJIaoDialog != null) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
+                    Log.d("AllConnects", "请求识别成功" + call.request().toString());
+                    //获得返回体
+                    try {
+
+                        ResponseBody body = response.body();
+                        String ss = body.string().trim();
+                        Log.d("DengJiActivity", ss);
+
+                        JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                        Gson gson = new Gson();
+                        ShouFangBean zhaoPianBean = gson.fromJson(jsonObject, ShouFangBean.class);
+
+                        if (zhaoPianBean.getDtoResult() == 0) {
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if (!XiuGaiYuanGongActivity.this.isFinishing()) {
+                                        Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "删除成功", TastyToast.LENGTH_LONG, TastyToast.INFO);
+                                        tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                        tastyToast.show();
+                                        finish();
+                                    }
+
+
+                                }
+                            });
+
+                        } else {
+                            if (!XiuGaiYuanGongActivity.this.isFinishing()) {
+                                Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "删除失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                tastyToast.show();
+                            }
+                        }
+
+                    } catch (Exception e) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (tiJIaoDialog != null) {
+                                    tiJIaoDialog.dismiss();
+                                    tiJIaoDialog = null;
+                                }
+                            }
+                        });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "提交失败,请检查网络", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                tastyToast.show();
+
+                            }
+                        });
+                        Log.d("WebsocketPushMsg", e.getMessage());
+                    }
+                }
+            });
+        }else {
+            Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "账户ID为空!,请设置帐户ID", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            tastyToast.setGravity(Gravity.CENTER, 0, 0);
+            tastyToast.show();
+        }
+    }
+
 }

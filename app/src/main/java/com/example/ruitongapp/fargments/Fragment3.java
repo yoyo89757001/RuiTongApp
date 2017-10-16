@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.HeiMingDanAdapter;
 import com.example.ruitongapp.beans.YuanGongBean;
+import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiHeiMingDanActivity;
 import com.example.ruitongapp.view.SideBar;
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
@@ -173,7 +174,7 @@ public class Fragment3 extends Fragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.sousuo:
-
+                startActivity(new Intent(getContext(),SouSuoActivity.class));
                 break;
             case R.id.tianjia:
 

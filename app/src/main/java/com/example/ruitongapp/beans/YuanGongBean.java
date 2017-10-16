@@ -128,7 +128,8 @@ public class YuanGongBean {
          * subject_type : 0
          * title :
          */
-
+        private String entry_date2;
+        private String birthday2;
         private int accountId;
         private String accountName;
         private String avatar;
@@ -138,7 +139,7 @@ public class YuanGongBean {
         private int dtoResult;
         private String email;
         private int gender;
-        private int id;
+        private Long id;
         private String job_number;
         private long modifyTime;
         private String name;
@@ -152,6 +153,22 @@ public class YuanGongBean {
         private int subject_type;
         private String title;
         private String firstLetter;
+
+        public String getEntry_date2() {
+            return entry_date2;
+        }
+
+        public void setEntry_date2(String entry_date2) {
+            this.entry_date2 = entry_date2;
+        }
+
+        public String getBirthday2() {
+            return birthday2;
+        }
+
+        public void setBirthday2(String birthday2) {
+            this.birthday2 = birthday2;
+        }
 
         public String getFirstLetter() {
             return firstLetter;
@@ -233,11 +250,11 @@ public class YuanGongBean {
             this.gender = gender;
         }
 
-        public int getId() {
+        public Long getId() {
             return id;
         }
 
-        public void setId(int id) {
+        public void setId(Long id) {
             this.id = id;
         }
 
@@ -337,4 +354,5 @@ public class YuanGongBean {
             this.title = title;
         }
     }
+
 }

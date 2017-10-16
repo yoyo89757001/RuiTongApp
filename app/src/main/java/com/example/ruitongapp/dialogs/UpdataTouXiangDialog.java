@@ -26,7 +26,7 @@ public class UpdataTouXiangDialog extends Dialog {
     }
 
     private void setCustomDialog() {
-        View mView = LayoutInflater.from(getContext()).inflate(R.layout.queren_ll3, null);
+        View mView = LayoutInflater.from(getContext()).inflate(R.layout.xiugaitouxiang_item, null);
      //   shanchu= (TextView) mView.findViewById(R.id.shanchu);
         paizhao= (TextView) mView.findViewById(R.id.paizhao);
         xiangce= (TextView) mView.findViewById(R.id.xiangce);

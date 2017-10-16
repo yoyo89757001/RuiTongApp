@@ -115,11 +115,11 @@ public class DateUtils {
      * @return
      */
     public static String timedate(String time) {
-        SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd",Locale.CHINA);
+        SimpleDateFormat sdr = new SimpleDateFormat("yyyy-MM-dd HH:mm",Locale.CHINA);
         @SuppressWarnings("unused")
         long lcc = Long.valueOf(time);
-        int i = Integer.parseInt(time);
-        String times = sdr.format(new Date(i * 1000L));
+       // int i = Integer.parseInt(time);
+        String times = sdr.format(new Date(lcc));
         return times;
 
     }

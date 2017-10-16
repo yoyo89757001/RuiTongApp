@@ -25,6 +25,8 @@
             android:textSize="16sp"
             android:gravity="center"
             android:id="@+id/a1"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/progressBar"

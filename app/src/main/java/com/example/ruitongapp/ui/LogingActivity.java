@@ -105,6 +105,7 @@ public class LogingActivity extends Activity {
             baoCunBean=baoCunBeanDao.load(123456L);
             if (baoCunBean!=null){
                 startActivity(new Intent(LogingActivity.this,HomePageActivity.class));
+                finish();
             }
         }
     }
@@ -117,7 +118,12 @@ public class LogingActivity extends Activity {
                 break;
             case R.id.denglu:
                 if (!youxiang.getText().toString().trim().equals("") && !mima.getText().toString().trim().equals("")){
-                    link_denglu();
+                    try {
+                        link_denglu();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
                 }else {
                     Toast tastyToast= TastyToast.makeText(LogingActivity.this,"请填写账号和密码!",TastyToast.LENGTH_LONG,TastyToast.ERROR);
                     tastyToast.setGravity(Gravity.CENTER,0,0);
@@ -204,6 +210,7 @@ public class LogingActivity extends Activity {
                         }
                         startActivity(new Intent(LogingActivity.this,HomePageActivity.class));
                         finish();
+                        Log.d("LogingActivity", "关闭");
                     }else {
                         runOnUiThread(new Runnable() {
                             @Override

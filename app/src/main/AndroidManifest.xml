@@ -60,7 +60,8 @@
             android:name=".ui.PaiZhaoActivity2"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
         <activity android:name=".ui.SheZhiActivity" />
-        <activity android:name=".ui.XiuGaiMiMaActivity"></activity>
+        <activity android:name=".ui.XiuGaiMiMaActivity" />
+        <activity android:name=".ui.SouSuoActivity"></activity>
     </application>
 
 </manifest>
