@@ -42,10 +42,10 @@
 
         </RelativeLayout>
 
-        <View
-            android:background="@color/view_bg"
-            android:layout_width="match_parent"
-            android:layout_height="0.8dp"/>
+        <!--<View-->
+            <!--android:background="@color/view_bg"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0.8dp"/>-->
 
         <LinearLayout
             android:layout_weight="1"
@@ -54,29 +54,33 @@
             android:layout_height="0dp">
 
             <Button
-                android:text="确定"
+                android:text="确 定"
                 android:layout_weight="1"
                 android:textSize="14sp"
                 android:id="@+id/queding_xingming"
-                android:textColor="#4b99f7"
-                android:background="@null"
+                android:textColor="@color/write"
+                android:layout_marginLeft="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginRight="4dp"
+                android:background="@drawable/jiaohu3"
                 android:layout_width="0dp"
-                android:layout_height="32dp" />
+                android:layout_height="match_parent" />
 
-            <View
-                android:layout_width="0.8dp"
-                android:id="@+id/quxiao_v"
-                android:background="@color/view_bg"
-                android:layout_height="match_parent"/>
+
             <Button
                 android:layout_weight="1"
-                android:text="取消"
+                android:text="取 消"
                 android:textSize="14sp"
                 android:id="@+id/quxiao"
-                android:textColor="#4b99f7"
-                android:background="@null"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/write"
+                android:background="@drawable/jiaohu3"
                 android:layout_width="0dp"
-                android:layout_height="32dp" />
+                android:layout_height="match_parent" />
 
         </LinearLayout>
 

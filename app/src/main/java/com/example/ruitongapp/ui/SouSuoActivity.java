@@ -31,6 +31,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sdsmdg.tastytoast.TastyToast;
+
+import org.parceler.Parcels;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -105,12 +108,18 @@ public class SouSuoActivity extends Activity implements ClickIntface {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.fg:
-
+                finish();
                 break;
             case R.id.sousuo:
 
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
@@ -143,7 +152,9 @@ public class SouSuoActivity extends Activity implements ClickIntface {
 
     @Override
     public void BackId(int id) {
-            startActivity(new Intent(SouSuoActivity.this,XiuGaiYuanGongActivity.class).putExtra("idid",benDiYuanGongList.get(id).getId()));
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("chuansong", Parcels.wrap(benDiYuanGongList.get(id)));
+        startActivity(new Intent(SouSuoActivity.this,XiuGaiYuanGongActivity.class).putExtra("type",2).putExtras(bundle));
 
     }
 

@@ -29,10 +29,14 @@
                 android:background="@color/lanse"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-
+                <View
+                    android:background="@color/write"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
                 <TextView
                     android:text="识别照片"
                     android:textSize="@dimen/sp_16"
+                    android:layout_marginTop="2dp"
                     android:layout_marginLeft="@dimen/sp_16"
                     android:textColor="@color/write"
                     android:layout_width="match_parent"

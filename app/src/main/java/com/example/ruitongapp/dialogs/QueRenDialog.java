@@ -21,7 +21,7 @@ public class QueRenDialog extends Dialog {
 
     private Button positiveButton,quxiao;
     private TextView shuoming;
-    private View quxiao_v;
+   // private View quxiao_v;
     public QueRenDialog(Context context) {
         super(context, R.style.dialog_style);
         setCustomDialog();
@@ -32,13 +32,13 @@ public class QueRenDialog extends Dialog {
         shuoming= (TextView) mView.findViewById(R.id.dddddd);
         positiveButton = (Button) mView.findViewById(R.id.queding_xingming);
         quxiao= (Button) mView.findViewById(R.id.quxiao);
-        quxiao_v=mView.findViewById(R.id.quxiao_v);
+      //  quxiao_v=mView.findViewById(R.id.quxiao_v);
         super.setContentView(mView);
     }
 
 
     public void setVisibility_BT(){
-        quxiao_v.setVisibility(View.VISIBLE);
+       // quxiao_v.setVisibility(View.VISIBLE);
         quxiao.setVisibility(View.VISIBLE);
 
     }

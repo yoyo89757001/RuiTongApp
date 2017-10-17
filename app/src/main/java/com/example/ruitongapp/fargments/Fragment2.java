@@ -19,6 +19,7 @@ import com.example.ruitongapp.beans.BaoCunBeanDao;
 import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiFangKeActivity;
+import com.example.ruitongapp.view.WrapContentLinearLayoutManager;
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.recyclerview.LRecyclerView;
@@ -48,7 +49,7 @@ public class Fragment2 extends Fragment {
     Unbinder unbinder;
 
 
-    private LinearLayoutManager linearLayoutManager = null;
+    private WrapContentLinearLayoutManager linearLayoutManager = null;
     private LRecyclerView lRecyclerView;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
     private List<YuanGongBean.ObjectsBean> dataList;
@@ -75,14 +76,12 @@ public class Fragment2 extends Fragment {
             baoCunBean=baoCunBeanDao.load(123456L);
         }
 
-        linearLayoutManager = new LinearLayoutManager(getContext());
-
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerView);
         taiZhangAdapter = new FangKeAdapter(dataList,getContext(),baoCunBean.getDizhi());
         taiZhangAdapter.setLetters();
         lRecyclerViewAdapter = new LRecyclerViewAdapter(taiZhangAdapter);
 
-        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager = new WrapContentLinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         lRecyclerView.setLayoutManager(linearLayoutManager);
 

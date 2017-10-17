@@ -46,6 +46,7 @@ import com.example.ruitongapp.beans.ShouFangBean;
 import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.dialogs.PaiZhaoDialog;
 import com.example.ruitongapp.dialogs.PaiZhaoDialog2;
+import com.example.ruitongapp.dialogs.QueRenDialog;
 import com.example.ruitongapp.dialogs.TiJIaoDialog;
 import com.example.ruitongapp.dialogs.UpdataTouXiangDialog;
 import com.example.ruitongapp.utils.GlideCircleTransform;
@@ -124,12 +125,9 @@ public class XiuGaiYuanGongActivity extends Activity {
     private IntentFilter intentFilter;
     //定义一个广播监听器；
     private NetChangReceiver netChangReceiver;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private int id;
     private TiJIaoDialog tiJIaoDialog=null;
     private BenDiYuanGong vipBean = null;
     private List<String> photosLists = new ArrayList<>();
-    private int photoSize = 0;
     public final static int ALBUM_REQUEST_CODE = 1;
     public final static int ALBUM_REQUEST_CODE2 = 4;
     String cameraPath = null;
@@ -146,7 +144,6 @@ public class XiuGaiYuanGongActivity extends Activity {
     private FuWuQiBeanDao fuWuQiBeanDao = null;
     private List<FuWuQiBean> fuWuQiBeanList = null;
     private FuWuQiBean fuWuQiBean = null;
-    private Long idid;
     private int nannv = 0;
     private String touxiangPath="";
     private String shibiePaths="";
@@ -209,12 +206,11 @@ public class XiuGaiYuanGongActivity extends Activity {
                 }
             }
         }
-        idid = getIntent().getLongExtra("idid", 0L);
 
         type = getIntent().getIntExtra("type", 0);
         if (type == 1) {
             title.setText("添加员工");
-
+            shanchu.setVisibility(View.GONE);
             for (int i = 3; i > 0; i--) {
 
                 photosLists.add("http://192.168.168.168.rui");
@@ -495,7 +491,22 @@ public class XiuGaiYuanGongActivity extends Activity {
                 break;
             case R.id.shanchu:
                 //删除
-               link_delect();
+                final QueRenDialog dialog=new QueRenDialog(XiuGaiYuanGongActivity.this);
+                dialog.setCountText("你确定要删除吗？");
+                dialog.setOnPositiveListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        link_delect();
+                        dialog.dismiss();
+                    }
+                });
+                dialog.setOnQuXiaoListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
 
                 break;
         }
@@ -536,83 +547,83 @@ public class XiuGaiYuanGongActivity extends Activity {
 
     }
 
-    private void link(int id) {
-
-        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-
-        OkHttpClient okHttpClient = new OkHttpClient();
-
-        RequestBody body = new FormBody.Builder()
-                .add("id", id + "")
-                .build();
-        Request.Builder requestBuilder = new Request.Builder()
-                // .header("Content-Type", "application/json")
-                .post(body)
-                .url(fuWuQiBean.getDizhi() + "/getSubject.do");
-        //    .url(HOST+"/mobile-admin/subjects");
-
-        // step 3：创建 Call 对象
-        Call call = okHttpClient.newCall(requestBuilder.build());
-
-        //step 4: 开始异步请求
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("AllConnects", "请求失败" + e.getMessage());
-
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                try {
-
-                    Log.d("AllConnects", "请求成功" + call.request().toString());
-                    //获得返回体
-                    ResponseBody body = response.body();
-
-                    String ss = body.string();
-                    Log.d("AllConnects", ss);
-                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
-                    Gson gson = new Gson();
-                    if (photosLists.size() > 0) {
-                        photosLists.clear();
-                    }
-
-                    //vipBean=gson.fromJson(jsonObject,EmployeesInfoBean.class);
-                    String s = vipBean.getPhoto_ids();
-                    if (null != s && !s.equals("")) {
-                        String p[] = s.split(",");
-                        photoSize = p.length;
-                        for (int i = 0; i < photoSize; i++) {
-                            photosLists.add(p[i]);
-                        }
-                    }
-                    int pp = photosLists.size();
-                    if (pp < 3) {
-                        for (int i = 3; i > pp; i--) {
-
-                            photosLists.add("http://192.168.168.168");
-                            if (photosLists.size() == 3) {
-                                break;
-                            }
-                        }
-                    }
-
-
-                    Message message = new Message();
-                    message.what = 3;
-                    message.obj = vipBean;
-                    handler.sendMessage(message);
-
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-
-        });
-
-    }
+//    private void link(int id) {
+//
+//        final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+//
+//        OkHttpClient okHttpClient = new OkHttpClient();
+//
+//        RequestBody body = new FormBody.Builder()
+//                .add("id", id + "")
+//                .build();
+//        Request.Builder requestBuilder = new Request.Builder()
+//                // .header("Content-Type", "application/json")
+//                .post(body)
+//                .url(fuWuQiBean.getDizhi() + "/getSubject.do");
+//        //    .url(HOST+"/mobile-admin/subjects");
+//
+//        // step 3：创建 Call 对象
+//        Call call = okHttpClient.newCall(requestBuilder.build());
+//
+//        //step 4: 开始异步请求
+//        call.enqueue(new Callback() {
+//            @Override
+//            public void onFailure(Call call, IOException e) {
+//                Log.d("AllConnects", "请求失败" + e.getMessage());
+//
+//            }
+//
+//            @Override
+//            public void onResponse(Call call, Response response) throws IOException {
+//                try {
+//
+//                    Log.d("AllConnects", "请求成功" + call.request().toString());
+//                    //获得返回体
+//                    ResponseBody body = response.body();
+//
+//                    String ss = body.string();
+//                    Log.d("AllConnects", ss);
+//                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+//                    Gson gson = new Gson();
+//                    if (photosLists.size() > 0) {
+//                        photosLists.clear();
+//                    }
+//
+//                    //vipBean=gson.fromJson(jsonObject,EmployeesInfoBean.class);
+//                    String s = vipBean.getPhoto_ids();
+//                    if (null != s && !s.equals("")) {
+//                        String p[] = s.split(",");
+//                        photoSize = p.length;
+//                        for (int i = 0; i < photoSize; i++) {
+//                            photosLists.add(p[i]);
+//                        }
+//                    }
+//                    int pp = photosLists.size();
+//                    if (pp < 3) {
+//                        for (int i = 3; i > pp; i--) {
+//
+//                            photosLists.add("http://192.168.168.168");
+//                            if (photosLists.size() == 3) {
+//                                break;
+//                            }
+//                        }
+//                    }
+//
+//
+//                    Message message = new Message();
+//                    message.what = 3;
+//                    message.obj = vipBean;
+//                    handler.sendMessage(message);
+//
+//
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        });
+//
+//    }
 
     private void addPhoto(final int type) {
         runOnUiThread(new Runnable() {
@@ -983,6 +994,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                             @Override
                             public void run() {
                                 TastyToast.makeText(XiuGaiYuanGongActivity.this, "修改成功！", Toast.LENGTH_LONG, TastyToast.INFO).show();
+                               // sendBroadcast(new Intent("shuaxing"));
                                 finish();
                             }
                         });
@@ -1021,8 +1033,6 @@ public class XiuGaiYuanGongActivity extends Activity {
         handler.removeCallbacksAndMessages(null);
         //销毁Activity时取消注册广播监听器；
         unregisterReceiver(netChangReceiver);
-        Intent intent = new Intent("gengxin1");
-        sendBroadcast(intent);
 
         super.onDestroy();
 
@@ -1508,6 +1518,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                                         tastyToast.setGravity(Gravity.CENTER, 0, 0);
                                         tastyToast.show();
                                         finish();
+                                       // sendBroadcast(new Intent("shanchu"));
                                     }
 
 

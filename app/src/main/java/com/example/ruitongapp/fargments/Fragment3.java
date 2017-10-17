@@ -1,7 +1,10 @@
 package com.example.ruitongapp.fargments;
 
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -26,6 +29,7 @@ import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiHeiMingDanActivity;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.view.SideBar;
+import com.example.ruitongapp.view.WrapContentLinearLayoutManager;
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
 import com.github.jdsjlzx.interfaces.OnItemClickListener;
 import com.github.jdsjlzx.interfaces.OnLoadMoreListener;
@@ -36,6 +40,8 @@ import com.github.jdsjlzx.recyclerview.ProgressStyle;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sdsmdg.tastytoast.TastyToast;
+
+import org.parceler.Parcels;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -65,7 +71,7 @@ public class Fragment3 extends Fragment {
     @BindView(R.id.tianjia)
     ImageView tianjia;
     Unbinder unbinder;
-    private LinearLayoutManager linearLayoutManager = null;
+    private WrapContentLinearLayoutManager linearLayoutManager = null;
     private LRecyclerView lRecyclerView;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
     private List<HeiMingDanBean.ObjectsBean> dataList;
@@ -79,13 +85,15 @@ public class Fragment3 extends Fragment {
     private int dangQianYe=1;
     private int qingQiuYe=1;
     private String ss=null;
-
-
+    private int piotions=-1;
+    //定义一个过滤器；
+    private IntentFilter intentFilter;
+    //定义一个广播监听器；
+    private NetChangReceiver netChangReceiver;
 
 
     public Fragment3() {
         dataList = new ArrayList<>();
-
 
     }
 
@@ -98,21 +106,27 @@ public class Fragment3 extends Fragment {
         if (baoCunBeanDao!=null){
             baoCunBean=baoCunBeanDao.load(123456L);
         }
-
+        //实例化过滤器；
+        intentFilter = new IntentFilter();
+        //添加过滤的Action值；
+        intentFilter.addAction("shanchu3");
+        intentFilter.addAction("shuaxing3");
+        //实例化广播监听器；
+        netChangReceiver = new NetChangReceiver();
+        //将广播监听器和过滤器注册在一起；
+        getActivity().registerReceiver(netChangReceiver, intentFilter);
 
         View view = inflater.inflate(R.layout.fragment_fragment3, container, false);
         sideBar = (SideBar) view.findViewById(R.id.side_bar);
         txtShowCurrentLetter = (TextView) view.findViewById(R.id.txt_show_current_letter);
 
-        linearLayoutManager = new LinearLayoutManager(getContext());
+        linearLayoutManager = new WrapContentLinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
 
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerView);
         taiZhangAdapter = new HeiMingDanAdapter(dataList,getContext(),baoCunBean.getDizhi());
         taiZhangAdapter.setLetters();
         lRecyclerViewAdapter = new LRecyclerViewAdapter(taiZhangAdapter);
 
-        linearLayoutManager = new LinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         lRecyclerView.setLayoutManager(linearLayoutManager);
 
         lRecyclerView.setAdapter(lRecyclerViewAdapter);
@@ -134,20 +148,23 @@ public class Fragment3 extends Fragment {
         lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-
-                startActivity(new Intent(getContext(), XiuGaiHeiMingDanActivity.class).putExtra("type", 2));
+                piotions=position;
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
+                startActivity(new Intent(getContext(), XiuGaiHeiMingDanActivity.class).putExtra("type", 2).putExtras(bundle));
 
             }
         });
 
 
         setCallbackInterface();
+        unbinder = ButterKnife.bind(this, view);
 
         lRecyclerView.setOnRefreshListener(new OnRefreshListener() {
             @Override
             public void onRefresh() {
                 //下拉刷新
-
+                Log.d("Fragment3333", "下拉刷新");
                 dangQianYe=1;
                 qingQiuYe=1;
                 link_liebiao("",qingQiuYe);
@@ -163,16 +180,42 @@ public class Fragment3 extends Fragment {
             }
         });
 
-        unbinder = ButterKnife.bind(this, view);
 
+
+        lRecyclerView.forceToRefresh();
         return view;
     }
 
     @Override
     public void onResume() {
-        super.onResume();
         lRecyclerView.forceToRefresh();
+        super.onResume();
+
     }
+
+
+
+    private class NetChangReceiver extends BroadcastReceiver {
+
+        //重写onReceive方法，该方法的实体为，接收到广播后的执行代码；
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("shanchu3")) {
+                if (piotions!=-1){
+                    dataList.remove(piotions);
+                    piotions=-1;
+                    taiZhangAdapter.notifyDataSetChanged();
+                }
+
+            }
+            if (intent.getAction().equals("shuaxing3")) {
+                Log.d("NetChangReceiver", "刷新3");
+                lRecyclerView.forceToRefresh();
+            }
+        }
+    }
+
+
 
     public void setCallbackInterface() {
         //回调接口
@@ -235,6 +278,7 @@ public class Fragment3 extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        getActivity().unregisterReceiver(netChangReceiver);
     }
 
     @OnClick({R.id.sousuo, R.id.tianjia})
@@ -294,8 +338,9 @@ public class Fragment3 extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    lRecyclerViewAdapter.notifyDataSetChanged();
                                     lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
+                                    taiZhangAdapter.notifyDataSetChanged();
+
                                 }
                             });
                             Toast tastyToast= TastyToast.makeText(getActivity(),"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
@@ -323,7 +368,7 @@ public class Fragment3 extends Fragment {
                         ResponseBody body = response.body();
                         // Log.d("AllConnects", "识别结果返回"+response.body().string());
                         ss=body.string();
-                        Log.d("Fragment1", ss);
+                        Log.d("Fragment3", ss);
                         JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
                         Gson gson=new Gson();
                         final HeiMingDanBean zhaoPianBean=gson.fromJson(jsonObject,HeiMingDanBean.class);
@@ -331,6 +376,7 @@ public class Fragment3 extends Fragment {
                             if (dataList.size()!=0){
                                 dataList.clear();
                             }
+
                             dataList.addAll(zhaoPianBean.getObjects());
                             chineseToPinyin(dataList);
                             paixu();
@@ -339,13 +385,16 @@ public class Fragment3 extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    taiZhangAdapter.notifyDataSetChanged();
                                     lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
+                                    taiZhangAdapter.notifyDataSetChanged();
+                                    Log.d("Fragment3", "d进来得到");
+
                                 }
                             });
 
 
                         }else {
+                            Log.d("Fragment3", "d进来得到2");
                             int size=zhaoPianBean.getObjects().size();
                             for (int i=0;i<size;i++){
                                 dataList.add(zhaoPianBean.getObjects().get(i));
@@ -357,8 +406,10 @@ public class Fragment3 extends Fragment {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    lRecyclerViewAdapter.notifyDataSetChanged();
                                     lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
+                                    taiZhangAdapter.notifyDataSetChanged();
+
+                                    Log.d("Fragment3", "d进来得到3");
                                 }
                             });
 

@@ -36,14 +36,18 @@ import com.example.ruitongapp.beans.BenDiYuanGongDao;
 import com.example.ruitongapp.beans.MoRenFanHuiBean;
 import com.example.ruitongapp.beans.ShouFangBean;
 import com.example.ruitongapp.dialogs.PaiZhaoDialog2;
+import com.example.ruitongapp.dialogs.QueRenDialog;
 import com.example.ruitongapp.dialogs.TiJIaoDialog;
 import com.example.ruitongapp.dialogs.UpdataTouXiangDialog;
+import com.example.ruitongapp.heimingdanbean.HeiMingDanBean;
 import com.example.ruitongapp.utils.GlideCircleTransform;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sdsmdg.tastytoast.TastyToast;
+
+import org.parceler.Parcels;
 
 import java.io.File;
 import java.io.IOException;
@@ -103,12 +107,12 @@ public class XiuGaiHeiMingDanActivity extends Activity {
     private TiJIaoDialog tiJIaoDialog=null;
     private BaoCunBeanDao baoCunBeanDao=null;
     private BaoCunBean baoCunBean=null;
-    private BenDiYuanGongDao benDiYuanGongDao = null;
-    private BenDiYuanGong benDiYuanGong = null;
-    private String touxiangPath=null;
+    private String touxiangPath="";
     private String shibiePaths="";
     private UpdataTouXiangDialog dialog88 = null;
     private String ss=null;
+    private HeiMingDanBean.ObjectsBean heiMingDanBean=null;
+
 
 
     @Override
@@ -122,11 +126,12 @@ public class XiuGaiHeiMingDanActivity extends Activity {
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.titlecolor);
         }
-        benDiYuanGongDao = MyApplication.myAppLaction.getDaoSession().getBenDiYuanGongDao();
+
         baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
         if (baoCunBeanDao!=null){
             baoCunBean=baoCunBeanDao.load(123456L);
         }
+        heiMingDanBean= Parcels.unwrap(getIntent().getParcelableExtra("chuansong"));
         //实例化过滤器；
         intentFilter = new IntentFilter();
         //添加过滤的Action值；
@@ -141,7 +146,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
         type = getIntent().getIntExtra("type", 0);
         if (type == 1) {
             title.setText("添加黑名单");
-
+            shanchu.setVisibility(View.GONE);
         } else {
             title.setText("黑名单信息");
         }
@@ -158,10 +163,39 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                 .load(R.drawable.tuijianyisheng)
                 .into(ruku);
 
+        if (heiMingDanBean!=null){
+            name.setText(heiMingDanBean.getName());
+            if (heiMingDanBean.getGender() == 0) {
+                xingbie.setImageResource(R.drawable.ic_select);
+                xingbie2.setImageResource(R.drawable.ic_select);
+            } else if (heiMingDanBean.getGender() == 1) {
+                xingbie.setImageResource(R.drawable.ic_selected);
+                xingbie2.setImageResource(R.drawable.ic_select);
+            } else {
+                xingbie.setImageResource(R.drawable.ic_select);
+                xingbie2.setImageResource(R.drawable.ic_selected);
+            }
+            beizhu.setText(heiMingDanBean.getRemark());
+            if (!heiMingDanBean.getAvatar().equals("")){
+                Glide.with(XiuGaiHeiMingDanActivity.this)
+                        .load(baoCunBean.getDizhi()+"/upload/avatar/"+heiMingDanBean.getAvatar())
+                        .transform(new GlideCircleTransform(XiuGaiHeiMingDanActivity.this, 0.6f, Color.parseColor("#ffffffff")))
+                        .into(touxiang);
+            }
+            if (!heiMingDanBean.getPhoto_ids().equals("")){
+
+                Glide.with(XiuGaiHeiMingDanActivity.this)
+                        .load(baoCunBean.getDizhi()+"/upload/compare/"+heiMingDanBean.getPhoto_ids())
+                        .into(ruku);
+            }
+            shibiePaths=heiMingDanBean.getPhoto_ids();
+            touxiangPath=heiMingDanBean.getAvatar();
+        }
+
     }
 
 
-    @OnClick({R.id.leftim, R.id.righttv,R.id.ruku, R.id.xingbie2, R.id.xingbie,R.id.r6})
+    @OnClick({R.id.leftim, R.id.righttv,R.id.ruku, R.id.xingbie2, R.id.xingbie,R.id.r6,R.id.shanchu})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.leftim:
@@ -193,6 +227,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
 
                 dialog2.show();
                 break;
+
             case R.id.xingbie2:
 
                 nannv = 2;
@@ -207,6 +242,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                 xingbie.setImageResource(R.drawable.ic_selected);
 
                 break;
+
             case R.id.r6:
                 dialog88 = new UpdataTouXiangDialog(XiuGaiHeiMingDanActivity.this);
                 dialog88.setOnUpdataPaiZhaoListener(new View.OnClickListener() {
@@ -222,6 +258,25 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                     }
                 });
                 dialog88.show();
+
+                break;
+            case R.id.shanchu:
+                final QueRenDialog dialog=new QueRenDialog(XiuGaiHeiMingDanActivity.this);
+                dialog.setCountText("你确定要删除吗？");
+                dialog.setOnPositiveListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    link_delect();
+                    dialog.dismiss();
+                }
+                });
+                dialog.setOnQuXiaoListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                dialog.show();
 
                 break;
         }
@@ -295,7 +350,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
         }else {
             //修改
             body = new FormBody.Builder()
-                    .add("id", benDiYuanGong.getId()+"")
+                    .add("id", heiMingDanBean.getId()+"")
                     .add("name", name.getText().toString().trim())
                     .add("subject_type", 0 + "")
                     .add("department", "黑名单")
@@ -364,6 +419,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                             public void run() {
                                 TastyToast.makeText(XiuGaiHeiMingDanActivity.this, "修改成功！", Toast.LENGTH_LONG, TastyToast.INFO).show();
                                 finish();
+                              //  sendBroadcast(new Intent("shuaxing3"));
                             }
                         });
                     } else {
@@ -426,7 +482,6 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                     intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mFile));
                     intent.putExtra("outputFormat", "JPEG");// 返回格式
                     startActivityForResult(intent, PHOTO_REQUEST_CUT);
-
                     // addPhoto(1);
                 } else {
                     TastyToast.makeText(getApplicationContext(),
@@ -646,7 +701,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Log.d("XiuGaiHeiMingDanActivit", "jinlai "+baoCunBean.getDizhi() + "/upload/avatar/" + shibiePaths);
+
                                     Glide.with(XiuGaiHeiMingDanActivity.this)
                                             //cameraPath
                                             .load(baoCunBean.getDizhi() + "/upload/compare/" + shibiePaths)
@@ -713,7 +768,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
             //    /* form的分割线,自己定义 */
             //        String boundary = "xx--------------------------------------------------------------xx";
             RequestBody body = new FormBody.Builder()
-                    .add("id", benDiYuanGong.getId()+"")
+                    .add("id", heiMingDanBean.getId()+"")
                     .add("token",baoCunBean.getToken())
                     .add("accountId",baoCunBean.getSid())
                     .build();
@@ -777,6 +832,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                                         tastyToast.setGravity(Gravity.CENTER, 0, 0);
                                         tastyToast.show();
                                         finish();
+                                      //  sendBroadcast(new Intent("shanchu3"));
                                     }
 
 
@@ -941,8 +997,9 @@ public class XiuGaiHeiMingDanActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         unregisterReceiver(netChangReceiver);
+        super.onDestroy();
+
     }
 
     private void addPhoto222(final int type) {
