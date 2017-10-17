@@ -186,6 +186,7 @@ public class Fragment3 extends Fragment {
         return view;
     }
 
+
     @Override
     public void onResume() {
         lRecyclerView.forceToRefresh();
