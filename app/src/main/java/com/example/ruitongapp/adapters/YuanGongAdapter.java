@@ -1,5 +1,7 @@
 package com.example.ruitongapp.adapters;
 
+import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,9 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.interfaces.ClickIntface;
+import com.example.ruitongapp.ui.XiuGaiYuanGongActivity;
+import com.example.ruitongapp.utils.GlideCircleTransform;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,15 +33,18 @@ public class YuanGongAdapter extends RecyclerView.Adapter<YuanGongAdapter.ViewHo
     private boolean isFirstItemLetter = true;
     //记录是否显示字母标题，键为字母，值为下标
     private Map<String, Integer> map;
-
+    private Context context;
+    private String zhuji;
 
     public void setClickIntface(ClickIntface clickIntface){
         this.clickIntface=clickIntface;
     }
 
-    public YuanGongAdapter(List<YuanGongBean.ObjectsBean> datas) {
+    public YuanGongAdapter(List<YuanGongBean.ObjectsBean> datas, Context context,String zhuji) {
         this.datas = datas;
         map = new HashMap<>();
+        this.context=context;
+        this.zhuji=zhuji;
     }
 
     //更新右边选择器
@@ -65,6 +75,20 @@ public class YuanGongAdapter extends RecyclerView.Adapter<YuanGongAdapter.ViewHo
             viewHolder.txtFirstLetter.setVisibility(View.GONE);
         }
         viewHolder.txtName.setText(datas.get(position).getName());
+
+        if (datas.get(position).getAvatar()!=null && !datas.get(position).getAvatar().equals("")){
+            Glide.with(context)
+                    .load(zhuji+"/upload/avatar/"+datas.get(position).getAvatar())
+                    .transform(new GlideCircleTransform(context, 0.6f, Color.parseColor("#ffffffff")))
+                    .into(viewHolder.imageView);
+        }else {
+          Glide.with(context)
+                    .load(R.drawable.tuijianyisheng)
+                    .transform(new GlideCircleTransform(context, 0.6f, Color.parseColor("#ffffffff")))
+                    .into(viewHolder.imageView);
+        }
+
+
 
     }
     //获取数据的数量

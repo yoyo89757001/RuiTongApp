@@ -39,15 +39,15 @@ import com.example.ruitongapp.R;
 import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
 import com.example.ruitongapp.beans.BenDiYuanGong;
-import com.example.ruitongapp.beans.BenDiYuanGongDao;
 import com.example.ruitongapp.beans.FuWuQiBean;
 import com.example.ruitongapp.beans.FuWuQiBeanDao;
+import com.example.ruitongapp.beans.MoRenFanHuiBean;
 import com.example.ruitongapp.beans.ShouFangBean;
+import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.dialogs.PaiZhaoDialog;
 import com.example.ruitongapp.dialogs.PaiZhaoDialog2;
 import com.example.ruitongapp.dialogs.TiJIaoDialog;
 import com.example.ruitongapp.dialogs.UpdataTouXiangDialog;
-import com.example.ruitongapp.utils.DateUtils;
 import com.example.ruitongapp.utils.GlideCircleTransform;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.view.DividerItemDecoration;
@@ -55,6 +55,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sdsmdg.tastytoast.TastyToast;
+
+import org.parceler.Parcels;
 
 import java.io.File;
 import java.io.IOException;
@@ -116,7 +118,7 @@ public class XiuGaiYuanGongActivity extends Activity {
     @BindView(R.id.shanchu)
     Button shanchu;
     private int type;
-    private boolean isNV = true;
+
 
     //定义一个过滤器；
     private IntentFilter intentFilter;
@@ -124,7 +126,7 @@ public class XiuGaiYuanGongActivity extends Activity {
     private NetChangReceiver netChangReceiver;
     private SwipeRefreshLayout swipeRefreshLayout;
     private int id;
-    private TiJIaoDialog tiJIaoDialog;
+    private TiJIaoDialog tiJIaoDialog=null;
     private BenDiYuanGong vipBean = null;
     private List<String> photosLists = new ArrayList<>();
     private int photoSize = 0;
@@ -145,14 +147,14 @@ public class XiuGaiYuanGongActivity extends Activity {
     private List<FuWuQiBean> fuWuQiBeanList = null;
     private FuWuQiBean fuWuQiBean = null;
     private Long idid;
-    private BenDiYuanGongDao benDiYuanGongDao = null;
-    private BenDiYuanGong benDiYuanGong = null;
     private int nannv = 0;
-    private String touxiangPath=null;
-    private String shibiePaths=null;
+    private String touxiangPath="";
+    private String shibiePaths="";
     private BaoCunBeanDao baoCunBeanDao=null;
     private BaoCunBean baoCunBean=null;
     private boolean isTiJiao=false;
+    private String ss;
+    private YuanGongBean.ObjectsBean benDiYuanGong=null;
 
 
 
@@ -192,7 +194,7 @@ public class XiuGaiYuanGongActivity extends Activity {
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.titlecolor);
         }
-        benDiYuanGongDao = MyApplication.myAppLaction.getDaoSession().getBenDiYuanGongDao();
+        benDiYuanGong= Parcels.unwrap(getIntent().getParcelableExtra("chuansong"));
         baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
         if (baoCunBeanDao!=null){
             baoCunBean=baoCunBeanDao.load(123456L);
@@ -208,9 +210,7 @@ public class XiuGaiYuanGongActivity extends Activity {
             }
         }
         idid = getIntent().getLongExtra("idid", 0L);
-        if (benDiYuanGongDao != null) {
-            benDiYuanGong = benDiYuanGongDao.load(idid);
-        }
+
         type = getIntent().getIntExtra("type", 0);
         if (type == 1) {
             title.setText("添加员工");
@@ -438,14 +438,14 @@ public class XiuGaiYuanGongActivity extends Activity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.xingbie2: //女
-                isNV = false;
+
                 nannv = 2;
                 xingbie.setImageResource(R.drawable.ic_select);
                 xingbie2.setImageResource(R.drawable.ic_selected);
 
                 break;
             case R.id.xingbie:
-                isNV = true;
+
                 nannv = 1;
                 xingbie2.setImageResource(R.drawable.ic_select);
                 xingbie.setImageResource(R.drawable.ic_selected);
@@ -484,7 +484,13 @@ public class XiuGaiYuanGongActivity extends Activity {
                 break;
             case R.id.righttv:
                 //保存
-                link_gengxinTuPian();
+                if (!name.getText().toString().trim().equals("") && !shibiePaths.equals("")){
+                    link_gengxinTuPian();
+                }else {
+                    TastyToast.makeText(getApplicationContext(),
+                            "请填写完整信息!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                }
+
 
                 break;
             case R.id.shanchu:
@@ -622,7 +628,7 @@ public class XiuGaiYuanGongActivity extends Activity {
             }
         });
 
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
         RequestBody fileBody1 = null;
         String file1Name = null;
          /* 第一个要上传的file */
@@ -750,7 +756,7 @@ public class XiuGaiYuanGongActivity extends Activity {
         });
 
 
-        OkHttpClient okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient =MyApplication.getOkHttpClient();
         RequestBody fileBody1 = null;
         String file1Name = null;
          /* 第一个要上传的file */
@@ -966,7 +972,7 @@ public class XiuGaiYuanGongActivity extends Activity {
 
                     //获得返回体
                     ResponseBody body = response.body();
-                    String ss=body.string();
+                     ss=body.string();
                       Log.d("AllConnects", "aa   "+ss);
                     JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
 //                Gson gson=new Gson();
@@ -990,6 +996,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                     }
 
                 } catch (Exception e) {
+                    dengLuGuoQi(ss);
                     e.printStackTrace();
                     runOnUiThread(new Runnable() {
                         @Override
@@ -1300,7 +1307,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                     try {
 
                         ResponseBody body = response.body();
-                        String ss = body.string().trim();
+                         ss = body.string().trim();
                         Log.d("DengJiActivity", ss);
 
                         JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
@@ -1382,11 +1389,11 @@ public class XiuGaiYuanGongActivity extends Activity {
                         }
 
                     } catch (Exception e) {
-
+                        dengLuGuoQi(ss);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (tiJIaoDialog != null) {
+                                if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing()) {
                                     tiJIaoDialog.dismiss();
                                     tiJIaoDialog = null;
                                 }
@@ -1483,7 +1490,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                     try {
 
                         ResponseBody body = response.body();
-                        String ss = body.string().trim();
+                        ss = body.string().trim();
                         Log.d("DengJiActivity", ss);
 
                         JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
@@ -1516,11 +1523,11 @@ public class XiuGaiYuanGongActivity extends Activity {
                         }
 
                     } catch (Exception e) {
-
+                            dengLuGuoQi(ss);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (tiJIaoDialog != null) {
+                                if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing()) {
                                     tiJIaoDialog.dismiss();
                                     tiJIaoDialog = null;
                                 }
@@ -1544,6 +1551,30 @@ public class XiuGaiYuanGongActivity extends Activity {
             Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "账户ID为空!,请设置帐户ID", TastyToast.LENGTH_LONG, TastyToast.ERROR);
             tastyToast.setGravity(Gravity.CENTER, 0, 0);
             tastyToast.show();
+        }
+    }
+
+    private void dengLuGuoQi(String ss){
+        try {
+            JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
+            Gson gson=new Gson();
+            final MoRenFanHuiBean zhaoPianBean=gson.fromJson(jsonObject,MoRenFanHuiBean.class);
+            if (zhaoPianBean.getDtoResult()==-33){
+                //登陆过期
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+//                                    if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
+//                                        jiaZaiDialog.dismiss();
+//                                    }
+                        Toast tastyToast= TastyToast.makeText(XiuGaiYuanGongActivity.this,"登陆过期,或账号在其它机器登陆,请重新登陆",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                        tastyToast.setGravity(Gravity.CENTER,0,0);
+                        tastyToast.show();
+                    }
+                });
+            }
+        }catch (Exception e1){
+            Log.d("Fragment1", "e1:" + e1);
         }
     }
 

@@ -13,7 +13,8 @@ import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
-import com.example.ruitongapp.ui.SheZhiActivity;
+import com.example.ruitongapp.dialogs.QueRenDialog;
+import com.example.ruitongapp.ui.LogingActivity;
 import com.example.ruitongapp.ui.XiuGaiMiMaActivity;
 
 import butterknife.BindView;
@@ -72,7 +73,25 @@ public class Fragment5 extends Fragment {
                 startActivity(new Intent(getContext(), XiuGaiMiMaActivity.class));
                 break;
             case R.id.r3:
-                startActivity(new Intent(getContext(), SheZhiActivity.class));
+                final QueRenDialog dialog2=new QueRenDialog(getActivity());
+                dialog2.setVisibility_BT();
+                dialog2.setCountText("你确定要退出?");
+                dialog2.setOnPositiveListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        baoCunBeanDao.deleteByKey(123456L);
+                        getActivity().sendBroadcast(new Intent("guanbiyemian"));
+                        dialog2.dismiss();
+                        startActivity(new Intent(getActivity(),LogingActivity.class));
+                    }
+                });
+                dialog2.setOnQuXiaoListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog2.dismiss();
+                    }
+                });
+                dialog2.show();
                 break;
         }
     }

@@ -39,6 +39,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sdsmdg.tastytoast.TastyToast;
 
+import org.parceler.Parcels;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -80,8 +82,8 @@ public class Fragment1 extends Fragment {
     private String ss=null;
     private int dangQianYe=1;
     private int qingQiuYe=1;
-    private BenDiYuanGongDao benDiYuanGongDao=null;
-    private BenDiYuanGong benDiYuanGongBean=null;
+
+
 
 
 
@@ -94,7 +96,6 @@ public class Fragment1 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
-        benDiYuanGongDao=MyApplication.myAppLaction.getDaoSession().getBenDiYuanGongDao();
         if (baoCunBeanDao!=null){
             baoCunBean=baoCunBeanDao.load(123456L);
         }
@@ -105,7 +106,7 @@ public class Fragment1 extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getContext());
 
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerView);
-        taiZhangAdapter = new YuanGongAdapter(dataList);
+        taiZhangAdapter = new YuanGongAdapter(dataList,getContext(),baoCunBean.getDizhi());
 
         lRecyclerViewAdapter = new LRecyclerViewAdapter(taiZhangAdapter);
 
@@ -133,7 +134,9 @@ public class Fragment1 extends Fragment {
             @Override
             public void onItemClick(View view, int position) {
 
-                startActivity(new Intent(getContext(),XiuGaiYuanGongActivity.class).putExtra("type",2).putExtra("idid",dataList.get(position).getId()));
+                Bundle bundle = new Bundle();
+                bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
+                startActivity(new Intent(getContext(),XiuGaiYuanGongActivity.class).putExtra("type",2).putExtras(bundle));
 
             }
         });
@@ -160,11 +163,15 @@ public class Fragment1 extends Fragment {
 
         unbinder = ButterKnife.bind(this, view);
 
-
-        lRecyclerView.forceToRefresh();
         return view;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        lRecyclerView.forceToRefresh();
+    }
 
     public void setCallbackInterface() {
         //回调接口
@@ -257,7 +264,7 @@ public class Fragment1 extends Fragment {
                 .add("status","1")
                 .add("name",name )
                 .add("pageNum",pageNum+"")
-                .add("pageSize", "10")
+                .add("pageSize", "20")
                 .add("token", baoCunBean.getToken())
                 .build();
 
@@ -332,39 +339,6 @@ public class Fragment1 extends Fragment {
                                 lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
                             }
                         });
-                        int size=zhaoPianBean.getObjects().size();
-                        for (int i=0;i<size;i++){
-                            BenDiYuanGong benDiYuanGong=new BenDiYuanGong();
-                            benDiYuanGong.setId(zhaoPianBean.getObjects().get(i).getId());
-                            benDiYuanGong.setAccountId(zhaoPianBean.getObjects().get(i).getAccountId());
-                            benDiYuanGong.setAvatar(zhaoPianBean.getObjects().get(i).getAvatar());
-                            benDiYuanGong.setAccountName(zhaoPianBean.getObjects().get(i).getAccountName());
-                            benDiYuanGong.setCreateTime(zhaoPianBean.getObjects().get(i).getCreateTime());
-                            benDiYuanGong.setDepartment(zhaoPianBean.getObjects().get(i).getDepartment());
-                            benDiYuanGong.setDescription(zhaoPianBean.getObjects().get(i).getDescription());
-                            benDiYuanGong.setDtoResult(zhaoPianBean.getObjects().get(i).getDtoResult());
-                            benDiYuanGong.setGender(zhaoPianBean.getObjects().get(i).getGender());
-                            benDiYuanGong.setJob_number(zhaoPianBean.getObjects().get(i).getJob_number());
-                            benDiYuanGong.setModifyTime(zhaoPianBean.getObjects().get(i).getModifyTime());
-                            benDiYuanGong.setName(zhaoPianBean.getObjects().get(i).getName());
-                            benDiYuanGong.setPageNum(zhaoPianBean.getObjects().get(i).getPageNum());
-                            benDiYuanGong.setPageSize(zhaoPianBean.getObjects().get(i).getPageSize());
-                            benDiYuanGong.setPhone(zhaoPianBean.getObjects().get(i).getPhone());
-                            benDiYuanGong.setPhoto_ids(zhaoPianBean.getObjects().get(i).getPhoto_ids());
-                            benDiYuanGong.setRemark(zhaoPianBean.getObjects().get(i).getRemark());
-                            benDiYuanGong.setSid(zhaoPianBean.getObjects().get(i).getSid());
-                            benDiYuanGong.setStatus(zhaoPianBean.getObjects().get(i).getStatus());
-                            benDiYuanGong.setSubject_type(zhaoPianBean.getObjects().get(i).getSubject_type());
-                            benDiYuanGong.setTitle(zhaoPianBean.getObjects().get(i).getTitle());
-                            benDiYuanGong.setEntry_date2(zhaoPianBean.getObjects().get(i).getEntry_date2());
-                            benDiYuanGong.setBirthday2(zhaoPianBean.getObjects().get(i).getBirthday2());
-                            if (benDiYuanGongDao.load(zhaoPianBean.getObjects().get(i).getId())==null){
-                                benDiYuanGongDao.insert(benDiYuanGong);
-                            }else {
-                                benDiYuanGongDao.update(benDiYuanGong);
-                            }
-
-                        }
 
 
                     }else {
@@ -380,39 +354,9 @@ public class Fragment1 extends Fragment {
                             @Override
                             public void run() {
                                 lRecyclerViewAdapter.notifyDataSetChanged();
-                                lRecyclerView.refreshComplete(10);// REQUEST_COUNT为每页加载数量
+                                lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
                             }
                         });
-
-                        for (int i=0;i<size;i++){
-                            BenDiYuanGong benDiYuanGong=new BenDiYuanGong();
-                            benDiYuanGong.setId(zhaoPianBean.getObjects().get(i).getId());
-                            benDiYuanGong.setAccountId(zhaoPianBean.getObjects().get(i).getAccountId());
-                            benDiYuanGong.setAccountName(zhaoPianBean.getObjects().get(i).getAccountName());
-                            benDiYuanGong.setCreateTime(zhaoPianBean.getObjects().get(i).getCreateTime());
-                            benDiYuanGong.setDepartment(zhaoPianBean.getObjects().get(i).getDepartment());
-                            benDiYuanGong.setDescription(zhaoPianBean.getObjects().get(i).getDescription());
-                            benDiYuanGong.setDtoResult(zhaoPianBean.getObjects().get(i).getDtoResult());
-                            benDiYuanGong.setGender(zhaoPianBean.getObjects().get(i).getGender());
-                            benDiYuanGong.setJob_number(zhaoPianBean.getObjects().get(i).getJob_number());
-                            benDiYuanGong.setModifyTime(zhaoPianBean.getObjects().get(i).getModifyTime());
-                            benDiYuanGong.setName(zhaoPianBean.getObjects().get(i).getName());
-                            benDiYuanGong.setPageNum(zhaoPianBean.getObjects().get(i).getPageNum());
-                            benDiYuanGong.setPageSize(zhaoPianBean.getObjects().get(i).getPageSize());
-                            benDiYuanGong.setPhone(zhaoPianBean.getObjects().get(i).getPhone());
-                            benDiYuanGong.setPhoto_ids(zhaoPianBean.getObjects().get(i).getPhoto_ids());
-                            benDiYuanGong.setRemark(zhaoPianBean.getObjects().get(i).getRemark());
-                            benDiYuanGong.setSid(zhaoPianBean.getObjects().get(i).getSid());
-                            benDiYuanGong.setStatus(zhaoPianBean.getObjects().get(i).getStatus());
-                            benDiYuanGong.setSubject_type(zhaoPianBean.getObjects().get(i).getSubject_type());
-                            benDiYuanGong.setTitle(zhaoPianBean.getObjects().get(i).getTitle());
-                            if (benDiYuanGongDao.load(zhaoPianBean.getObjects().get(i).getId())==null){
-                                benDiYuanGongDao.insert(benDiYuanGong);
-                            }else {
-                                benDiYuanGongDao.update(benDiYuanGong);
-                            }
-
-                        }
 
 
                     }

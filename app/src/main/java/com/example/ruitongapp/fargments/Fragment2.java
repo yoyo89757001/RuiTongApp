@@ -10,8 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
+import com.example.ruitongapp.adapters.FangKeAdapter;
 import com.example.ruitongapp.adapters.YuanGongAdapter;
+import com.example.ruitongapp.beans.BaoCunBean;
+import com.example.ruitongapp.beans.BaoCunBeanDao;
 import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiFangKeActivity;
@@ -48,10 +52,10 @@ public class Fragment2 extends Fragment {
     private LRecyclerView lRecyclerView;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
     private List<YuanGongBean.ObjectsBean> dataList;
-    private YuanGongAdapter taiZhangAdapter;
+    private FangKeAdapter taiZhangAdapter;
+    private BaoCunBeanDao baoCunBeanDao=null;
+    private BaoCunBean baoCunBean=null;
 
-    private String[] letterStrings = {"#", "dA", "gB", "tC", "aD", "bE", "hF", "jG", "kH", "lI", "oJ", "pK",
-            "qL", "wM", "dN", "aO", "jP", "bQ", "cR", "zS", "eT", "rU", "uV", "iW", "hX", "jY", "kZ"};
 
     public Fragment2() {
         dataList = new ArrayList<>();
@@ -66,11 +70,15 @@ public class Fragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment2, container, false);
+        baoCunBeanDao= MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+        if (baoCunBeanDao!=null){
+            baoCunBean=baoCunBeanDao.load(123456L);
+        }
 
         linearLayoutManager = new LinearLayoutManager(getContext());
 
         lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerView);
-        taiZhangAdapter = new YuanGongAdapter(dataList);
+        taiZhangAdapter = new FangKeAdapter(dataList,getContext(),baoCunBean.getDizhi());
         taiZhangAdapter.setLetters();
         lRecyclerViewAdapter = new LRecyclerViewAdapter(taiZhangAdapter);
 

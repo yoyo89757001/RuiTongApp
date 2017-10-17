@@ -11,7 +11,10 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_below="@+id/op"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
         <LinearLayout
             android:layout_width="match_parent"
             android:paddingBottom="10dp"
@@ -21,18 +24,27 @@
 
             <LinearLayout
                 android:id="@+id/l2"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:gravity="center_horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:background="@color/lanse"
                 android:layout_width="match_parent"
-                android:layout_height="110dp">
+                android:layout_height="wrap_content">
 
-               <ImageView
-                   android:layout_width="110dp"
-                   android:id="@+id/ruku"
-                   android:layout_height="match_parent" />
+                <TextView
+                    android:text="识别照片"
+                    android:textSize="@dimen/sp_16"
+                    android:layout_marginLeft="@dimen/sp_16"
+                    android:textColor="@color/write"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+                <ImageView
+                    android:id="@+id/ruku"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:layout_marginBottom="10dp"
+                    android:scaleType="fitXY" />
 
 
             </LinearLayout>
@@ -65,6 +77,8 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginRight="@dimen/sp_16"
                     android:id="@+id/name"
+                    android:hint="请输入姓名"
+                    android:textColorHint="@color/textcolor"
                     android:background="@null"
                     android:gravity="right|center_vertical"
                     android:layout_toRightOf="@+id/gonghao111"

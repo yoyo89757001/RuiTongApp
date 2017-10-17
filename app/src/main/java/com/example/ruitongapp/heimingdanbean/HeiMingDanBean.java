@@ -1,26 +1,26 @@
-package com.example.ruitongapp.beans;
+package com.example.ruitongapp.heimingdanbean;
 
 import org.parceler.Parcel;
 
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/10/10.
+ * Created by Administrator on 2017/10/17.
  */
 @Parcel
-public class YuanGongBean {
+public class HeiMingDanBean {
 
 
     /**
-     * createTime : 1507972942742
+     * createTime : 1508210006110
      * dtoResult : 0
-     * modifyTime : 1507972942742
-     * objects : [{"accountId":10000005,"accountName":"市电","avatar":"","createTime":1507775759000,"department":"技术部门","description":"","dtoResult":0,"email":"","gender":1,"id":10000132,"job_number":"","modifyTime":1507775786000,"name":"王总","pageNum":0,"pageSize":0,"phone":"","photo_ids":"20171012/1507775744274.jpg,","remark":"","sid":0,"status":1,"subject_type":0,"title":""},{"accountId":10000005,"accountName":"市电","avatar":"","createTime":1504713172000,"department":"","description":"","dtoResult":0,"email":"","gender":0,"id":10000057,"job_number":"","modifyTime":1504713624000,"name":"张总","pageNum":0,"pageSize":0,"phone":"","photo_ids":"20170906/1504713172770.jpg,","remark":"","sid":0,"status":1,"subject_type":0,"title":""},{"accountId":10000005,"accountName":"市电","avatar":"","createTime":1504713193000,"department":"","description":"","dtoResult":0,"email":"","gender":0,"id":10000060,"job_number":"","modifyTime":1504713598000,"name":"水波总","pageNum":0,"pageSize":0,"phone":"","photo_ids":"20170906/1504713193810.jpg,","remark":"","sid":0,"status":1,"subject_type":0,"title":""}]
+     * modifyTime : 1508210006110
+     * objects : [{"accountId":10000005,"accountName":"市电","avatar":"","birthday2":"","createTime":1508209229000,"department":"黑名单","dtoResult":0,"entry_date2":"","gender":0,"id":10000138,"modifyTime":1508209229000,"name":"211","pageNum":0,"pageSize":0,"photo_ids":"20171017/1508209162651.jpg","remark":"","sid":0,"status":1,"subject_type":0},{"accountId":10000005,"accountName":"市电","avatar":"","birthday2":"","createTime":1508208886000,"department":"黑名单","dtoResult":0,"entry_date2":"","gender":0,"id":10000137,"modifyTime":1508208886000,"name":"1","pageNum":0,"pageSize":0,"photo_ids":"20171017/1508208880752.jpg,","remark":"","sid":0,"status":1,"subject_type":0}]
      * pageIndex : 0
      * pageNum : 1
-     * pageSize : 3
+     * pageSize : 20
      * sid : 0
-     * totalNum : 15
+     * totalNum : 2
      */
 
     public long createTime;
@@ -104,74 +104,51 @@ public class YuanGongBean {
     public void setObjects(List<ObjectsBean> objects) {
         this.objects = objects;
     }
-
+    
     @Parcel
     public static class ObjectsBean {
         /**
          * accountId : 10000005
          * accountName : 市电
          * avatar :
-         * createTime : 1507775759000
-         * department : 技术部门
-         * description :
+         * birthday2 :
+         * createTime : 1508209229000
+         * department : 黑名单
          * dtoResult : 0
-         * email :
-         * gender : 1
-         * id : 10000132
-         * job_number :
-         * modifyTime : 1507775786000
-         * name : 王总
+         * entry_date2 :
+         * gender : 0
+         * id : 10000138
+         * modifyTime : 1508209229000
+         * name : 211
          * pageNum : 0
          * pageSize : 0
-         * phone :
-         * photo_ids : 20171012/1507775744274.jpg,
+         * photo_ids : 20171017/1508209162651.jpg
          * remark :
          * sid : 0
          * status : 1
          * subject_type : 0
-         * title :
          */
-        public String entry_date2;
-        public String birthday2;
+
         public int accountId;
         public String accountName;
         public String avatar;
+        public String birthday2;
         public long createTime;
         public String department;
-        public String description;
         public int dtoResult;
-        public String email;
+        public String entry_date2;
         public int gender;
         public Long id;
-        public String job_number;
         public long modifyTime;
         public String name;
         public int pageNum;
         public int pageSize;
-        public String phone;
         public String photo_ids;
         public String remark;
         public int sid;
         public int status;
         public int subject_type;
-        public String title;
         public String firstLetter;
-
-        public String getEntry_date2() {
-            return entry_date2;
-        }
-
-        public void setEntry_date2(String entry_date2) {
-            this.entry_date2 = entry_date2;
-        }
-
-        public String getBirthday2() {
-            return birthday2;
-        }
-
-        public void setBirthday2(String birthday2) {
-            this.birthday2 = birthday2;
-        }
 
         public String getFirstLetter() {
             return firstLetter;
@@ -205,6 +182,14 @@ public class YuanGongBean {
             this.avatar = avatar;
         }
 
+        public String getBirthday2() {
+            return birthday2;
+        }
+
+        public void setBirthday2(String birthday2) {
+            this.birthday2 = birthday2;
+        }
+
         public long getCreateTime() {
             return createTime;
         }
@@ -221,14 +206,6 @@ public class YuanGongBean {
             this.department = department;
         }
 
-        public String getDescription() {
-            return description;
-        }
-
-        public void setDescription(String description) {
-            this.description = description;
-        }
-
         public int getDtoResult() {
             return dtoResult;
         }
@@ -237,12 +214,12 @@ public class YuanGongBean {
             this.dtoResult = dtoResult;
         }
 
-        public String getEmail() {
-            return email;
+        public String getEntry_date2() {
+            return entry_date2;
         }
 
-        public void setEmail(String email) {
-            this.email = email;
+        public void setEntry_date2(String entry_date2) {
+            this.entry_date2 = entry_date2;
         }
 
         public int getGender() {
@@ -259,14 +236,6 @@ public class YuanGongBean {
 
         public void setId(Long id) {
             this.id = id;
-        }
-
-        public String getJob_number() {
-            return job_number;
-        }
-
-        public void setJob_number(String job_number) {
-            this.job_number = job_number;
         }
 
         public long getModifyTime() {
@@ -299,14 +268,6 @@ public class YuanGongBean {
 
         public void setPageSize(int pageSize) {
             this.pageSize = pageSize;
-        }
-
-        public String getPhone() {
-            return phone;
-        }
-
-        public void setPhone(String phone) {
-            this.phone = phone;
         }
 
         public String getPhoto_ids() {
@@ -348,14 +309,5 @@ public class YuanGongBean {
         public void setSubject_type(int subject_type) {
             this.subject_type = subject_type;
         }
-
-        public String getTitle() {
-            return title;
-        }
-
-        public void setTitle(String title) {
-            this.title = title;
-        }
     }
-
 }

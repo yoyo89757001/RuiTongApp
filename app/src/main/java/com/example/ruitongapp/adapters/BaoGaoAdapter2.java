@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.beans.BenDiYuanGong;
+import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.interfaces.ClickIntface;
 import com.example.ruitongapp.utils.GlideCircleTransform;
 
@@ -22,7 +23,7 @@ import java.util.List;
  */
 
 public class BaoGaoAdapter2 extends RecyclerView.Adapter<BaoGaoAdapter2.ViewHolder> {
-    private List<BenDiYuanGong> datas;
+    private List<YuanGongBean.ObjectsBean> datas;
     private ClickIntface clickIntface;
     private Context context;
     private String zhuji=null;
@@ -31,7 +32,7 @@ public class BaoGaoAdapter2 extends RecyclerView.Adapter<BaoGaoAdapter2.ViewHold
         this.clickIntface=clickIntface;
     }
 
-    public BaoGaoAdapter2(List<BenDiYuanGong> datas, Context context,String zhuji) {
+    public BaoGaoAdapter2(List<YuanGongBean.ObjectsBean> datas, Context context,String zhuji) {
         this.datas = datas;
         this.context=context;
         this.zhuji=zhuji;
@@ -52,8 +53,8 @@ public class BaoGaoAdapter2 extends RecyclerView.Adapter<BaoGaoAdapter2.ViewHold
                 clickIntface.BackId(position);
             }
         });
-        if (datas.get(position).getAvatar()!=null) {
-            if (!datas.get(position).getAvatar().equals("")) {
+
+            if (datas.get(position).getAvatar()!=null && !datas.get(position).getAvatar().equals("")) {
                 Glide.with(context)
                         .load(zhuji + "/upload/avatar/" + datas.get(position).getAvatar())
                         .transform(new GlideCircleTransform(context, 0.6f, Color.parseColor("#ffffffff")))
@@ -64,7 +65,6 @@ public class BaoGaoAdapter2 extends RecyclerView.Adapter<BaoGaoAdapter2.ViewHold
                         .transform(new GlideCircleTransform(context, 0.6f, Color.parseColor("#ffffffff")))
                         .into(viewHolder.touxiang);
             }
-        }
 
 
     }
