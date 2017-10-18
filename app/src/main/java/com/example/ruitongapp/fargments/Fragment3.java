@@ -6,18 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
 import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.HeiMingDanAdapter;
@@ -27,7 +23,6 @@ import com.example.ruitongapp.beans.BenDiYuanGongDao;
 import com.example.ruitongapp.beans.MoRenFanHuiBean;
 import com.example.ruitongapp.heimingdanbean.HeiMingDanBean;
 import com.example.ruitongapp.ui.SouSuo3Activity;
-import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiHeiMingDanActivity;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.utils.Utils;
@@ -385,7 +380,7 @@ public class Fragment3 extends Fragment {
                                         if (dataList.size()!=0){
                                         dataList.clear();
                                          }
-                                        dataList.addAll(zhaoPianBean.getObjects());
+                                        dataList.addAll(zhaoPianBean.getObjects()!=null?zhaoPianBean.getObjects():new ArrayList<HeiMingDanBean.ObjectsBean>());
                                         chineseToPinyin(dataList);
                                         paixu();
                                         taiZhangAdapter.setLetters();

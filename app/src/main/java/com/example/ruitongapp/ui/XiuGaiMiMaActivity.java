@@ -25,9 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sdsmdg.tastytoast.TastyToast;
-
 import java.io.IOException;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -39,6 +37,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+
 
 public class XiuGaiMiMaActivity extends Activity {
     @BindView(R.id.leftim)
@@ -72,8 +71,7 @@ public class XiuGaiMiMaActivity extends Activity {
         if (baoCunBeanDao != null) {
             baoCunBean = baoCunBeanDao.load(123456L);
         }
-
-
+        title.setText("修改密码");
     }
 
     @OnClick({R.id.leftim, R.id.tijiao})
@@ -83,18 +81,20 @@ public class XiuGaiMiMaActivity extends Activity {
                 finish();
                 break;
             case R.id.tijiao:
+
                 String s1=  yuanmima.getText().toString().trim();
                 String s2=xin1.getText().toString().trim();
                 String s3=xin2.getText().toString().trim();
                 if (s1.equals("") || s2.equals("") || s3.equals("")){
-                    Utils.showToast(XiuGaiMiMaActivity.this,"你");
-
+                    Utils.showToast(XiuGaiMiMaActivity.this,"请填写完整信息",3);
+                }else if (!s2.equals(s3)){
+                    Utils.showToast(XiuGaiMiMaActivity.this,"两次填写的密码不一致",3);
+                }else{
+                    link_delect();
                 }
-
                 break;
         }
     }
-
 
     private void link_delect() {
         runOnUiThread(new Runnable() {
@@ -107,6 +107,128 @@ public class XiuGaiMiMaActivity extends Activity {
             }
         });
 
+        //final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        //http://192.168.2.4:8080/sign?cmd=getUnSignList&subjectId=jfgsdf
+        OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+
+        if (null != baoCunBean.getSid()) {
+
+
+            //    /* form的分割线,自己定义 */
+            //        String boundary = "xx--------------------------------------------------------------xx";
+            RequestBody body = new FormBody.Builder()
+                    .add("pwd", Utils.jiami(yuanmima.getText().toString().trim()))
+                    .add("token", baoCunBean.getToken())
+                    .add("account", baoCunBean.getZhanghao())
+                    .build();
+
+            Request.Builder requestBuilder = new Request.Builder()
+                    // .header("Content-Type", "application/json")
+                    .post(body)
+                    .url(baoCunBean.getDizhi() + "/vertifyPwd.do");
+
+            // step 3：创建 Call 对象
+            Call call = okHttpClient.newCall(requestBuilder.build());
+
+            //step 4: 开始异步请求
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tiJIaoDialog != null && !XiuGaiMiMaActivity.this.isFinishing() && tiJIaoDialog.isShowing()) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tiJIaoDialog != null) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
+                    Log.d("AllConnects", "请求识别成功" + call.request().toString());
+                    //获得返回体
+                    try {
+
+                        ResponseBody body = response.body();
+                        String ss = body.string().trim();
+                        Log.d("DengJiActivity", ss);
+
+                        JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                        Gson gson = new Gson();
+                        ShouFangBean zhaoPianBean = gson.fromJson(jsonObject, ShouFangBean.class);
+
+                        if (zhaoPianBean.getDtoResult() == 0) {
+
+                            link_delect2();
+
+                        } else {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast tastyToast = TastyToast.makeText(XiuGaiMiMaActivity.this, "验证原密码失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                    tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                    tastyToast.show();
+                                }
+                            });
+
+
+                        }
+
+                    } catch (Exception e) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (tiJIaoDialog != null) {
+                                    tiJIaoDialog.dismiss();
+                                    tiJIaoDialog = null;
+                                }
+                            }
+                        });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                Toast tastyToast = TastyToast.makeText(XiuGaiMiMaActivity.this, "提交失败,请检查网络", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                tastyToast.show();
+
+                            }
+                        });
+                        Log.d("WebsocketPushMsg", e.getMessage());
+                    }
+                }
+            });
+        } else {
+            Toast tastyToast = TastyToast.makeText(XiuGaiMiMaActivity.this, "账户ID为空!,请设置帐户ID", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            tastyToast.setGravity(Gravity.CENTER, 0, 0);
+            tastyToast.show();
+        }
+    }
+
+    private void link_delect2() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (tiJIaoDialog == null && !XiuGaiMiMaActivity.this.isFinishing()) {
+                    tiJIaoDialog = new TiJIaoDialog(XiuGaiMiMaActivity.this);
+                    tiJIaoDialog.show();
+                }
+            }
+        });
 
         //final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
         //http://192.168.2.4:8080/sign?cmd=getUnSignList&subjectId=jfgsdf
@@ -118,15 +240,15 @@ public class XiuGaiMiMaActivity extends Activity {
             //    /* form的分割线,自己定义 */
             //        String boundary = "xx--------------------------------------------------------------xx";
             RequestBody body = new FormBody.Builder()
-                    .add("id", benDiYuanGong.getId() + "")
+                    .add("pwd", Utils.jiami(xin1.getText().toString().trim()))
                     .add("token", baoCunBean.getToken())
-                    .add("accountId", baoCunBean.getSid())
+                    .add("account", baoCunBean.getZhanghao())
                     .build();
 
             Request.Builder requestBuilder = new Request.Builder()
                     // .header("Content-Type", "application/json")
                     .post(body)
-                    .url(baoCunBean.getDizhi() + "/delCompare.do");
+                    .url(baoCunBean.getDizhi() + "/modPassword.do");
 
             // step 3：创建 Call 对象
             Call call = okHttpClient.newCall(requestBuilder.build());
@@ -177,23 +299,25 @@ public class XiuGaiMiMaActivity extends Activity {
                                 @Override
                                 public void run() {
 
-                                    if (!XiuGaiMiMaActivity.this.isFinishing()) {
-                                        Toast tastyToast = TastyToast.makeText(XiuGaiMiMaActivity.this, "删除成功", TastyToast.LENGTH_LONG, TastyToast.INFO);
-                                        tastyToast.setGravity(Gravity.CENTER, 0, 0);
-                                        tastyToast.show();
-                                        finish();
-                                        //  sendBroadcast(new Intent("shanchu3"));
-                                    }
-
+                                    Toast tastyToast = TastyToast.makeText(XiuGaiMiMaActivity.this, "你的密码修改为 "+xin1.getText().toString().trim(), TastyToast.LENGTH_LONG, TastyToast.INFO);
+                                    tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                    tastyToast.show();
+                                    finish();
 
                                 }
                             });
 
                         } else {
                             if (!XiuGaiMiMaActivity.this.isFinishing()) {
-                                Toast tastyToast = TastyToast.makeText(XiuGaiMiMaActivity.this, "删除失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
-                                tastyToast.setGravity(Gravity.CENTER, 0, 0);
-                                tastyToast.show();
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast tastyToast = TastyToast.makeText(XiuGaiMiMaActivity.this, "修改失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                        tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                        tastyToast.show();
+                                    }
+                                });
+
                             }
                         }
 

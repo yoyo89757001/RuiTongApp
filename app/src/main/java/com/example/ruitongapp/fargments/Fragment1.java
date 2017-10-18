@@ -385,7 +385,7 @@ public class Fragment1 extends Fragment {
                                     if (dataList.size()!=0){
                                         dataList.clear();
                                     }
-                                    dataList.addAll(zhaoPianBean.getObjects());
+                                    dataList.addAll(zhaoPianBean.getObjects()!=null?zhaoPianBean.getObjects():new ArrayList<YuanGongBean.ObjectsBean>());
                                     chineseToPinyin(dataList);
                                     paixu();
                                     taiZhangAdapter.setLetters();

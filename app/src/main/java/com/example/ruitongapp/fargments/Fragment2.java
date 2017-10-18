@@ -19,7 +19,6 @@ import com.example.ruitongapp.beans.MoRenFanHuiBean;
 import com.example.ruitongapp.fangkebean.FangKeBean;
 import com.example.ruitongapp.ui.ShenHeActivity;
 import com.example.ruitongapp.ui.SouSuo2Activity;
-import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiFangKeActivity;
 import com.example.ruitongapp.utils.DateUtils;
 import com.example.ruitongapp.utils.GsonUtil;
@@ -56,13 +55,11 @@ import okhttp3.ResponseBody;
  */
 public class Fragment2 extends Fragment {
 
-
     @BindView(R.id.sousuo)
     ImageView sousuo;
     @BindView(R.id.tianjia)
     ImageView tianjia;
     Unbinder unbinder;
-
 
     private WrapContentLinearLayoutManager linearLayoutManager = null;
     private LRecyclerView lRecyclerView;
@@ -78,7 +75,6 @@ public class Fragment2 extends Fragment {
 
     public Fragment2() {
         dataList = new ArrayList<>();
-
     }
 
 
@@ -88,7 +84,6 @@ public class Fragment2 extends Fragment {
         View view = inflater.inflate(R.layout.fragment_fragment2, container, false);
 
         try {
-
 
         baoCunBeanDao= MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
         if (baoCunBeanDao!=null){
@@ -330,7 +325,7 @@ public class Fragment2 extends Fragment {
                                         if (dataList.size()!=0){
                                           dataList.clear();
                                         }
-                                        dataList.addAll(zhaoPianBean.getObjects());
+                                        dataList.addAll(zhaoPianBean.getObjects()!=null?zhaoPianBean.getObjects():new ArrayList<FangKeBean.ObjectsBean>());
                                         taiZhangAdapter.setLetters();
                                         lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
                                         taiZhangAdapter.notifyDataSetChanged();
