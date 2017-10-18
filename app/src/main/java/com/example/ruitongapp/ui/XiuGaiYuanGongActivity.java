@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -228,7 +227,7 @@ public class XiuGaiYuanGongActivity extends Activity {
             title.setText("员工信息");
         }
         righttv.setVisibility(View.VISIBLE);
-        righttv.setText("保存");
+        righttv.setText("保 存");
 
         mFile = new File(getExternalFilesDir(null), "pic.jpg");
         //实例化过滤器；
@@ -715,6 +714,8 @@ public class XiuGaiYuanGongActivity extends Activity {
 
                     }
                 });
+                try {
+
                 cameraPath = null;
                 //获得返回体
                 ResponseBody body = response.body();
@@ -746,6 +747,9 @@ public class XiuGaiYuanGongActivity extends Activity {
                         }
                     });
 
+                }
+                }catch (Exception e){
+                    Log.d("XiuGaiYuanGongActivity", e.getMessage()+"");
                 }
 
             }
@@ -830,6 +834,9 @@ public class XiuGaiYuanGongActivity extends Activity {
                     }
                 });
                 Log.d("AllConnects", "头像上传成功" + call.request().toString());
+                try {
+
+
                 cameraPath = null;
                 //获得返回体
                 ResponseBody body = response.body();
@@ -875,7 +882,9 @@ public class XiuGaiYuanGongActivity extends Activity {
                         }
                     });
                 }
-
+                }catch (Exception e){
+                    Log.d("XiuGaiYuanGongActivity", e.getMessage()+"");
+                }
             }
         });
 

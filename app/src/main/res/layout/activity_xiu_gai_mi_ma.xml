@@ -1,9 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/write"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true"
     android:layout_height="match_parent"
     tools:context="com.example.ruitongapp.ui.XiuGaiMiMaActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <include layout="@layout/base_title"
+        android:id="@+id/op"/>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginTop="40dp"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:textSize="16sp"
+            android:textColor="@color/blake"
+            android:text="原密码:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.example.ruitongapp.view.MyEditText
+            android:layout_width="match_parent"
+            android:textSize="@dimen/sp_16"
+            android:background="@null"
+            android:id="@+id/yuanmima"
+            android:textColor="@color/textcolor"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:textSize="16sp"
+            android:textColor="@color/blake"
+            android:text="新密码:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.example.ruitongapp.view.MyEditText
+            android:layout_width="match_parent"
+            android:textSize="@dimen/sp_16"
+            android:background="@null"
+            android:id="@+id/xin1"
+            android:textColor="@color/textcolor"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_marginLeft="20dp"
+        android:gravity="center_vertical"
+        android:layout_marginRight="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:textSize="16sp"
+            android:textColor="@color/blake"
+            android:text="再次输入:"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.example.ruitongapp.view.MyEditText
+            android:layout_width="match_parent"
+            android:textSize="@dimen/sp_16"
+            android:background="@null"
+            android:id="@+id/xin2"
+            android:textColor="@color/textcolor"
+            android:layout_marginLeft="8dp"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_marginLeft="30dp"
+        android:textSize="@dimen/sp_16"
+        android:textColor="@color/write"
+        android:text="修 改"
+        android:id="@+id/tijiao"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/jiaohu"
+        android:layout_marginRight="30dp"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

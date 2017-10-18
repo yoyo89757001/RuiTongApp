@@ -68,8 +68,8 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/sp_16"
             android:src="@drawable/ic_go3x"
-            android:layout_width="22dp"
-            android:layout_height="22dp" />
+            android:layout_width="18dp"
+            android:layout_height="18dp" />
 
 
     </RelativeLayout>
@@ -96,8 +96,8 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/sp_16"
             android:src="@drawable/ic_go3x"
-            android:layout_width="22dp"
-            android:layout_height="22dp" />
+            android:layout_width="18dp"
+            android:layout_height="18dp" />
 
 
     </RelativeLayout>

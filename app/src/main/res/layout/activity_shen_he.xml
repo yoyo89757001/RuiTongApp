@@ -24,6 +24,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:paddingBottom="10dp"
+            android:background="#eeeeee"
             android:orientation="vertical"
             android:layout_height="wrap_content">
 
@@ -42,28 +43,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"/>
 
-                <TextView
-                    android:text="识别照片"
-                    android:textColor="@color/write"
-                    android:textSize="16sp"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginLeft="@dimen/sp_16"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
 
                 <ImageView
-                    android:layout_marginTop="@dimen/dp_4"
-                    android:layout_width="110dp"
-                    android:scaleType="fitXY"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_width="100dp"
                     android:id="@+id/fangkeruku"
-                    android:src="@drawable/tuijianyisheng"
-                    android:layout_height="110dp" />
+                    android:background="@drawable/zidonghuoqu5"
+                    android:layout_height="100dp" />
 
 
             </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/r1"
+                android:background="@color/write"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <View
@@ -82,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <EditText
+                <TextView
                     android:textSize="14sp"
                     android:maxLines="1"
                     android:layout_alignParentRight="true"
@@ -90,7 +84,7 @@
                     android:layout_marginRight="@dimen/sp_16"
                     android:id="@+id/laifangren"
                     android:background="@null"
-                    android:hint="请输入来访人"
+                    android:hint="来访人"
                     android:textColorHint="@color/textcolor"
                     android:gravity="right|center_vertical"
                     android:layout_toRightOf="@+id/gonghao111"
@@ -106,6 +100,7 @@
 
             <RelativeLayout
                 android:id="@+id/r2"
+                android:background="@color/write"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <View
@@ -124,7 +119,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <EditText
+                <TextView
                     android:textSize="14sp"
                     android:layout_centerVertical="true"
                     android:maxLines="1"
@@ -133,7 +128,7 @@
                     android:layout_marginRight="@dimen/sp_16"
                     android:textColor="@color/textcolor"
                     android:background="@null"
-                    android:hint="请输入被访人"
+                    android:hint="被访人"
                     android:textColorHint="@color/textcolor"
                     android:layout_width="match_parent"
                     android:gravity="center_vertical|right"
@@ -147,6 +142,7 @@
 
             <RelativeLayout
                 android:id="@+id/r3"
+                android:background="@color/write"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <View
@@ -166,7 +162,7 @@
                     android:layout_height="wrap_content" />
 
 
-                <EditText
+                <TextView
                     android:textSize="14sp"
                     android:layout_centerVertical="true"
                     android:maxLines="1"
@@ -175,7 +171,7 @@
                     android:layout_marginRight="@dimen/sp_16"
                     android:textColor="@color/textcolor"
                     android:background="@null"
-                    android:hint="请输入手机号"
+                    android:hint="手机号"
                     android:inputType="number"
                     android:maxLength="11"
                     android:textColorHint="@color/textcolor"
@@ -189,6 +185,7 @@
 
             <RelativeLayout
                 android:id="@+id/r4"
+                android:background="@color/write"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <View
@@ -207,13 +204,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <EditText
+                <TextView
                     android:textSize="14sp"
                     android:layout_centerVertical="true"
                     android:maxLines="1"
                     android:layout_toRightOf="@+id/zw"
                     android:id="@+id/zhiwei"
-                    android:hint="请输入来访目的"
+                    android:hint="来访目的"
                     android:textColorHint="@color/textcolor"
                     android:layout_marginRight="@dimen/sp_16"
                     android:textColor="@color/textcolor"
@@ -228,6 +225,7 @@
 
             <RelativeLayout
                 android:id="@+id/ruzhi"
+                android:background="@color/write"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
 
@@ -252,30 +250,21 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginRight="16dp"
-                    android:layout_toLeftOf="@+id/ee65"
-                    android:layout_toStartOf="@+id/ee65"
                     android:background="@null"
                     android:maxLines="1"
                     android:textColorHint="@color/textcolor"
-                    android:hint="请选择来访时间"
+                    android:hint="来访时间"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:textColor="@color/textcolor"
                     android:textSize="14sp" />
 
-                <ImageView
-                    android:id="@+id/ee65"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginRight="16dp"
-                    android:src="@drawable/ic_go3x" />
+
             </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/r5"
-                android:visibility="gone"
+                android:background="@color/write"
                 android:layout_width="match_parent"
                 android:layout_height="60dp">
                 <View
@@ -288,128 +277,30 @@
                     android:textSize="14sp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginStart="16dp"
-                    android:text="备注"
+                    android:text="来源"
                     android:id="@+id/yx"
                     android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
 
-                <EditText
+                <TextView
                     android:textSize="14sp"
                     android:layout_centerVertical="true"
                     android:maxLines="1"
-                    android:layout_toRightOf="@+id/yx"
                     android:id="@+id/beizhu"
-                    android:hint="请输入备注"
+                    android:hint="来源"
                     android:textColorHint="@color/textcolor"
                     android:layout_marginRight="@dimen/sp_16"
                     android:textColor="@color/textcolor"
                     android:background="@null"
-                    android:layout_width="match_parent"
-                    android:gravity="center_vertical|right"
+                    android:layout_width="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:layout_height="match_parent" />
-
-            </RelativeLayout>
-
-
-            <View
-                android:background="@color/view_bg"
-                android:layout_width="match_parent"
-                android:layout_height="6dp"/>
-
-            <RelativeLayout
-                android:id="@+id/vip"
-                android:layout_width="match_parent"
-                android:layout_height="60dp">
-
-
-                <TextView
-                    android:text="是否为VIP"
-                    android:textColor="@color/blake"
-                    android:textSize="16sp"
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
                     android:layout_height="wrap_content" />
 
-
-                <ImageView
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/kai"
-                    android:id="@+id/ee63"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
-                    android:paddingLeft="18dp"
-                    android:paddingRight="18dp"
-                    android:layout_centerVertical="true"
-                    android:layout_width="80dp"
-                    android:layout_height="match_parent" />
-
             </RelativeLayout>
 
-
-
-            <RelativeLayout
-                android:id="@+id/r6"
-                android:layout_width="match_parent"
-                android:layout_height="80dp">
-                <View
-                    android:background="@color/view_bg"
-                    android:layout_width="match_parent"
-                    android:layout_height="0.6dp"/>
-
-                <TextView
-                    android:textColor="@color/blake"
-                    android:textSize="14sp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginStart="16dp"
-                    android:text="显示头像"
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/textView" />
-
-
-                <TextView
-                    android:textSize="12sp"
-                    android:maxLines="1"
-                    android:layout_marginTop="4dp"
-                    android:text="显示在迎宾界面的头像"
-                    android:layout_marginLeft="16dp"
-                    android:id="@+id/gongga4p"
-                    android:textColor="@color/textcolor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/ee4"/>
-
-                <ImageView
-                    android:id="@+id/touxiang"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/morentouxiang"
-                    android:layout_marginRight="@dimen/dp_6"
-                    android:layout_centerVertical="true"
-                    android:layout_toLeftOf="@+id/ee4" />
-
-
-                <ImageView
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_go3x"
-                    android:id="@+id/ee4"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_centerVertical="true"
-                    android:layout_width="18dp"
-                    android:layout_height="18dp" />
-
-            </RelativeLayout>
 
             <View
                 android:id="@+id/v2"
@@ -417,21 +308,48 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.6dp"/>
 
-            <Button
-                android:text="删  除"
-                android:textColor="@color/write"
-                android:textSize="16sp"
-                android:background="@drawable/jiaohu"
-                android:gravity="center"
-                android:id="@+id/shanchu"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="16dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginRight="16dp"
+            <LinearLayout
+                android:layout_marginTop="50dp"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="50dp" />
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:text="通 过"
+                    android:textColor="@color/write"
+                    android:textSize="16sp"
+                    android:background="@drawable/jiaohu3"
+                    android:gravity="center"
+                    android:id="@+id/tongguo"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="0dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp" />
+
+                <Button
+                    android:text="拒 绝"
+                    android:textColor="@color/write"
+                    android:textSize="16sp"
+                    android:background="@drawable/jiaohu6"
+                    android:gravity="center"
+                    android:id="@+id/jujue"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="50dp" />
+
+            </LinearLayout>
+
 
         </LinearLayout>
     </ScrollView>

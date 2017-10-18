@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -22,12 +23,9 @@ import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.YuanGongAdapter;
 import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
-import com.example.ruitongapp.beans.BenDiYuanGong;
-import com.example.ruitongapp.beans.BenDiYuanGongDao;
 import com.example.ruitongapp.beans.MoRenFanHuiBean;
 import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.dialogs.TiJIaoDialog;
-import com.example.ruitongapp.heimingdanbean.HeiMingDanBean;
 import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiYuanGongActivity;
 import com.example.ruitongapp.utils.GsonUtil;
@@ -92,15 +90,25 @@ public class Fragment1 extends Fragment {
     //定义一个广播监听器；
     private NetChangReceiver netChangReceiver;
     private int piotions=-1;
+    /**
+     * 是否创建
+     */
+
+
 
     public Fragment1() {
         dataList = new ArrayList<>();
 
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View view=null;
+        try {
+
         baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
         if (baoCunBeanDao!=null){
             baoCunBean=baoCunBeanDao.load(123456L);
@@ -115,7 +123,7 @@ public class Fragment1 extends Fragment {
         //将广播监听器和过滤器注册在一起；
         getActivity().registerReceiver(netChangReceiver, intentFilter);
 
-        View view = inflater.inflate(R.layout.fragment_fragment1, container, false);
+         view = inflater.inflate(R.layout.fragment_fragment1, container, false);
         sideBar = (SideBar) view.findViewById(R.id.side_bar);
         txtShowCurrentLetter = (TextView) view.findViewById(R.id.txt_show_current_letter);
         linearLayoutManager = new WrapContentLinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
@@ -128,7 +136,7 @@ public class Fragment1 extends Fragment {
 
         lRecyclerView.setAdapter(lRecyclerViewAdapter);
 
-        DividerDecoration divider = new DividerDecoration.Builder(getContext())
+        final DividerDecoration divider = new DividerDecoration.Builder(getContext())
                 .setHeight(R.dimen.default_divider_height2)
                 .setPadding(R.dimen.default_divider_padding2)
                 .setColorResource(R.color.transparent)
@@ -145,11 +153,12 @@ public class Fragment1 extends Fragment {
         lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                piotions=position;
-                Bundle bundle = new Bundle();
-                bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
-                startActivity(new Intent(getContext(),XiuGaiYuanGongActivity.class).putExtra("type",2).putExtras(bundle));
-
+                if (dataList.size()!=0) {
+                    piotions = position;
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
+                    startActivity(new Intent(getContext(), XiuGaiYuanGongActivity.class).putExtra("type", 2).putExtras(bundle));
+                }
             }
         });
         setCallbackInterface();
@@ -176,11 +185,14 @@ public class Fragment1 extends Fragment {
             }
         });
 
+      //  lRecyclerView.forceToRefresh();
 
-
-        lRecyclerView.forceToRefresh();
-
+        }catch (IllegalArgumentException e){
+            Log.d("Fragment1", e.getMessage()+"");
+        }
         return view;
+
+
     }
 
     @Override
@@ -323,25 +335,23 @@ public class Fragment1 extends Fragment {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-//                        if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
-//                            jiaZaiDialog.dismiss();
-//                        }
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
-                                taiZhangAdapter.notifyDataSetChanged();
+                if (getActivity()!=null) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
 
+                            if (dataList.size()!=0){
+                                dataList.clear();
                             }
-                        });
-                        Toast tastyToast= TastyToast.makeText(getActivity(),"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
-                        tastyToast.setGravity(Gravity.CENTER,0,0);
-                        tastyToast.show();
-                    }
-                });
+                           // lRecyclerView.refreshComplete(0);// REQUEST_COUNT为每页加载数量
+                            taiZhangAdapter.notifyDataSetChanged();
+
+                            Toast tastyToast = TastyToast.makeText(getActivity(), "获取数据失败.", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                            tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                            tastyToast.show();
+                        }
+                    });
+                }
                 Log.d("AllConnects", "请求识别失败"+e.getMessage());
             }
 
@@ -367,56 +377,73 @@ public class Fragment1 extends Fragment {
                     Gson gson=new Gson();
                     final YuanGongBean zhaoPianBean=gson.fromJson(jsonObject,YuanGongBean.class);
                     if (qingQiuYe==dangQianYe){
-                        if (dataList.size()!=0){
-                            dataList.clear();
+
+                        if (getActivity()!=null){
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (dataList.size()!=0){
+                                        dataList.clear();
+                                    }
+                                    dataList.addAll(zhaoPianBean.getObjects());
+                                    chineseToPinyin(dataList);
+                                    paixu();
+                                    taiZhangAdapter.setLetters();
+                                    lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
+                                    taiZhangAdapter.notifyDataSetChanged();
+
+                                }
+                            });
                         }
-                        dataList.addAll(zhaoPianBean.getObjects());
-                        chineseToPinyin(dataList);
-                        paixu();
-                        taiZhangAdapter.setLetters();
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
-                                taiZhangAdapter.notifyDataSetChanged();
-
-                            }
-                        });
 
 
                     }else {
-                        int size=zhaoPianBean.getObjects().size();
-                        for (int i=0;i<size;i++){
-                            dataList.add(zhaoPianBean.getObjects().get(i));
+
+                        if (getActivity()!=null){
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int size=zhaoPianBean.getObjects().size();
+                                    for (int i=0;i<size;i++){
+                                        dataList.add(zhaoPianBean.getObjects().get(i));
+                                    }
+                                    chineseToPinyin(dataList);
+                                    paixu();
+                                    taiZhangAdapter.setLetters();
+                                    lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
+                                    taiZhangAdapter.notifyDataSetChanged();
+                                }
+                            });
                         }
-                        chineseToPinyin(dataList);
-                        paixu();
-                        taiZhangAdapter.setLetters();
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-
-                                lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
-                                taiZhangAdapter.notifyDataSetChanged();
-                            }
-                        });
-
 
                     }
-                    if (zhaoPianBean.getObjects().size()==0){
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                lRecyclerView.setNoMore(true);
-                            }
-                        });
+                    if (zhaoPianBean.getObjects().size()==0 && dataList.size()>=20){
+                        if (getActivity()!=null){
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    lRecyclerView.setNoMore(true);
+                                }
+                            });
+                        }
 
                     }
 
                 }catch (Exception e){
+                    if (getActivity()!=null){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                if (dataList.size()!=0){
+                                    dataList.clear();
+                                }
+                               // lRecyclerView.refreshComplete(0);// REQUEST_COUNT为每页加载数量
+                                taiZhangAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    }
+
                     Log.d("WebsocketPushMsg", e.getMessage()+"");
                     try {
                         JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
@@ -424,34 +451,30 @@ public class Fragment1 extends Fragment {
                         final MoRenFanHuiBean zhaoPianBean=gson.fromJson(jsonObject,MoRenFanHuiBean.class);
                         if (zhaoPianBean.getDtoResult()==-33){
                             //登陆过期
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-//                                    if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
-//                                        jiaZaiDialog.dismiss();
-//                                    }
-                                    Toast tastyToast= TastyToast.makeText(getActivity(),"登陆过期,或账号在其它机器登陆,请重新登陆",TastyToast.LENGTH_LONG,TastyToast.ERROR);
-                                    tastyToast.setGravity(Gravity.CENTER,0,0);
-                                    tastyToast.show();
-                                }
-                            });
+                            if (getActivity()!=null){
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast tastyToast= TastyToast.makeText(getActivity(),"登陆过期,或账号在其它机器登陆,请重新登陆",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                                        tastyToast.setGravity(Gravity.CENTER,0,0);
+                                        tastyToast.show();
+                                    }
+                                });
+                            }
                         }
                     }catch (Exception e1){
                         Log.d("Fragment1", "e1:" + e1);
                     }
-
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-//                            if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
-//                                jiaZaiDialog.dismiss();
-//                            }
-                            Toast tastyToast= TastyToast.makeText(getActivity(),"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
-                            tastyToast.setGravity(Gravity.CENTER,0,0);
-                            tastyToast.show();
-                        }
-                    });
-
+                    if (getActivity()!=null){
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast tastyToast= TastyToast.makeText(getActivity(),"获取数据失败.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                                tastyToast.setGravity(Gravity.CENTER,0,0);
+                                tastyToast.show();
+                            }
+                        });
+                    }
 
                 }
             }

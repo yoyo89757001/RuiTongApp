@@ -16,12 +16,11 @@
         android:textColor="#333333"
         android:textSize="16sp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:background="#ffffff"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:gravity="center_vertical">
 
         <ImageView
             android:id="@+id/image"
@@ -30,17 +29,41 @@
             android:scaleType="fitXY"
             android:layout_height="50dp"
             android:padding="5dp"
+            android:layout_centerVertical="true"
             android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/txt_name"
+            android:layout_toRightOf="@+id/image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/textcolor"
-            android:layout_gravity="center_vertical"
+           android:layout_centerVertical="true"
             android:text="姓名"
-            android:textSize="14sp" />
-    </LinearLayout>
+            android:layout_marginLeft="8dp"
+            android:textSize="16sp" />
+            
+        <ImageView
+            android:layout_width="18dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/rrr"
+            android:layout_marginRight="@dimen/sp_16"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_go3x"
+            android:layout_height="18dp" />
+        
+        <TextView
+            android:textSize="@dimen/sp_16"
+            android:layout_toLeftOf="@+id/rrr"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:id="@+id/zhuangtai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        
+        
+    </RelativeLayout>
 
 </LinearLayout>
 

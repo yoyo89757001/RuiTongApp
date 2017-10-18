@@ -15,9 +15,9 @@
         android:layout_width="1dp"
         android:layout_toRightOf="@+id/leftim"
         android:background="#035FED"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="8dp"
         android:id="@+id/fr"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="8dp"
         android:layout_height="match_parent"/>
 
     <TextView

@@ -143,7 +143,7 @@ public class HomePageActivity extends AppCompatActivity implements View.OnClickL
         tabText4= (TextView) findViewById(R.id.tabText4);
         tabTextZhong= (TextView) findViewById(R.id.tabzhong_tv);
 
-        mViewPager.setOffscreenPageLimit(3);
+        mViewPager.setOffscreenPageLimit(1);
     }
 
     @Override

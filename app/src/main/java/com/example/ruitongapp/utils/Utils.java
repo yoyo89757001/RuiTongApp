@@ -14,11 +14,15 @@
 
 package com.example.ruitongapp.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Point;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import com.sdsmdg.tastytoast.TastyToast;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -45,19 +49,7 @@ public class Utils {
         return size;
     }
 
-    /**
-     * Shows a (long) toast
-     */
-    public static void showToast(Context context, String msg) {
-        Toast.makeText(context, msg, Toast.LENGTH_LONG).show();
-    }
 
-    /**
-     * Shows a (long) toast.
-     */
-    public static void showToast(Context context, int resourceId) {
-        Toast.makeText(context, context.getString(resourceId), Toast.LENGTH_LONG).show();
-    }
 
     public static int convertDpToPixel(Context ctx, int dp) {
         float density = ctx.getResources().getDisplayMetrics().density;
@@ -168,6 +160,11 @@ public class Utils {
                 e.printStackTrace();
                 return null;
             }
+        }
+        public static void showToast(Context context,String ss,int ii){
+            Toast tastyToast= TastyToast.makeText(context,ss,TastyToast.LENGTH_LONG,ii);
+            tastyToast.setGravity(Gravity.CENTER,0,0);
+            tastyToast.show();
         }
 
 

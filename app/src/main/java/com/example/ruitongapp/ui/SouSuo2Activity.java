@@ -10,27 +10,26 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
-import com.example.ruitongapp.adapters.BaoGaoAdapter;
+import com.example.ruitongapp.adapters.BaoGaoAdapter2;
 import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
 import com.example.ruitongapp.beans.MoRenFanHuiBean;
-import com.example.ruitongapp.beans.YuanGongBean;
+import com.example.ruitongapp.fangkebean.FangKeBean;
 import com.example.ruitongapp.interfaces.ClickIntface;
+import com.example.ruitongapp.utils.DateUtils;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.view.MyEditTextWrite;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.sdsmdg.tastytoast.TastyToast;
-
 import org.parceler.Parcels;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +44,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class SouSuoActivity extends Activity implements ClickIntface {
+public class SouSuo2Activity extends Activity implements ClickIntface {
 
     @BindView(R.id.fg)
     ImageView fg;
@@ -53,23 +52,20 @@ public class SouSuoActivity extends Activity implements ClickIntface {
     MyEditTextWrite sousuoEt;
     @BindView(R.id.sousuo)
     ImageView sousuo;
+
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-
-
-    private BaoGaoAdapter baoGaoAdapter =null;
-    private List<YuanGongBean.ObjectsBean> benDiYuanGongList;
-    private BaoCunBeanDao baoCunBeanDao=null;
-    private BaoCunBean baoCunBean=null;
+    private BaoGaoAdapter2 baoGaoAdapter = null;
+    private List<FangKeBean.ObjectsBean> benDiYuanGongList;
+    private BaoCunBeanDao baoCunBeanDao = null;
+    private BaoCunBean baoCunBean = null;
     private Call call;
     private String ss;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sou_suo);
+        setContentView(R.layout.activity_sou_suo2);
         ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -78,42 +74,26 @@ public class SouSuoActivity extends Activity implements ClickIntface {
             tintManager.setStatusBarTintResource(R.color.titlecolor);
         }
 
-        baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
-        if (baoCunBeanDao!=null){
-            baoCunBean=baoCunBeanDao.load(123456L);
+        baoCunBeanDao = MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+        if (baoCunBeanDao != null) {
+            baoCunBean = baoCunBeanDao.load(123456L);
         }
 
-        benDiYuanGongList=new ArrayList<>();
+        benDiYuanGongList = new ArrayList<>();
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
-        baoGaoAdapter = new BaoGaoAdapter(benDiYuanGongList,SouSuoActivity.this,baoCunBean.getDizhi());
+        baoGaoAdapter = new BaoGaoAdapter2(benDiYuanGongList, SouSuo2Activity.this, baoCunBean.getDizhi());
         baoGaoAdapter.setClickIntface(this);
         recyclerView.setAdapter(baoGaoAdapter);
 
         sousuoEt.addTextChangedListener(textWatcher);
-
-
-
     }
 
-    @OnClick({R.id.fg, R.id.sousuo})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.fg:
-                finish();
-                break;
-            case R.id.sousuo:
-
-                break;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
+    @OnClick(R.id.fg)
+    public void onViewClicked() {
+        finish();
     }
 
     private TextWatcher textWatcher = new TextWatcher() {
@@ -146,9 +126,10 @@ public class SouSuoActivity extends Activity implements ClickIntface {
 
     @Override
     public void BackId(int id) {
+
         Bundle bundle = new Bundle();
         bundle.putParcelable("chuansong", Parcels.wrap(benDiYuanGongList.get(id)));
-        startActivity(new Intent(SouSuoActivity.this,XiuGaiYuanGongActivity.class).putExtra("type",2).putExtras(bundle));
+        startActivity(new Intent(SouSuo2Activity.this,XiuGaiFangKeActivity.class).putExtra("type",2).putExtras(bundle));
 
     }
 
@@ -159,18 +140,19 @@ public class SouSuoActivity extends Activity implements ClickIntface {
 
             RequestBody body = new FormBody.Builder()
                     .add("accountId",baoCunBean.getSid())
-                    .add("subject_type", "0")
-                    .add("status","1")
+                    .add("compareTimeStart", "2016-01-01 11:22")
+                    .add("compareTimeEnd", DateUtils.time(System.currentTimeMillis()+""))
+                    .add("source","0")
                     .add("name",name )
                     .add("pageNum",pageNum+"")
-                    .add("pageSize", "50")
+                    .add("pageSize", "30")
                     .add("token", baoCunBean.getToken())
                     .build();
 
             Request.Builder requestBuilder = new Request.Builder()
                     // .header("Content-Type", "application/json")
                     .post(body)
-                    .url(baoCunBean.getDizhi() + "/querySubjects.do");
+                    .url(baoCunBean.getDizhi() + "/queryCompares.do");
 
 
             // step 3：创建 Call 对象
@@ -184,7 +166,7 @@ public class SouSuoActivity extends Activity implements ClickIntface {
                         @Override
                         public void run() {
 
-                            Toast tastyToast= TastyToast.makeText(SouSuoActivity.this,"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                            Toast tastyToast= TastyToast.makeText(SouSuo2Activity.this,"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
                             tastyToast.setGravity(Gravity.CENTER,0,0);
                             tastyToast.show();
                         }
@@ -213,7 +195,7 @@ public class SouSuoActivity extends Activity implements ClickIntface {
                         Log.d("Fragment1", ss);
                         JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
                         Gson gson=new Gson();
-                        final YuanGongBean zhaoPianBean=gson.fromJson(jsonObject,YuanGongBean.class);
+                        final FangKeBean zhaoPianBean=gson.fromJson(jsonObject,FangKeBean.class);
                         if (benDiYuanGongList.size()!=0){
                             benDiYuanGongList.clear();
                         }
@@ -239,7 +221,7 @@ public class SouSuoActivity extends Activity implements ClickIntface {
 //                                    if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
 //                                        jiaZaiDialog.dismiss();
 //                                    }
-                                        Toast tastyToast= TastyToast.makeText(SouSuoActivity.this,"登陆过期,或账号在其它机器登陆,请重新登陆",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                                        Toast tastyToast= TastyToast.makeText(SouSuo2Activity.this,"登陆过期,或账号在其它机器登陆,请重新登陆",TastyToast.LENGTH_LONG,TastyToast.ERROR);
                                         tastyToast.setGravity(Gravity.CENTER,0,0);
                                         tastyToast.show();
                                     }
@@ -255,7 +237,7 @@ public class SouSuoActivity extends Activity implements ClickIntface {
 //                            if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
 //                                jiaZaiDialog.dismiss();
 //                            }
-                                Toast tastyToast= TastyToast.makeText(SouSuoActivity.this,"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                                Toast tastyToast= TastyToast.makeText(SouSuo2Activity.this,"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
                                 tastyToast.setGravity(Gravity.CENTER,0,0);
                                 tastyToast.show();
                             }

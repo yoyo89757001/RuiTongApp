@@ -10,17 +10,17 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
-import com.example.ruitongapp.adapters.BaoGaoAdapter;
+import com.example.ruitongapp.adapters.BaoGaoAdapter3;
 import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
 import com.example.ruitongapp.beans.MoRenFanHuiBean;
-import com.example.ruitongapp.beans.YuanGongBean;
+import com.example.ruitongapp.heimingdanbean.HeiMingDanBean;
 import com.example.ruitongapp.interfaces.ClickIntface;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.view.MyEditTextWrite;
@@ -34,6 +34,7 @@ import org.parceler.Parcels;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -45,8 +46,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
 
-public class SouSuoActivity extends Activity implements ClickIntface {
-
+public class SouSuo3Activity extends Activity implements ClickIntface {
     @BindView(R.id.fg)
     ImageView fg;
     @BindView(R.id.sousuo_et)
@@ -55,21 +55,18 @@ public class SouSuoActivity extends Activity implements ClickIntface {
     ImageView sousuo;
     @BindView(R.id.recyclerView)
     RecyclerView recyclerView;
-
-
-    private BaoGaoAdapter baoGaoAdapter =null;
-    private List<YuanGongBean.ObjectsBean> benDiYuanGongList;
-    private BaoCunBeanDao baoCunBeanDao=null;
-    private BaoCunBean baoCunBean=null;
+    private BaoGaoAdapter3 baoGaoAdapter = null;
+    private List<HeiMingDanBean.ObjectsBean> benDiYuanGongList;
+    private BaoCunBeanDao baoCunBeanDao = null;
+    private BaoCunBean baoCunBean = null;
     private Call call;
     private String ss;
-
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sou_suo);
+        setContentView(R.layout.activity_sou_suo3);
         ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -78,41 +75,21 @@ public class SouSuoActivity extends Activity implements ClickIntface {
             tintManager.setStatusBarTintResource(R.color.titlecolor);
         }
 
-        baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
-        if (baoCunBeanDao!=null){
-            baoCunBean=baoCunBeanDao.load(123456L);
+        baoCunBeanDao = MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+        if (baoCunBeanDao != null) {
+            baoCunBean = baoCunBeanDao.load(123456L);
         }
 
-        benDiYuanGongList=new ArrayList<>();
+        benDiYuanGongList = new ArrayList<>();
 
         LinearLayoutManager manager = new LinearLayoutManager(this);
         manager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(manager);
-        baoGaoAdapter = new BaoGaoAdapter(benDiYuanGongList,SouSuoActivity.this,baoCunBean.getDizhi());
+        baoGaoAdapter = new BaoGaoAdapter3(benDiYuanGongList, SouSuo3Activity.this, baoCunBean.getDizhi());
         baoGaoAdapter.setClickIntface(this);
         recyclerView.setAdapter(baoGaoAdapter);
 
         sousuoEt.addTextChangedListener(textWatcher);
-
-
-
-    }
-
-    @OnClick({R.id.fg, R.id.sousuo})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.fg:
-                finish();
-                break;
-            case R.id.sousuo:
-
-                break;
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
 
     }
 
@@ -130,12 +107,12 @@ public class SouSuoActivity extends Activity implements ClickIntface {
 
         @Override
         public void afterTextChanged(Editable s) {
-            if (!s.toString().equals("")){
-                link_liebiao(s.toString(),1);
+            if (!s.toString().equals("")) {
+                link_liebiao(s.toString(), 1);
 
-            }else {
+            } else {
 
-                if (benDiYuanGongList.size()!=0){
+                if (benDiYuanGongList.size() != 0) {
                     benDiYuanGongList.clear();
                 }
                 baoGaoAdapter.notifyDataSetChanged();
@@ -148,12 +125,12 @@ public class SouSuoActivity extends Activity implements ClickIntface {
     public void BackId(int id) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("chuansong", Parcels.wrap(benDiYuanGongList.get(id)));
-        startActivity(new Intent(SouSuoActivity.this,XiuGaiYuanGongActivity.class).putExtra("type",2).putExtras(bundle));
+        startActivity(new Intent(SouSuo3Activity.this, XiuGaiHeiMingDanActivity.class).putExtra("type", 2).putExtras(bundle));
 
     }
 
 
-    private void link_liebiao(String name,int pageNum) {
+    private void link_liebiao(String name, int pageNum) {
 
         try {
 
@@ -163,8 +140,9 @@ public class SouSuoActivity extends Activity implements ClickIntface {
                     .add("status","1")
                     .add("name",name )
                     .add("pageNum",pageNum+"")
-                    .add("pageSize", "50")
+                    .add("pageSize", "20")
                     .add("token", baoCunBean.getToken())
+                    .add("department", "黑名单")
                     .build();
 
             Request.Builder requestBuilder = new Request.Builder()
@@ -184,12 +162,12 @@ public class SouSuoActivity extends Activity implements ClickIntface {
                         @Override
                         public void run() {
 
-                            Toast tastyToast= TastyToast.makeText(SouSuoActivity.this,"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
-                            tastyToast.setGravity(Gravity.CENTER,0,0);
+                            Toast tastyToast = TastyToast.makeText(SouSuo3Activity.this, "网络错误.", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                            tastyToast.setGravity(Gravity.CENTER, 0, 0);
                             tastyToast.show();
                         }
                     });
-                    Log.d("AllConnects", "请求识别失败"+e.getMessage());
+                    Log.d("AllConnects", "请求识别失败" + e.getMessage());
                 }
 
                 @Override
@@ -203,18 +181,18 @@ public class SouSuoActivity extends Activity implements ClickIntface {
 //                    }
 //                });
 
-                    Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                    Log.d("AllConnects", "请求识别成功" + call.request().toString());
                     //获得返回体
                     try {
 
                         ResponseBody body = response.body();
                         // Log.d("AllConnects", "识别结果返回"+response.body().string());
-                        ss=body.string();
+                        ss = body.string();
                         Log.d("Fragment1", ss);
-                        JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
-                        Gson gson=new Gson();
-                        final YuanGongBean zhaoPianBean=gson.fromJson(jsonObject,YuanGongBean.class);
-                        if (benDiYuanGongList.size()!=0){
+                        JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                        Gson gson = new Gson();
+                        final HeiMingDanBean zhaoPianBean = gson.fromJson(jsonObject, HeiMingDanBean.class);
+                        if (benDiYuanGongList.size() != 0) {
                             benDiYuanGongList.clear();
                         }
                         benDiYuanGongList.addAll(zhaoPianBean.getObjects());
@@ -225,13 +203,13 @@ public class SouSuoActivity extends Activity implements ClickIntface {
                             }
                         });
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                         try {
-                            JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
-                            Gson gson=new Gson();
-                            final MoRenFanHuiBean zhaoPianBean=gson.fromJson(jsonObject,MoRenFanHuiBean.class);
-                            if (zhaoPianBean.getDtoResult()==-33){
+                            JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                            Gson gson = new Gson();
+                            final MoRenFanHuiBean zhaoPianBean = gson.fromJson(jsonObject, MoRenFanHuiBean.class);
+                            if (zhaoPianBean.getDtoResult() == -33) {
                                 //登陆过期
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -239,13 +217,13 @@ public class SouSuoActivity extends Activity implements ClickIntface {
 //                                    if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
 //                                        jiaZaiDialog.dismiss();
 //                                    }
-                                        Toast tastyToast= TastyToast.makeText(SouSuoActivity.this,"登陆过期,或账号在其它机器登陆,请重新登陆",TastyToast.LENGTH_LONG,TastyToast.ERROR);
-                                        tastyToast.setGravity(Gravity.CENTER,0,0);
+                                        Toast tastyToast = TastyToast.makeText(SouSuo3Activity.this, "登陆过期,或账号在其它机器登陆,请重新登陆", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                        tastyToast.setGravity(Gravity.CENTER, 0, 0);
                                         tastyToast.show();
                                     }
                                 });
                             }
-                        }catch (Exception e1){
+                        } catch (Exception e1) {
                             Log.d("Fragment1", "e1:" + e1);
                         }
 
@@ -255,8 +233,8 @@ public class SouSuoActivity extends Activity implements ClickIntface {
 //                            if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
 //                                jiaZaiDialog.dismiss();
 //                            }
-                                Toast tastyToast= TastyToast.makeText(SouSuoActivity.this,"网络错误.",TastyToast.LENGTH_LONG,TastyToast.ERROR);
-                                tastyToast.setGravity(Gravity.CENTER,0,0);
+                                Toast tastyToast = TastyToast.makeText(SouSuo3Activity.this, "网络错误.", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                tastyToast.setGravity(Gravity.CENTER, 0, 0);
                                 tastyToast.show();
                             }
                         });
@@ -266,9 +244,13 @@ public class SouSuoActivity extends Activity implements ClickIntface {
                 }
             });
 
-        }catch (Exception e){
-            Log.d("Fragment1", e.getMessage()+"");
+        } catch (Exception e) {
+            Log.d("Fragment1", e.getMessage() + "");
         }
     }
 
+    @OnClick(R.id.fg)
+    public void onViewClicked() {
+        finish();
+    }
 }

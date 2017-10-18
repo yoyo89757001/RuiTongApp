@@ -151,7 +151,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
             title.setText("黑名单信息");
         }
         righttv.setVisibility(View.VISIBLE);
-        righttv.setText("保存");
+        righttv.setText("保 存");
 
 
         Glide.with(XiuGaiHeiMingDanActivity.this)
@@ -961,6 +961,9 @@ public class XiuGaiHeiMingDanActivity extends Activity {
 
                     }
                 });
+                try {
+
+
                 cameraPath = null;
                 //获得返回体
                 ResponseBody body = response.body();
@@ -989,7 +992,9 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                     });
 
                 }
-
+                }catch (Exception e){
+                    Log.d("XiuGaiHeiMingDanActivit", e.getMessage()+"");
+                }
             }
         });
 
@@ -1076,7 +1081,9 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                         }
                     }
                 });
-                Log.d("AllConnects", "头像上传成功" + call.request().toString());
+               try {
+
+
                 cameraPath = null;
                 //获得返回体
                 ResponseBody body = response.body();
@@ -1122,7 +1129,9 @@ public class XiuGaiHeiMingDanActivity extends Activity {
                         }
                     });
                 }
-
+               }catch (Exception e){
+                   Log.d("XiuGaiHeiMingDanActivit", e.getMessage()+"");
+               }
             }
         });
 

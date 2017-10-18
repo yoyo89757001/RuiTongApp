@@ -14,7 +14,6 @@ import com.bumptech.glide.Glide;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.interfaces.ClickIntface;
-import com.example.ruitongapp.ui.XiuGaiYuanGongActivity;
 import com.example.ruitongapp.utils.GlideCircleTransform;
 
 import java.util.HashMap;
@@ -83,7 +82,7 @@ public class YuanGongAdapter extends RecyclerView.Adapter<YuanGongAdapter.ViewHo
                     .into(viewHolder.imageView);
         }else {
           Glide.with(context)
-                    .load(R.drawable.tuijianyisheng)
+                    .load(R.drawable.morentouxiang)
                     .transform(new GlideCircleTransform(context, 0.6f, Color.parseColor("#ffffffff")))
                     .into(viewHolder.imageView);
         }
