@@ -31,7 +31,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
-        <activity android:name=".ui.LogingActivity">
+        <activity android:name=".ui.QiDongActivity"
+            android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -64,7 +66,8 @@
         <activity android:name=".ui.SouSuoActivity" />
         <activity android:name=".ui.ShenHeActivity" />
         <activity android:name=".ui.SouSuo2Activity" />
-        <activity android:name=".ui.SouSuo3Activity"></activity>
+        <activity android:name=".ui.SouSuo3Activity" />
+        <activity android:name=".ui.LogingActivity"/>
     </application>
 
 </manifest>
