@@ -139,7 +139,6 @@ public class XiuGaiYuanGongActivity extends Activity {
     private static final int PHOTO_REQUEST_CUT = 9;
     private static final int PHOTO_REQUEST_CUT2 = 6;
     private UpdataTouXiangDialog dialog88 = null;
-    private ImageView nan, nv;
     private FuWuQiBeanDao fuWuQiBeanDao = null;
     private List<FuWuQiBean> fuWuQiBeanList = null;
     private FuWuQiBean fuWuQiBean = null;

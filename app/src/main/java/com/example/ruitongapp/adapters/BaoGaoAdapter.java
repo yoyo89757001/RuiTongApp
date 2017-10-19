@@ -60,7 +60,7 @@ public class BaoGaoAdapter extends RecyclerView.Adapter<BaoGaoAdapter.ViewHolder
                         .into(viewHolder.touxiang);
             } else {
                 Glide.with(context)
-                        .load(R.drawable.tuijianyisheng)
+                        .load(R.drawable.morentouxiang)
                         .transform(new GlideCircleTransform(context, 0.6f, Color.parseColor("#ffffffff")))
                         .into(viewHolder.touxiang);
             }

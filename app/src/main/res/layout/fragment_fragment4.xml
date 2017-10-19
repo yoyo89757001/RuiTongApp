@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:orientation="vertical"
+    android:background="@color/write"
     android:layout_height="match_parent"
     tools:context="com.example.ruitongapp.fargments.Fragment4">
 
@@ -22,34 +23,33 @@
 
 
         <TextView
-            android:id="@+id/sousuo"
+            android:id="@+id/fabu"
             android:layout_width="50dp"
-            android:layout_marginRight="2dp"
-            android:text="发布"
+            android:text="发 布"
             android:textColor="@color/write"
             android:textSize="@dimen/sp_16"
             android:gravity="center"
-            android:layout_toLeftOf="@+id/tianjia"
+            android:layout_toLeftOf="@+id/bianji"
             android:layout_height="match_parent" />
 
         <TextView
-            android:id="@+id/tianjia"
+            android:id="@+id/bianji"
             android:layout_width="50dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:text="编辑"
+            android:text="编 辑"
             android:textColor="@color/write"
             android:textSize="@dimen/sp_16"
             android:gravity="center"
-            android:layout_marginRight="22dp"
+            android:layout_marginRight="12dp"
             android:layout_height="match_parent" />
 
     </RelativeLayout>
 
-        <com.github.jdsjlzx.recyclerview.LuRecyclerView
-            android:layout_width="match_parent"
-            android:id="@+id/recyclerView"
-            android:layout_height="match_parent"/>
+    <com.github.jdsjlzx.recyclerview.LRecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 
 

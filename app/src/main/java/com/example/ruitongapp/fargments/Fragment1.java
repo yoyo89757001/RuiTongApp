@@ -90,9 +90,7 @@ public class Fragment1 extends Fragment {
     //定义一个广播监听器；
     private NetChangReceiver netChangReceiver;
     private int piotions=-1;
-    /**
-     * 是否创建
-     */
+
 
 
 
