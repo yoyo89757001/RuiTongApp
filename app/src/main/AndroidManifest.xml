@@ -26,9 +26,9 @@
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@drawable/logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar">
         <activity
@@ -68,7 +68,7 @@
         <activity android:name=".ui.SouSuo2Activity" />
         <activity android:name=".ui.SouSuo3Activity" />
         <activity android:name=".ui.LogingActivity" />
-        <activity android:name=".ui.FaBuGongGaoActivity"></activity>
+        <activity android:name=".ui.FaBuGongGaoActivity"/>
     </application>
 
 </manifest>
