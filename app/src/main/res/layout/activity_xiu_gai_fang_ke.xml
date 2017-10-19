@@ -55,6 +55,7 @@
                     android:layout_marginTop="@dimen/dp_4"
                     android:layout_width="110dp"
                     android:scaleType="fitXY"
+                    android:background="@drawable/bai"
                     android:id="@+id/fangkeruku"
                     android:src="@drawable/tuijianyisheng"
                     android:layout_height="110dp" />

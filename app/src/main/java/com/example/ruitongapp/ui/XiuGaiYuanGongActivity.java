@@ -368,7 +368,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                         .into(touxiang);
             }else {
                 Glide.with(XiuGaiYuanGongActivity.this)
-                        .load(R.drawable.tuijianyisheng)
+                        .load(R.drawable.morentouxiang)
                         .transform(new GlideCircleTransform(XiuGaiYuanGongActivity.this, 0.6f, Color.parseColor("#ffffffff")))
                         .into(touxiang);
             }

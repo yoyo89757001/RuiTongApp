@@ -155,7 +155,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
 
 
         Glide.with(XiuGaiHeiMingDanActivity.this)
-                .load(R.drawable.tuijianyisheng)
+                .load(R.drawable.morentouxiang)
                 .transform(new GlideCircleTransform(XiuGaiHeiMingDanActivity.this, 0.6f, Color.parseColor("#ffffffff")))
                 .into(touxiang);
 

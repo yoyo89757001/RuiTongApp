@@ -176,7 +176,7 @@ public class XiuGaiFangKeActivity extends Activity {
                 vip_im.setImageResource(R.drawable.kai);
             }
 
-            if (!benDiYuanGong.getAvatar().equals("")) {
+            if (benDiYuanGong.getAvatar()!=null && !benDiYuanGong.getAvatar().equals("")) {
                 Glide.with(XiuGaiFangKeActivity.this)
                         .load(baoCunBean.getDizhi() + "/upload/avatar/" + benDiYuanGong.getAvatar())
                         .transform(new GlideCircleTransform(XiuGaiFangKeActivity.this, 0.6f, Color.parseColor("#ffffffff")))

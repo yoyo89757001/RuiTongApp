@@ -142,12 +142,12 @@ public class Fragment4 extends Fragment implements ClickIntface {
             lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
                 @Override
                 public void onItemClick(View view, int position) {
-                    if (dataList.size() != 0) {
-                        piotions = position;
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
-                        startActivity(new Intent(getContext(), XiuGaiYuanGongActivity.class).putExtra("type", 2).putExtras(bundle));
-                    }
+//                    if (dataList.size() != 0) {
+//                        piotions = position;
+//                        Bundle bundle = new Bundle();
+//                        bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
+//                        startActivity(new Intent(getContext(), XiuGaiYuanGongActivity.class).putExtra("type", 2).putExtras(bundle));
+//                    }
                 }
             });
 
@@ -253,12 +253,7 @@ public class Fragment4 extends Fragment implements ClickIntface {
                         lRecyclerViewAdapter.notifyDataSetChanged();
                     }
 
-
                 }
-
-
-
-
                 break;
         }
     }

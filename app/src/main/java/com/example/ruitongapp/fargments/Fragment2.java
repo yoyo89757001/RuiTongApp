@@ -2,6 +2,7 @@ package com.example.ruitongapp.fargments;
 
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -10,6 +11,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
 import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
 import com.example.ruitongapp.adapters.FangKeAdapter;
@@ -33,10 +37,13 @@ import com.github.jdsjlzx.recyclerview.LRecyclerViewAdapter;
 import com.github.jdsjlzx.recyclerview.ProgressStyle;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
 import org.parceler.Parcels;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -60,19 +67,36 @@ public class Fragment2 extends Fragment {
     @BindView(R.id.tianjia)
     ImageView tianjia;
     Unbinder unbinder;
+    @BindView(R.id.t1)
+    TextView t1;
+    @BindView(R.id.l1)
+    LinearLayout l1;
+    @BindView(R.id.t2)
+    TextView t2;
+    @BindView(R.id.l2)
+    LinearLayout l2;
+    @BindView(R.id.t3)
+    TextView t3;
+    @BindView(R.id.l3)
+    LinearLayout l3;
+    @BindView(R.id.t4)
+    TextView t4;
+    @BindView(R.id.l4)
+    LinearLayout l4;
+    Unbinder unbinder1;
 
     private WrapContentLinearLayoutManager linearLayoutManager = null;
     private LRecyclerView lRecyclerView;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
     private List<FangKeBean.ObjectsBean> dataList;
     private FangKeAdapter taiZhangAdapter;
-    private BaoCunBeanDao baoCunBeanDao=null;
-    private BaoCunBean baoCunBean=null;
-    private int dangQianYe=1;
-    private int qingQiuYe=1;
+    private BaoCunBeanDao baoCunBeanDao = null;
+    private BaoCunBean baoCunBean = null;
+    private int dangQianYe = 1;
+    private int qingQiuYe = 1;
     private String ss;
     private Call call;
-
+    private int  shenhe=-1;
     public Fragment2() {
         dataList = new ArrayList<>();
     }
@@ -85,83 +109,92 @@ public class Fragment2 extends Fragment {
 
         try {
 
-        baoCunBeanDao= MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
-        if (baoCunBeanDao!=null){
-            baoCunBean=baoCunBeanDao.load(123456L);
-        }
+            baoCunBeanDao = MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+            if (baoCunBeanDao != null) {
+                baoCunBean = baoCunBeanDao.load(123456L);
+            }
 
-        lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerView);
-        taiZhangAdapter = new FangKeAdapter(dataList,getContext(),baoCunBean.getDizhi());
-        lRecyclerViewAdapter = new LRecyclerViewAdapter(taiZhangAdapter);
+            lRecyclerView = (LRecyclerView) view.findViewById(R.id.recyclerView);
+            taiZhangAdapter = new FangKeAdapter(dataList, getContext(), baoCunBean.getDizhi());
+            lRecyclerViewAdapter = new LRecyclerViewAdapter(taiZhangAdapter);
 
-        linearLayoutManager = new WrapContentLinearLayoutManager(getContext());
-        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        lRecyclerView.setLayoutManager(linearLayoutManager);
-        //设置头部加载颜色
-        lRecyclerView.setHeaderViewColor(R.color.colorAccent, R.color.blake ,android.R.color.white);
-        lRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
-        lRecyclerView.setFooterViewColor(R.color.textcolor, R.color.blake ,android.R.color.white);
-        //设置底部加载文字提示
-        lRecyclerView.setFooterViewHint("拼命加载中","--------我是有底线的--------","网络不给力...");
-        lRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
+            linearLayoutManager = new WrapContentLinearLayoutManager(getContext());
+            linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            lRecyclerView.setLayoutManager(linearLayoutManager);
+            //设置头部加载颜色
+            lRecyclerView.setHeaderViewColor(R.color.colorAccent, R.color.blake, android.R.color.white);
+            lRecyclerView.setRefreshProgressStyle(ProgressStyle.LineSpinFadeLoader);
+            lRecyclerView.setFooterViewColor(R.color.textcolor, R.color.blake, android.R.color.white);
+            //设置底部加载文字提示
+            lRecyclerView.setFooterViewHint("拼命加载中", "--------我是有底线的--------", "网络不给力...");
+            lRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallSpinFadeLoader);
 
-        lRecyclerView.setAdapter(lRecyclerViewAdapter);
+            lRecyclerView.setAdapter(lRecyclerViewAdapter);
 
-        DividerDecoration divider = new DividerDecoration.Builder(getContext())
-                .setHeight(R.dimen.default_divider_height2)
-                .setPadding(R.dimen.default_divider_padding2)
-                .setColorResource(R.color.transparent)
-                .build();
-        lRecyclerView.addItemDecoration(divider);
+            DividerDecoration divider = new DividerDecoration.Builder(getContext())
+                    .setHeight(R.dimen.default_divider_height2)
+                    .setPadding(R.dimen.default_divider_padding2)
+                    .setColorResource(R.color.transparent)
+                    .build();
+            lRecyclerView.addItemDecoration(divider);
 
 
-        lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                if (dataList.size()!=0) {
-                    if (dataList.get(position).getAudit().equals("0")) {
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
-                        startActivity(new Intent(getContext(), ShenHeActivity.class).putExtra("type", 2).putExtras(bundle));
-                    } else {
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
-                        startActivity(new Intent(getContext(), XiuGaiFangKeActivity.class).putExtra("type", 2).putExtras(bundle));
+            lRecyclerViewAdapter.setOnItemClickListener(new OnItemClickListener() {
+                @Override
+                public void onItemClick(View view, int position) {
+                    if (dataList.size() != 0) {
+                        if (dataList.get(position).getAudit().equals("0")) {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
+                            startActivity(new Intent(getContext(), ShenHeActivity.class).putExtra("type", 2).putExtras(bundle));
+                        } else {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable("chuansong", Parcels.wrap(dataList.get(position)));
+                            startActivity(new Intent(getContext(), XiuGaiFangKeActivity.class).putExtra("type", 2).putExtras(bundle));
+                        }
+                    }
+
+                }
+            });
+
+            unbinder = ButterKnife.bind(this, view);
+
+            lRecyclerView.setOnRefreshListener(new OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    //下拉刷新
+                    Log.d("Fragment2", "下拉刷新");
+                    dangQianYe = 1;
+                    qingQiuYe = 1;
+                    if (shenhe==-1){
+                        link_liebiao("", qingQiuYe, shenhe, false);
+                    }else {
+                        link_liebiao("", qingQiuYe, shenhe, true);
                     }
                 }
+            });
 
-            }
-        });
+            lRecyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
+                @Override
+                public void onLoadMore() {
+                    qingQiuYe++;
+                    //加载更多
+                    if (shenhe==-1){
+                        link_liebiao("", qingQiuYe, shenhe, false);
+                    }else {
+                        link_liebiao("", qingQiuYe, shenhe, true);
+                    }
 
-        unbinder = ButterKnife.bind(this, view);
-
-        lRecyclerView.setOnRefreshListener(new OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                //下拉刷新
-                Log.d("Fragment2", "下拉刷新");
-                dangQianYe=1;
-                qingQiuYe=1;
-                link_liebiao("",qingQiuYe,0,false);
-            }
-        });
-
-        lRecyclerView.setOnLoadMoreListener(new OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                qingQiuYe++;
-                //加载更多
-                link_liebiao("",qingQiuYe,0,false);
-            }
-        });
+                }
+            });
 
 
-        }catch (IllegalArgumentException e){
-            Log.d("Fragment2", e.getMessage()+"");
+        } catch (IllegalArgumentException e) {
+            Log.d("Fragment2", e.getMessage() + "");
         }
+        unbinder1 = ButterKnife.bind(this, view);
         return view;
     }
-
 
 
     @Override
@@ -207,6 +240,7 @@ public class Fragment2 extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        unbinder1.unbind();
 
     }
 
@@ -216,49 +250,88 @@ public class Fragment2 extends Fragment {
         unbinder.unbind();
     }
 
-    @OnClick({R.id.sousuo, R.id.tianjia})
+    @OnClick({R.id.sousuo, R.id.tianjia,R.id.l1, R.id.l2, R.id.l3, R.id.l4})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.sousuo:
-                startActivity(new Intent(getContext(),SouSuo2Activity.class));
+                startActivity(new Intent(getContext(), SouSuo2Activity.class));
                 break;
             case R.id.tianjia:
                 startActivity(new Intent(getContext(), XiuGaiFangKeActivity.class).putExtra("type", 1));
                 break;
+            case R.id.l1:
+                setColoer();
+                t1.setTextColor(Color.parseColor("#111111"));
+                dangQianYe = 1;
+                qingQiuYe = 1;
+                shenhe=0;
+                lRecyclerView.forceToRefresh();
+
+                break;
+            case R.id.l2:
+                setColoer();
+                t2.setTextColor(Color.parseColor("#111111"));
+                dangQianYe = 1;
+                qingQiuYe = 1;
+                shenhe=1;
+                lRecyclerView.forceToRefresh();
+
+                break;
+            case R.id.l3:
+                setColoer();
+                t3.setTextColor(Color.parseColor("#111111"));
+                dangQianYe = 1;
+                qingQiuYe = 1;
+                shenhe=2;
+                lRecyclerView.forceToRefresh();
+
+                break;
+            case R.id.l4:
+                setColoer();
+                t4.setTextColor(Color.parseColor("#111111"));
+                dangQianYe = 1;
+                qingQiuYe = 1;
+                shenhe=-1;
+                lRecyclerView.forceToRefresh();
+
+                break;
         }
     }
 
-    private void link_liebiao(String name,int pageNum,int audit,boolean chaxun) {
+    private void setColoer(){
+        t1.setTextColor(Color.parseColor("#878686"));
+        t2.setTextColor(Color.parseColor("#878686"));
+        t3.setTextColor(Color.parseColor("#878686"));
+        t4.setTextColor(Color.parseColor("#878686"));
+    }
 
-//        jiaZaiDialog=new TiJIaoDialog(getActivity());
-//        if (!getActivity().isFinishing()){
-//        jiaZaiDialog.show();
-//        }
+    private void link_liebiao(String name, int pageNum, int audit, boolean chaxun) {
+
 
         try {
-            RequestBody body=null;
-            if (chaxun){
+            RequestBody body = null;
+            if (chaxun) {
 
                 body = new FormBody.Builder()
-                        .add("accountId",baoCunBean.getSid())
-                        .add("audit",audit+"")
-                        .add("compareTimeStart","2016-01-01 11:22")
-                        .add("compareTimeEnd", DateUtils.time(System.currentTimeMillis()+""))
-                        .add("source","0")
-                        .add("name",name )
-                        .add("pageNum",pageNum+"")
+                        .add("accountId", baoCunBean.getSid())
+                        .add("audit", audit + "")
+                        .add("compareTimeStart", "2016-01-01 11:22")
+                        .add("compareTimeEnd", DateUtils.time(System.currentTimeMillis() + ""))
+                        .add("source", "0")
+                        .add("name", name)
+                        .add("pageNum", pageNum + "")
                         .add("pageSize", "20")
                         .add("token", baoCunBean.getToken())
                         .build();
-            }else {
+            } else {
 
                 body = new FormBody.Builder()
-                        .add("accountId",baoCunBean.getSid())
+                        .add("accountId", baoCunBean.getSid())
                         .add("compareTimeStart", "2016-01-01 11:22")
-                        .add("compareTimeEnd",DateUtils.time(System.currentTimeMillis()+""))
-                        .add("source","0")
-                        .add("name",name )
-                        .add("pageNum",pageNum+"")
+                        .add("compareTimeEnd", DateUtils.time(System.currentTimeMillis() + ""))
+                        .add("source", "0")
+                        .add("name", name)
+                        .add("pageNum", pageNum + "")
                         .add("pageSize", "20")
                         .add("token", baoCunBean.getToken())
                         .build();
@@ -278,21 +351,21 @@ public class Fragment2 extends Fragment {
             call.enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
-                    if (getActivity()!=null){
+                    if (getActivity() != null) {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if (dataList.size()!=0){
+                                if (dataList.size() != 0) {
                                     dataList.clear();
                                 }
-                               // lRecyclerView.refreshComplete(0);// REQUEST_COUNT为每页加载数量
+                                // lRecyclerView.refreshComplete(0);// REQUEST_COUNT为每页加载数量
                                 taiZhangAdapter.notifyDataSetChanged();
 
-                                Utils.showToast(getContext(),"获取数据失败",3);
+                                Utils.showToast(getContext(), "获取数据失败", 3);
                             }
                         });
                     }
-                    Log.d("AllConnects", "请求识别失败"+e.getMessage());
+                    Log.d("AllConnects", "请求识别失败" + e.getMessage());
                 }
 
                 @Override
@@ -305,27 +378,27 @@ public class Fragment2 extends Fragment {
 //                        }
 //                    }
 //                });
-                    Log.d("AllConnects", "请求识别成功"+call.request().toString());
+                    Log.d("AllConnects", "请求识别成功" + call.request().toString());
                     //获得返回体
                     try {
 
                         ResponseBody body = response.body();
                         // Log.d("AllConnects", "识别结果返回"+response.body().string());
-                        ss=body.string();
+                        ss = body.string();
                         Log.d("Fragment2", "请求数据成功");
-                        JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
-                        Gson gson=new Gson();
-                        final FangKeBean zhaoPianBean=gson.fromJson(jsonObject,FangKeBean.class);
-                        if (qingQiuYe==dangQianYe){
+                        JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                        Gson gson = new Gson();
+                        final FangKeBean zhaoPianBean = gson.fromJson(jsonObject, FangKeBean.class);
+                        if (qingQiuYe == dangQianYe) {
 
-                            if (getActivity()!=null){
+                            if (getActivity() != null) {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        if (dataList.size()!=0){
-                                          dataList.clear();
+                                        if (dataList.size() != 0) {
+                                            dataList.clear();
                                         }
-                                        dataList.addAll(zhaoPianBean.getObjects()!=null?zhaoPianBean.getObjects():new ArrayList<FangKeBean.ObjectsBean>());
+                                        dataList.addAll(zhaoPianBean.getObjects() != null ? zhaoPianBean.getObjects() : new ArrayList<FangKeBean.ObjectsBean>());
                                         taiZhangAdapter.setLetters();
                                         lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
                                         taiZhangAdapter.notifyDataSetChanged();
@@ -336,15 +409,15 @@ public class Fragment2 extends Fragment {
                             }
 
 
-                        }else {
+                        } else {
 
 
-                            if (getActivity()!=null){
+                            if (getActivity() != null) {
                                 getActivity().runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        int size=zhaoPianBean.getObjects().size();
-                                        for (int i=0;i<size;i++){
+                                        int size = zhaoPianBean.getObjects().size();
+                                        for (int i = 0; i < size; i++) {
                                             dataList.add(zhaoPianBean.getObjects().get(i));
                                         }
                                         taiZhangAdapter.setLetters();
@@ -356,7 +429,7 @@ public class Fragment2 extends Fragment {
                             }
 
                         }
-                        if (zhaoPianBean.getObjects().size()==0 && dataList.size()>=20){
+                        if (zhaoPianBean.getObjects().size() == 0 && dataList.size() >= 20) {
 
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
@@ -367,44 +440,44 @@ public class Fragment2 extends Fragment {
 
                         }
 
-                    }catch (Exception e){
-                        if (getActivity()!=null){
+                    } catch (Exception e) {
+                        if (getActivity() != null) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
 
-                                    if (dataList.size()!=0){
+                                    if (dataList.size() != 0) {
                                         dataList.clear();
                                     }
-                                   // lRecyclerView.refreshComplete(0);// REQUEST_COUNT为每页加载数量
+                                    // lRecyclerView.refreshComplete(0);// REQUEST_COUNT为每页加载数量
                                     taiZhangAdapter.notifyDataSetChanged();
                                 }
                             });
                         }
                         try {
-                            JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
-                            Gson gson=new Gson();
-                            final MoRenFanHuiBean zhaoPianBean=gson.fromJson(jsonObject,MoRenFanHuiBean.class);
-                            if (zhaoPianBean.getDtoResult()==-33){
+                            JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                            Gson gson = new Gson();
+                            final MoRenFanHuiBean zhaoPianBean = gson.fromJson(jsonObject, MoRenFanHuiBean.class);
+                            if (zhaoPianBean.getDtoResult() == -33) {
                                 //登陆过期
-                                if (getActivity()!=null){
+                                if (getActivity() != null) {
                                     getActivity().runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            Utils.showToast(getContext(),"登陆过期,或账号在其它机器登陆,请重新登陆",3);
+                                            Utils.showToast(getContext(), "登陆过期,或账号在其它机器登陆,请重新登陆", 3);
                                         }
                                     });
                                 }
 
                             }
-                        }catch (Exception e1){
+                        } catch (Exception e1) {
                             Log.d("Fragment1", "e1:" + e1);
                         }
-                        if (getActivity()!=null){
+                        if (getActivity() != null) {
                             getActivity().runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    Utils.showToast(getContext(),"获取数据失败",3);
+                                    Utils.showToast(getContext(), "获取数据失败", 3);
                                 }
                             });
                         }
@@ -414,8 +487,10 @@ public class Fragment2 extends Fragment {
                 }
             });
 
-        }catch (Exception e){
-            Log.d("Fragment1", e.getMessage()+"");
+        } catch (Exception e) {
+            Log.d("Fragment1", e.getMessage() + "");
         }
     }
+
+
 }
