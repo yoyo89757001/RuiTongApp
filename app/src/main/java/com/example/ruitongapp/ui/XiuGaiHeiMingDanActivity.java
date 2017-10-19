@@ -325,6 +325,7 @@ public class XiuGaiHeiMingDanActivity extends Activity {
             public void run() {
                 if (tiJIaoDialog==null && !XiuGaiHeiMingDanActivity.this.isFinishing()){
                     tiJIaoDialog=new TiJIaoDialog(XiuGaiHeiMingDanActivity.this);
+                    if (!XiuGaiHeiMingDanActivity.this.isFinishing())
                     tiJIaoDialog.show();
                 }
             }

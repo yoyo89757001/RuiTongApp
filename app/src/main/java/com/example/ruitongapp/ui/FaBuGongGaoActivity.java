@@ -135,6 +135,7 @@ public class FaBuGongGaoActivity extends Activity {
             public void run() {
                 if (tiJIaoDialog==null && !FaBuGongGaoActivity.this.isFinishing()){
                     tiJIaoDialog=new TiJIaoDialog(FaBuGongGaoActivity.this);
+                    if (!FaBuGongGaoActivity.this.isFinishing())
                     tiJIaoDialog.show();
                 }
             }

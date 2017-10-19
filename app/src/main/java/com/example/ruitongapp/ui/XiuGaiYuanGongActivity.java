@@ -763,6 +763,7 @@ public class XiuGaiYuanGongActivity extends Activity {
             public void run() {
                 if (dialog88 != null) {
                     dialog88.setL1Gone();
+                    if (!XiuGaiYuanGongActivity.this.isFinishing())
                     dialog88.show();
                 }
 
