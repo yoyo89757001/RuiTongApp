@@ -44,14 +44,14 @@
             android:textSize="16sp" />
             
         <ImageView
-            android:layout_width="18dp"
+            android:layout_width="16dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:id="@+id/rrr"
             android:layout_marginRight="@dimen/sp_16"
             android:layout_alignParentEnd="true"
-            android:src="@drawable/ic_go3x"
-            android:layout_height="18dp" />
+            android:src="@drawable/xianyou"
+            android:layout_height="16dp" />
         
         <TextView
             android:textSize="@dimen/sp_16"

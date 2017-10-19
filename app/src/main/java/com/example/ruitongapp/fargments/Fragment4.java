@@ -26,7 +26,6 @@ import com.example.ruitongapp.dialogs.TiJIaoDialog;
 import com.example.ruitongapp.gonggaobean.GongGaoBean;
 import com.example.ruitongapp.interfaces.ClickIntface;
 import com.example.ruitongapp.ui.FaBuGongGaoActivity;
-import com.example.ruitongapp.ui.XiuGaiYuanGongActivity;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.view.WrapContentLinearLayoutManager;
 import com.github.jdsjlzx.ItemDecoration.DividerDecoration;
@@ -39,7 +38,6 @@ import com.github.jdsjlzx.recyclerview.ProgressStyle;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.sdsmdg.tastytoast.TastyToast;
-import org.parceler.Parcels;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -185,7 +183,7 @@ public class Fragment4 extends Fragment implements ClickIntface {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
+        getActivity().unregisterReceiver(netChangReceiver);
         unbinder.unbind();
     }
 

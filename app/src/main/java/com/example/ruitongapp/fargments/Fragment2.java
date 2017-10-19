@@ -299,10 +299,10 @@ public class Fragment2 extends Fragment {
     }
 
     private void setColoer(){
-        t1.setTextColor(Color.parseColor("#878686"));
-        t2.setTextColor(Color.parseColor("#878686"));
-        t3.setTextColor(Color.parseColor("#878686"));
-        t4.setTextColor(Color.parseColor("#878686"));
+        t1.setTextColor(Color.parseColor("#a7a6a6"));
+        t2.setTextColor(Color.parseColor("#a7a6a6"));
+        t3.setTextColor(Color.parseColor("#a7a6a6"));
+        t4.setTextColor(Color.parseColor("#a7a6a6"));
     }
 
     private void link_liebiao(String name, int pageNum, int audit, boolean chaxun) {

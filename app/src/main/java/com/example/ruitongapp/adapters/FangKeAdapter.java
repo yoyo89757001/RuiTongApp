@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.ruitongapp.R;
-import com.example.ruitongapp.beans.YuanGongBean;
 import com.example.ruitongapp.fangkebean.FangKeBean;
 import com.example.ruitongapp.interfaces.ClickIntface;
 import com.example.ruitongapp.utils.DateUtils;

@@ -443,7 +443,7 @@
                     <ImageView
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:src="@drawable/ic_go3x"
+                        android:src="@drawable/xianyou"
                         android:layout_marginRight="16dp"
                         android:id="@+id/ee65"
                         android:layout_marginEnd="16dp"
@@ -486,7 +486,7 @@
                     <ImageView
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:src="@drawable/ic_go3x"
+                        android:src="@drawable/xianyou"
                         android:layout_marginRight="16dp"
                         android:id="@+id/ee63"
                         android:layout_marginEnd="16dp"
@@ -586,7 +586,7 @@
                     <ImageView
                         android:layout_alignParentRight="true"
                         android:layout_alignParentEnd="true"
-                        android:src="@drawable/ic_go3x"
+                        android:src="@drawable/xianyou"
                         android:id="@+id/ee4"
                         android:layout_marginRight="16dp"
                         android:layout_marginEnd="16dp"
