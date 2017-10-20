@@ -16,9 +16,8 @@
         android:id="@+id/qiehuan"
         android:textSize="12sp"
         android:textColor="@color/write"
-        android:layout_alignParentRight="true"
+        android:layout_marginLeft="20dp"
         android:layout_marginTop="30dp"
-        android:layout_marginRight="20dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         android:paddingLeft="8dp"
@@ -53,5 +52,52 @@
         android:layout_marginRight="50dp"
         android:layout_width="match_parent"
         android:layout_height="44dp" />
+
+    <ImageView
+        android:scaleType="fitXY"
+        android:id="@+id/yulan"
+        android:visibility="gone"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="30dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_width="100dp"
+        android:layout_height="120dp" />
+
+    <RelativeLayout
+        android:id="@+id/jiazai_rl"
+        android:visibility="gone"
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="240dp">
+
+        <ProgressBar
+            android:layout_width="60dp"
+            android:padding="10dp"
+            android:layout_centerInParent="true"
+            android:layout_height="60dp"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:id="@+id/progressBar" />
+
+        <TextView
+            android:textColor="@color/write"
+            android:layout_marginTop="10dp"
+            android:background="@color/lanse"
+            android:text="分析图片中,请稍后..."
+            android:textSize="16sp"
+            android:gravity="center"
+            android:id="@+id/a1"
+            android:paddingLeft="@dimen/dp_6"
+            android:paddingRight="@dimen/dp_6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/progressBar"
+            android:layout_centerHorizontal="true" />
+
+
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

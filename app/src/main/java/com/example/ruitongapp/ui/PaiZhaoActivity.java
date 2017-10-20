@@ -4,23 +4,40 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
+import com.example.ruitongapp.beans.BaoCunBean;
+import com.example.ruitongapp.beans.BaoCunBeanDao;
+import com.example.ruitongapp.beans.ShouFangBean;
+import com.example.ruitongapp.dialogs.TiJIaoDialog;
 import com.example.ruitongapp.utils.FileUtil;
+import com.example.ruitongapp.utils.GsonUtil;
+import com.example.ruitongapp.utils.Utils;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.sdsmdg.tastytoast.TastyToast;
 import com.tzutalin.dlib.FaceDet;
 import com.tzutalin.dlib.VisionDetRet;
@@ -29,10 +46,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class PaiZhaoActivity extends Activity implements SurfaceHolder.Callback {
 
@@ -54,12 +80,24 @@ public class PaiZhaoActivity extends Activity implements SurfaceHolder.Callback 
     private static int count = 1;
     private int cameraID=0;
     private String paths=null;
+    private TiJIaoDialog tiJIaoDialog=null;
+    private ImageView yulan;
+    private RelativeLayout jiazai_rl;
+    private BaoCunBeanDao baoCunBeanDao=null;
+    private BaoCunBean baoCunBean=null;
+    private String ss;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pai_zhao);
+        baoCunBeanDao=MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
+        if (baoCunBeanDao!=null){
+            baoCunBean=baoCunBeanDao.load(123456L);
+        }
+        jiazai_rl= (RelativeLayout) findViewById(R.id.jiazai_rl);
+        yulan= (ImageView) findViewById(R.id.yulan);
         ButterKnife.bind(this);
         mFaceDet = MyApplication.mFaceDet;
 
@@ -136,20 +174,20 @@ public class PaiZhaoActivity extends Activity implements SurfaceHolder.Callback 
 
         mCamera.setPreviewCallback(new Camera.PreviewCallback() {
             @Override
-            public void onPreviewFrame(byte[] data, Camera camera) {
-
-                Camera.Size size = camera.getParameters().getPreviewSize();
-                try {
-                    YuvImage image = new YuvImage(data, ImageFormat.NV21, size.width, size.height, null);
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    image.compressToJpeg(new Rect(0, 0, size.width, size.height), 100, stream);
-
-
-                    while (isTrue4) {
-                        isTrue4 = false;
+            public void onPreviewFrame(byte[] data, final Camera camera) {
+                while (isTrue4) {
+                    isTrue4 = false;
+                    try {
+                        Camera.Size size = camera.getParameters().getPreviewSize();
+                        YuvImage image = new YuvImage(data, ImageFormat.NV21, size.width, size.height, null);
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        image.compressToJpeg(new Rect(0, 0, size.width, size.height), 100, stream);
 
                         bmp2 = BitmapFactory.decodeByteArray(stream.toByteArray(), 0, stream.size());
-                        Matrix matrix = new Matrix();
+
+                        camera.stopPreview();
+
+                        final Matrix matrix = new Matrix();
                         if (cameraId == 1) {
                             matrix.postRotate(270);
                         } else {
@@ -157,26 +195,28 @@ public class PaiZhaoActivity extends Activity implements SurfaceHolder.Callback 
                         }
 
                         bmp2 = Bitmap.createBitmap(bmp2, 0, 0, bmp2.getWidth(), bmp2.getHeight(), matrix, true);
+                        jiazai_rl.setVisibility(View.VISIBLE);
+                        yulan.setVisibility(View.VISIBLE);
+                        yulan.setImageBitmap(bmp2);
+                        paizhao.setEnabled(false);
 
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
 
                         List<VisionDetRet> results = mFaceDet.detect(bmp2);
+
 
                         if (results != null) {
 
                             int s = results.size();
                             VisionDetRet face;
                             if (s > 0) {
-                                mCamera.stopPreview();
                                 if (s > count - 1) {
-
                                     face = results.get(count - 1);
-
                                 } else {
-
                                     face = results.get(0);
-
                                 }
-
                                 int xx = 0;
                                 int yy = 0;
                                 int xx2 = 0;
@@ -212,23 +252,31 @@ public class PaiZhaoActivity extends Activity implements SurfaceHolder.Callback 
 
                             } else {
                                 isTrue4 = false;
-
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-
-                                        TastyToast.makeText(PaiZhaoActivity.this, "没有检查到人脸,请重新拍摄", TastyToast.LENGTH_LONG, TastyToast.ERROR).show();
+                                        paizhao.setEnabled(true);
+                                        Utils.showToast(PaiZhaoActivity.this, "没有检查到人脸,请重新拍摄", 3);
+                                        if (!PaiZhaoActivity.this.isFinishing() && camera!=null)
+                                        camera.startPreview();
+                                      jiazai_rl.setVisibility(View.GONE);
                                     }
                                 });
+
+
                             }
 
                         }
-                    }
+                            }
+
+
+                        }).start();
+
                     stream.close();
 
-
-                } catch (Exception ex) {
+                } catch(Exception ex){
                     Log.e("Sys", "Error:" + ex.getMessage());
+                }
                 }
             }
         });
@@ -253,8 +301,14 @@ public class PaiZhaoActivity extends Activity implements SurfaceHolder.Callback 
             bm.compress(Bitmap.CompressFormat.JPEG, quality, bos);
             bos.flush();
             bos.close();
-            paizhao.setVisibility(View.GONE);
-            baocun.setVisibility(View.VISIBLE);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    paizhao.setVisibility(View.GONE);
+                    baocun.setVisibility(View.VISIBLE);
+                    jiazai_rl.setVisibility(View.GONE);
+                }
+            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -436,5 +490,134 @@ public class PaiZhaoActivity extends Activity implements SurfaceHolder.Callback 
 
                 break;
         }
+    }
+
+    private void link_zhiliang(final String path) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (tiJIaoDialog==null && !PaiZhaoActivity.this.isFinishing()){
+                    tiJIaoDialog=new TiJIaoDialog(PaiZhaoActivity.this);
+                    tiJIaoDialog.show();
+                }
+            }
+        });
+
+
+        //final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        //http://192.168.2.4:8080/sign?cmd=getUnSignList&subjectId=jfgsdf
+        OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
+
+        if (null!=baoCunBean.getSid()) {
+
+
+            //    /* form的分割线,自己定义 */
+            //        String boundary = "xx--------------------------------------------------------------xx";
+            RequestBody body = new FormBody.Builder()
+                    .add("scanPhoto", path)
+                    .add("accountId", baoCunBean.getSid())
+                    .build();
+
+
+            Request.Builder requestBuilder = new Request.Builder()
+                    // .header("Content-Type", "application/json")
+                    .post(body)
+                    .url(baoCunBean.getDizhi() + "/faceQuality.do");
+
+            // step 3：创建 Call 对象
+            Call call = okHttpClient.newCall(requestBuilder.build());
+
+            //step 4: 开始异步请求
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("AllConnects", "请求识别失败" + e.getMessage());
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tiJIaoDialog != null && !PaiZhaoActivity.this.isFinishing() && tiJIaoDialog.isShowing()) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (tiJIaoDialog != null) {
+                                tiJIaoDialog.dismiss();
+                                tiJIaoDialog = null;
+                            }
+                        }
+                    });
+                    Log.d("AllConnects", "请求识别成功" + call.request().toString());
+                    //获得返回体
+                    try {
+
+                        ResponseBody body = response.body();
+                        ss = body.string().trim();
+                        Log.d("DengJiActivity", ss);
+
+                        JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                        Gson gson = new Gson();
+                        ShouFangBean zhaoPianBean = gson.fromJson(jsonObject, ShouFangBean.class);
+
+                        if (zhaoPianBean.getDtoResult() != 0) {
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if (!PaiZhaoActivity.this.isFinishing()) {
+                                        Toast tastyToast = TastyToast.makeText(PaiZhaoActivity.this, "照片质量不符合入库要求,请拍正面照!", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                        tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                        tastyToast.show();
+                                    }
+
+
+                                }
+                            });
+
+                        } else {
+
+                        }
+
+                    } catch (Exception e) {
+
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (tiJIaoDialog != null && !PaiZhaoActivity.this.isFinishing()) {
+                                    tiJIaoDialog.dismiss();
+                                    tiJIaoDialog = null;
+                                }
+                            }
+                        });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                Toast tastyToast = TastyToast.makeText(PaiZhaoActivity.this, "提交失败,请检查网络", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                tastyToast.show();
+
+                            }
+                        });
+                        Log.d("WebsocketPushMsg", e.getMessage());
+                    }
+                }
+            });
+        }else {
+            Toast tastyToast = TastyToast.makeText(PaiZhaoActivity.this, "账户ID为空!,请设置帐户ID", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            tastyToast.setGravity(Gravity.CENTER, 0, 0);
+            tastyToast.show();
+        }
+
+
     }
 }
