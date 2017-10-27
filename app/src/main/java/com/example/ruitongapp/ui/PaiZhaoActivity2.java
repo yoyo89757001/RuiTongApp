@@ -113,7 +113,7 @@ public class PaiZhaoActivity2 extends Activity implements SurfaceHolder.Callback
     }
 
 
-    private Void OpenCameraAndSetSurfaceviewSize(final int cameraId) {
+    private void OpenCameraAndSetSurfaceviewSize(final int cameraId) {
 
         sh = surfaceView.getHolder();
         sh.addCallback(this);
@@ -173,7 +173,6 @@ public class PaiZhaoActivity2 extends Activity implements SurfaceHolder.Callback
             }
         });
 
-        return null;
     }
 
     public void saveBitmap2File2(Bitmap bm, final String path, int quality) {
