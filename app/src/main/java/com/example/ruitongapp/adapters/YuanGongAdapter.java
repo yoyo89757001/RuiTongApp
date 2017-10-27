@@ -25,6 +25,7 @@ import java.util.Map;
  * Created by Administrator on 2017/10/3.
  */
 
+
 public class YuanGongAdapter extends RecyclerView.Adapter<YuanGongAdapter.ViewHolder> {
     private List<YuanGongBean.ObjectsBean> datas;
     private ClickIntface clickIntface;

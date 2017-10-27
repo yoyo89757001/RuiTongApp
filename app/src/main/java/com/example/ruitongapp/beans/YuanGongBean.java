@@ -7,6 +7,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2017/10/10.
  */
+
 @Parcel
 public class YuanGongBean {
 

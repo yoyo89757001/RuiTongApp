@@ -6,6 +6,7 @@ package com.example.ruitongapp.beans;
 
 public class EmployeesInfoBean {
 
+
     /**
      * avatar : 20170531/1496211779601.jpg
      * createTime : 1496200897000

@@ -7,6 +7,7 @@ package com.example.ruitongapp.beans;
 public class DengLuFanHuiBean {
 
 
+
     /**
      * createTime : 1507969914670
      * dtoDesc : 登录成功

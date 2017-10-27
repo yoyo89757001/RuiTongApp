@@ -21,6 +21,7 @@ import java.util.List;
  * Created by Administrator on 2017/10/3.
  */
 
+
 public class GongGaoAdapter extends RecyclerView.Adapter<GongGaoAdapter.ViewHolder> {
     private List<GongGaoBean.ObjectsBean> datas;
     private ClickIntface clickIntface;

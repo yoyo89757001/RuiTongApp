@@ -13,6 +13,7 @@ import org.greenrobot.greendao.database.DatabaseStatement;
 /** 
  * DAO for table "FU_WU_QI_BEAN".
 */
+
 public class FuWuQiBeanDao extends AbstractDao<FuWuQiBean, Long> {
 
     public static final String TABLENAME = "FU_WU_QI_BEAN";

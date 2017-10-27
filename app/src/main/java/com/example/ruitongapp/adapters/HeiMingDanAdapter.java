@@ -25,6 +25,7 @@ import java.util.Map;
  * Created by Administrator on 2017/10/3.
  */
 
+
 public class HeiMingDanAdapter extends RecyclerView.Adapter<HeiMingDanAdapter.ViewHolder> {
     private List<HeiMingDanBean.ObjectsBean> datas;
     private ClickIntface clickIntface;

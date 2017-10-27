@@ -4,6 +4,7 @@ package com.example.ruitongapp.beans;
  * Created by Administrator on 2017/7/31.
  */
 
+
 public class ShouFangBean {
 
     /**

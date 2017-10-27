@@ -16,6 +16,7 @@ import org.greenrobot.greendao.identityscope.IdentityScopeType;
 /**
  * Master of DAO (schema version 1): knows all DAOs.
  */
+
 public class DaoMaster extends AbstractDaoMaster {
     public static final int SCHEMA_VERSION = 1;
 

@@ -16,6 +16,7 @@ import java.util.List;
  * Created by Administrator on 2017/10/9.
  */
 
+
 public class FuWuQiAdapter extends BaseAdapter {
 
     private LayoutInflater mInflater;//得到一个LayoutInfalter对象用来导入布局

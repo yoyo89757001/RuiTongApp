@@ -8,6 +8,7 @@ import org.greenrobot.greendao.annotation.Generated;
 /**
  * Created by Administrator on 2017/10/13.
  */
+
 @Entity
 public class BaoCunBean {
     @Id

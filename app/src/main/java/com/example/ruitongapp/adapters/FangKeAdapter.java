@@ -26,6 +26,7 @@ import java.util.Map;
  * Created by Administrator on 2017/10/3.
  */
 
+
 public class FangKeAdapter extends RecyclerView.Adapter<FangKeAdapter.ViewHolder> {
     private List<FangKeBean.ObjectsBean> datas;
     private ClickIntface clickIntface;

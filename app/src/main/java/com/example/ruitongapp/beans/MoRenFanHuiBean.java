@@ -4,6 +4,7 @@ package com.example.ruitongapp.beans;
  * Created by Administrator on 2017/10/14.
  */
 
+
 public class MoRenFanHuiBean {
 
     /**

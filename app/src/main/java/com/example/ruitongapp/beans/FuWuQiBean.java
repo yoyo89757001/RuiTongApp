@@ -9,6 +9,7 @@ import org.greenrobot.greendao.annotation.Generated;
  * Created by Administrator on 2017/10/9.
  */
 
+
 @Entity
 public class FuWuQiBean {
     @Id
