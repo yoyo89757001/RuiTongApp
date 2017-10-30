@@ -95,8 +95,6 @@
             android:layout_below="@+id/progressBar"
             android:layout_centerHorizontal="true" />
 
-
-
     </RelativeLayout>
 
 
