@@ -36,7 +36,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:padding="16dp"
-            android:layout_marginRight="12dp"
             android:src="@drawable/tj"
             android:layout_height="match_parent" />
 

@@ -89,6 +89,7 @@ public class Fragment2 extends Fragment {
     private LRecyclerView lRecyclerView;
     private LRecyclerViewAdapter lRecyclerViewAdapter;
     private List<FangKeBean.ObjectsBean> dataList;
+    private ImageView i1,i2,i3,i4;
     private FangKeAdapter taiZhangAdapter;
     private BaoCunBeanDao baoCunBeanDao = null;
     private BaoCunBean baoCunBean = null;
@@ -106,7 +107,10 @@ public class Fragment2 extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_fragment2, container, false);
-
+        i1= (ImageView) view.findViewById(R.id.i1);
+        i2= (ImageView) view.findViewById(R.id.i2);
+        i3= (ImageView) view.findViewById(R.id.i3);
+        i4= (ImageView) view.findViewById(R.id.i4);
         try {
 
             baoCunBeanDao = MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
@@ -262,6 +266,7 @@ public class Fragment2 extends Fragment {
             case R.id.l1:
                 setColoer();
                 t1.setTextColor(Color.parseColor("#111111"));
+                i1.setImageResource(R.drawable.xia2);
                 dangQianYe = 1;
                 qingQiuYe = 1;
                 shenhe=0;
@@ -270,6 +275,7 @@ public class Fragment2 extends Fragment {
                 break;
             case R.id.l2:
                 setColoer();
+                i2.setImageResource(R.drawable.xia2);
                 t2.setTextColor(Color.parseColor("#111111"));
                 dangQianYe = 1;
                 qingQiuYe = 1;
@@ -279,6 +285,7 @@ public class Fragment2 extends Fragment {
                 break;
             case R.id.l3:
                 setColoer();
+                i3.setImageResource(R.drawable.xia2);
                 t3.setTextColor(Color.parseColor("#111111"));
                 dangQianYe = 1;
                 qingQiuYe = 1;
@@ -288,6 +295,7 @@ public class Fragment2 extends Fragment {
                 break;
             case R.id.l4:
                 setColoer();
+                i4.setImageResource(R.drawable.xia2);
                 t4.setTextColor(Color.parseColor("#111111"));
                 dangQianYe = 1;
                 qingQiuYe = 1;
@@ -303,6 +311,10 @@ public class Fragment2 extends Fragment {
         t2.setTextColor(Color.parseColor("#a7a6a6"));
         t3.setTextColor(Color.parseColor("#a7a6a6"));
         t4.setTextColor(Color.parseColor("#a7a6a6"));
+        i1.setImageResource(R.drawable.xia);
+        i2.setImageResource(R.drawable.xia);
+        i3.setImageResource(R.drawable.xia);
+        i4.setImageResource(R.drawable.xia);
     }
 
     private void link_liebiao(String name, int pageNum, int audit, boolean chaxun) {

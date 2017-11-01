@@ -23,7 +23,6 @@ import com.example.ruitongapp.beans.FuWuQiBeanDao;
  * 
  * @see org.greenrobot.greendao.AbstractDaoSession
  */
-
 public class DaoSession extends AbstractDaoSession {
 
     private final DaoConfig baoCunBeanDaoConfig;

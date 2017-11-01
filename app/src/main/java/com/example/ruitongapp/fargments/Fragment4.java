@@ -192,8 +192,8 @@ public class Fragment4 extends Fragment implements ClickIntface {
         switch (view.getId()) {
             case R.id.fabu:
                 if (isShanChu){
-                    fabu.setText("发 布");
-                    bianji.setText("编 辑");
+                    fabu.setText("发布");
+                    bianji.setText("编辑");
                     isShanChu=false;
                     int size=dataList.size();
                     if (size!=0){
@@ -204,7 +204,7 @@ public class Fragment4 extends Fragment implements ClickIntface {
                     }
 
                 }else {
-                    fabu.setText("发 布");
+                    fabu.setText("发布");
                     isShanChu=false;
                     int size=dataList.size();
                     if (size!=0){
@@ -220,9 +220,9 @@ public class Fragment4 extends Fragment implements ClickIntface {
 
                 break;
             case R.id.bianji:
-                if (bianji.getText().equals("编 辑")){
-                    bianji.setText("删 除");
-                    fabu.setText("取 消");
+                if (bianji.getText().equals("编辑")){
+                    bianji.setText("删除");
+                    fabu.setText("取消");
                     isShanChu=true;
 
                     int size=dataList.size();
@@ -235,8 +235,8 @@ public class Fragment4 extends Fragment implements ClickIntface {
 
                 }else {
                     //删除
-                    bianji.setText("编 辑");
-                    fabu.setText("发 布");
+                    bianji.setText("编辑");
+                    fabu.setText("发布");
                     isShanChu=false;
                     int size=dataList.size();
                     if (size>0){

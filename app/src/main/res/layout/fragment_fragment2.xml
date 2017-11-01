@@ -35,7 +35,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:padding="16dp"
-        android:layout_marginRight="12dp"
         android:src="@drawable/tj"
         android:layout_height="match_parent" />
 
@@ -53,7 +52,7 @@
             android:orientation="horizontal"
             android:layout_below="@+id/rq"
             android:id="@+id/ffhh"
-            android:paddingRight="80dp"
+            android:paddingRight="70dp"
             android:paddingLeft="16dp"
             android:background="@color/write"
             android:layout_width="match_parent"
@@ -77,6 +76,7 @@
                     android:layout_height="wrap_content" />
                 <ImageView
                     android:layout_width="14dp"
+                    android:id="@+id/i1"
                     android:src="@drawable/xia"
                     android:layout_height="14dp" />
 
@@ -103,6 +103,7 @@
                 <ImageView
                     android:layout_width="14dp"
                     android:layout_height="14dp"
+                    android:id="@+id/i2"
                     android:src="@drawable/xia" />
 
 
@@ -126,6 +127,7 @@
                     android:layout_height="wrap_content" />
                 <ImageView
                     android:layout_width="14dp"
+                    android:id="@+id/i3"
                     android:src="@drawable/xia"
                     android:layout_height="14dp" />
 
@@ -148,7 +150,8 @@
                     android:layout_height="wrap_content" />
                 <ImageView
                     android:layout_width="14dp"
-                    android:src="@drawable/xia"
+                    android:src="@drawable/xia2"
+                    android:id="@+id/i4"
                     android:layout_height="14dp" />
 
             </LinearLayout>
