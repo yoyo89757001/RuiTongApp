@@ -192,7 +192,6 @@ public class XiuGaiFangKeActivity extends Activity {
             touxiangPath = benDiYuanGong.getAvatar();
         }
 
-
     }
 
 
@@ -286,8 +285,6 @@ public class XiuGaiFangKeActivity extends Activity {
     }
 
 
-
-
     private class NetChangReceiver extends BroadcastReceiver {
 
         //重写onReceive方法，该方法的实体为，接收到广播后的执行代码；
@@ -320,7 +317,6 @@ public class XiuGaiFangKeActivity extends Activity {
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(intent, ALBUM_REQUEST_CODE);
         }
-
 
     }
 

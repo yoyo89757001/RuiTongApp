@@ -257,7 +257,7 @@ public class PaiZhaoActivity extends Activity implements SurfaceHolder.Callback 
                                     public void run() {
                                         paizhao.setEnabled(true);
                                         Utils.showToast(PaiZhaoActivity.this, "没有检查到人脸,请重新拍摄", 3);
-                                        if (!PaiZhaoActivity.this.isFinishing() && camera!=null)
+                                        if (!PaiZhaoActivity.this.isFinishing())
                                         camera.startPreview();
                                       jiazai_rl.setVisibility(View.GONE);
                                     }

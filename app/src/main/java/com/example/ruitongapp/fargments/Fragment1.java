@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
@@ -25,7 +24,6 @@ import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
 import com.example.ruitongapp.beans.MoRenFanHuiBean;
 import com.example.ruitongapp.beans.YuanGongBean;
-import com.example.ruitongapp.dialogs.TiJIaoDialog;
 import com.example.ruitongapp.ui.SouSuoActivity;
 import com.example.ruitongapp.ui.XiuGaiYuanGongActivity;
 import com.example.ruitongapp.utils.GsonUtil;
@@ -78,7 +76,7 @@ public class Fragment1 extends Fragment {
     private LRecyclerViewAdapter lRecyclerViewAdapter;
     private List<YuanGongBean.ObjectsBean> dataList;
     private YuanGongAdapter taiZhangAdapter;
-    private TiJIaoDialog jiaZaiDialog=null;
+  //  private TiJIaoDialog jiaZaiDialog=null;
     private Call call=null;
     private BaoCunBeanDao baoCunBeanDao=null;
     private BaoCunBean baoCunBean=null;
@@ -92,13 +90,10 @@ public class Fragment1 extends Fragment {
     private int piotions=-1;
 
 
-
-
     public Fragment1() {
         dataList = new ArrayList<>();
 
     }
-
 
 
     @Override
@@ -167,7 +162,7 @@ public class Fragment1 extends Fragment {
             @Override
             public void onRefresh() {
                 //下拉刷新
-                Log.d("Fragment144444", "下拉刷新");
+             //   Log.d("Fragment144444", "下拉刷新");
                 dangQianYe=1;
                 qingQiuYe=1;
                 link_liebiao("",qingQiuYe);
