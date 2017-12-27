@@ -135,15 +135,15 @@ public class QiDongActivity extends Activity {
                       //  finish();
                         Log.d("LogingActivity", "关闭");
                     }else {
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//
-//                                Toast tastyToast= TastyToast.makeText(LogingActivity.this,zhaoPianBean.getDtoDesc(),TastyToast.LENGTH_LONG,TastyToast.ERROR);
-//                                tastyToast.setGravity(Gravity.CENTER,0,0);
-//                                tastyToast.show();
-//                            }
-//                        });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                Toast tastyToast= TastyToast.makeText(QiDongActivity.this,zhaoPianBean.getDtoDesc(),TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                                tastyToast.setGravity(Gravity.CENTER,0,0);
+                                tastyToast.show();
+                            }
+                        });
                     }
 
 

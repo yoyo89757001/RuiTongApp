@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.FaceDetector;
 import android.net.Uri;
 import android.os.Build;
@@ -21,11 +22,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,9 +40,11 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
+import com.example.ruitongapp.adapters.PopupWindowAdapter;
 import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
 import com.example.ruitongapp.beans.BenDiYuanGong;
+import com.example.ruitongapp.beans.BuMenBeans;
 import com.example.ruitongapp.beans.FuWuQiBean;
 import com.example.ruitongapp.beans.FuWuQiBeanDao;
 import com.example.ruitongapp.beans.MoRenFanHuiBean;
@@ -48,6 +55,7 @@ import com.example.ruitongapp.dialogs.PaiZhaoDialog2;
 import com.example.ruitongapp.dialogs.QueRenDialog;
 import com.example.ruitongapp.dialogs.TiJIaoDialog;
 import com.example.ruitongapp.dialogs.UpdataTouXiangDialog;
+import com.example.ruitongapp.utils.FileUtil;
 import com.example.ruitongapp.utils.GlideCircleTransform;
 import com.example.ruitongapp.utils.GsonUtil;
 import com.example.ruitongapp.view.DividerItemDecoration;
@@ -76,6 +84,8 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import top.zibin.luban.Luban;
+import top.zibin.luban.OnCompressListener;
 
 
 public class XiuGaiYuanGongActivity extends Activity {
@@ -94,7 +104,7 @@ public class XiuGaiYuanGongActivity extends Activity {
     @BindView(R.id.gonghao)
     EditText gonghao;
     @BindView(R.id.bumen)
-    EditText bumen;
+    TextView bumen;
     @BindView(R.id.zhiwei)
     EditText zhiwei;
     @BindView(R.id.youxiang)
@@ -147,10 +157,14 @@ public class XiuGaiYuanGongActivity extends Activity {
     private String shibiePaths="";
     private BaoCunBeanDao baoCunBeanDao=null;
     private BaoCunBean baoCunBean=null;
-    private boolean isTiJiao=false;
+  //  private boolean isTiJiao=false;
     private String ss;
     private YuanGongBean.ObjectsBean benDiYuanGong=null;
-
+    private PopupWindow popupWindow=null;
+    private RelativeLayout r3;
+    private List<String> stringList=new ArrayList<>();
+    private int p1=-1;
+    private PopupWindowAdapter adapterss;
 
 
     Handler handler = new Handler(new Handler.Callback() {
@@ -181,6 +195,7 @@ public class XiuGaiYuanGongActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_xiu_gai_yuan_gong);
         ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
@@ -194,6 +209,37 @@ public class XiuGaiYuanGongActivity extends Activity {
         if (baoCunBeanDao!=null){
             baoCunBean=baoCunBeanDao.load(123456L);
         }
+        link_bumen();
+        stringList.add("省公司领导");
+        stringList.add("市公司领导");
+        stringList.add("特邀嘉宾");
+        stringList.add("技术部");
+        r3= (RelativeLayout) findViewById(R.id.r3);
+        r3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View contentView = LayoutInflater.from(XiuGaiYuanGongActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                popupWindow=new PopupWindow(contentView,400, 560);
+                ListView listView= (ListView) contentView.findViewById(R.id.dddddd);
+                adapterss=new PopupWindowAdapter(XiuGaiYuanGongActivity.this,stringList);
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        p1=position;
+                        bumen.setText(stringList.get(position));
+                        popupWindow.dismiss();
+                    }
+                });
+                listView.setAdapter(adapterss);
+
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(r3,bumen.getRight(),0);
+            }
+        });
+
 
         fuWuQiBeanDao = MyApplication.myAppLaction.getDaoSession().getFuWuQiBeanDao();
         if (fuWuQiBeanDao != null) {
@@ -304,7 +350,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                             if (indx != -1) {
                                 str = str.substring(0, indx) + str.substring(indx + 1, str.length());
                             }
-                            Log.d("UserInfoActivity", str + "删除得得得");
+                          //  Log.d("UserInfoActivity", str + "删除得得得");
                             shibiePaths=str;
                             String s[] =shibiePaths.split(",");
                             int sss=s.length;
@@ -478,7 +524,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                 break;
             case R.id.righttv:
                 //保存
-                if (!name.getText().toString().trim().equals("") && !shibiePaths.equals("")){
+                if (!name.getText().toString().trim().equals("") && !shibiePaths.equals("") && p1!=-1){
                     link_gengxinTuPian();
                 }else {
                     TastyToast.makeText(getApplicationContext(),
@@ -637,123 +683,167 @@ public class XiuGaiYuanGongActivity extends Activity {
             }
         });
 
-        OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
-        RequestBody fileBody1 = null;
-        String file1Name = null;
-         /* 第一个要上传的file */
-        if (cameraPath != null) {
-            File file1 = new File(cameraPath);
-            fileBody1 = RequestBody.create(MediaType.parse("application/octet-stream"), file1);
-            //  file1Name = System.currentTimeMillis()+"testFile1.jpg";
-            file1Name = System.currentTimeMillis() + "testFile1.jpg";
+        if (cameraPath!=null) {
+            try {
+
+                Luban.with(this)
+                        .load(cameraPath)   // 传人要压缩的图片列表
+                        .ignoreBy(100)   // 忽略不压缩图片的大小
+                        .setTargetDir(FileUtil.SDPATH + File.separator + FileUtil.PATH + File.separator)  // 设置压缩后文件存储位置
+                        .setCompressListener(new OnCompressListener() { //设置回调
+                            @Override
+                            public void onStart() {
+                                Log.d("BaoZhangDengJiActivity", "开始压缩");
+                            }
+
+                            @Override
+                            public void onSuccess(File file) {
+
+                                OkHttpClient okHttpClient = MyApplication.getOkHttpClient();
+                                RequestBody fileBody1 = null;
+                                String file1Name = null;
+                              /* 第一个要上传的file */
+
+                                    fileBody1 = RequestBody.create(MediaType.parse("application/octet-stream"), file);
+                                    //  file1Name = System.currentTimeMillis()+"testFile1.jpg";
+                                    file1Name = System.currentTimeMillis() + "testFile1.jpg";
+
+
+                            //    /* 第二个要上传的文件,这里偷懒了,和file1用的一个图片 */
+                            //        File file2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/a.jpg");
+                            //        RequestBody fileBody2 = RequestBody.create(MediaType.parse("application/octet-stream") , file2);
+                            //        String file2Name = "testFile2.txt";
+
+
+                            //    /* form的分割线,自己定义 */
+                    //        String boundary = "xx--------------------------------------------------------------xx";
+
+                                MultipartBody mBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
+            /* 底下是上传了两个文件 */
+                                        .addFormDataPart("voiceFile", file1Name, fileBody1)
+                  /* 上传一个普通的String参数 */
+                                        //  .addFormDataPart("subject_id" , subject_id+"")
+//                .addFormDataPart("file" , file2Name , fileBody2)
+                                        .build();
+                                Request.Builder requestBuilder = new Request.Builder()
+                                        //  .header("Content-Type", "application/json")
+                                        .post(mBody)
+                                        .url(fuWuQiBean.getDizhi() + "/AppFileUploadServlet?FilePathPath=compareFilePath&AllowFileType=.jpg,.gif,.jpeg,.bmp,.png&MaxFileSize=10");
+                                //    .url(HOST+"/mobile-admin/subjects");
+
+                                // step 3：创建 Call 对象
+                                Call call = okHttpClient.newCall(requestBuilder.build());
+                                //step 4: 开始异步请求
+                                call.enqueue(new Callback() {
+                                    @Override
+                                    public void onFailure(Call call, IOException e) {
+                                        Log.d("AllConnects", "照片上传失败" + e.getMessage());
+                                        cameraPath = null;
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+
+                                                if (dialog != null) {
+                                                    dialog.dismiss();
+                                                    dialog = null;
+                                                }
+                                                if (dialog2 != null) {
+                                                    dialog2.dismiss();
+                                                    dialog2 = null;
+                                                }
+
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onResponse(Call call, Response response) throws IOException { //识别照片
+                                        Log.d("AllConnects", "照片上传成功" + call.request().toString());
+                                        runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+
+                                                if (dialog != null) {
+                                                    dialog.dismiss();
+                                                    dialog = null;
+                                                }
+                                                if (dialog2 != null) {
+                                                    dialog2.dismiss();
+                                                    dialog2 = null;
+                                                }
+
+                                            }
+                                        });
+                                        try {
+
+                                            cameraPath = null;
+                                            //获得返回体
+                                            ResponseBody body = response.body();
+                                            String ss=body.string();
+                                            Log.d("AllConnects", "aa   "+ss);
+                                            JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                                            // Gson gson=new Gson();
+                                            int code = jsonObject.get("exId").getAsInt();
+                                            if (code == 0) {
+                                                String array = jsonObject.get("exDesc").getAsString();
+                                                link_zhiliang(array);
+
+                                            } else {
+
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+
+                                                        if (dialog != null) {
+                                                            dialog.dismiss();
+                                                            dialog = null;
+                                                        }
+                                                        if (dialog2 != null) {
+                                                            dialog2.dismiss();
+                                                            dialog2 = null;
+                                                        }
+                                                        TastyToast.makeText(getApplicationContext(),
+                                                                "上传失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                                    }
+                                                });
+
+                                            }
+                                        }catch (Exception e){
+                                            Log.d("XiuGaiYuanGongActivity", e.getMessage()+"");
+                                        }
+
+                                    }
+                                });
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+
+                                showMSG("压缩图片出现错误"+e, 4);
+                            }
+                        }).launch();    //启动压缩
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
-//    /* 第二个要上传的文件,这里偷懒了,和file1用的一个图片 */
-//        File file2 = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/a.jpg");
-//        RequestBody fileBody2 = RequestBody.create(MediaType.parse("application/octet-stream") , file2);
-//        String file2Name = "testFile2.txt";
 
+    }
 
-//    /* form的分割线,自己定义 */
-//        String boundary = "xx--------------------------------------------------------------xx";
+    private void showMSG(final String s,final int i){
 
-        MultipartBody mBody = new MultipartBody.Builder().setType(MultipartBody.FORM)
-            /* 底下是上传了两个文件 */
-                .addFormDataPart("voiceFile", file1Name, fileBody1)
-                  /* 上传一个普通的String参数 */
-                //  .addFormDataPart("subject_id" , subject_id+"")
-//                .addFormDataPart("file" , file2Name , fileBody2)
-                .build();
-        Request.Builder requestBuilder = new Request.Builder()
-                //  .header("Content-Type", "application/json")
-                .post(mBody)
-                .url(fuWuQiBean.getDizhi() + "/AppFileUploadServlet?FilePathPath=compareFilePath&AllowFileType=.jpg,.gif,.jpeg,.bmp,.png&MaxFileSize=10");
-        //    .url(HOST+"/mobile-admin/subjects");
-
-        // step 3：创建 Call 对象
-        Call call = okHttpClient.newCall(requestBuilder.build());
-        //step 4: 开始异步请求
-        call.enqueue(new Callback() {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onFailure(Call call, IOException e) {
-                Log.d("AllConnects", "照片上传失败" + e.getMessage());
-                cameraPath = null;
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+            public void run() {
 
-                        if (dialog != null) {
-                            dialog.dismiss();
-                            dialog = null;
-                        }
-                        if (dialog2 != null) {
-                            dialog2.dismiss();
-                            dialog2 = null;
-                        }
-
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException { //识别照片
-                Log.d("AllConnects", "照片上传成功" + call.request().toString());
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        if (dialog != null) {
-                            dialog.dismiss();
-                            dialog = null;
-                        }
-                        if (dialog2 != null) {
-                            dialog2.dismiss();
-                            dialog2 = null;
-                        }
-
-                    }
-                });
-                try {
-
-                cameraPath = null;
-                //获得返回体
-                ResponseBody body = response.body();
-                String ss=body.string();
-                 Log.d("AllConnects", "aa   "+ss);
-                JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
-                // Gson gson=new Gson();
-                int code = jsonObject.get("exId").getAsInt();
-                if (code == 0) {
-                    String array = jsonObject.get("exDesc").getAsString();
-                    link_zhiliang(array);
-
-                } else {
-
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-
-                            if (dialog != null) {
-                                dialog.dismiss();
-                                dialog = null;
-                            }
-                            if (dialog2 != null) {
-                                dialog2.dismiss();
-                                dialog2 = null;
-                            }
-                            TastyToast.makeText(getApplicationContext(),
-                                    "上传失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
-                        }
-                    });
-
-                }
-                }catch (Exception e){
-                    Log.d("XiuGaiYuanGongActivity", e.getMessage()+"");
-                }
+                Toast tastyToast= TastyToast.makeText(XiuGaiYuanGongActivity.this,s,TastyToast.LENGTH_LONG,i);
+                tastyToast.setGravity(Gravity.CENTER,0,0);
+                tastyToast.show();
 
             }
         });
-
     }
 
 
@@ -924,7 +1014,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                     .add("token",baoCunBean.getToken())
                     .add("accountId",baoCunBean.getSid())
                     .build();
-            Log.d("XiuGaiYuanGongActivity", "添加");
+          //  Log.d("XiuGaiYuanGongActivity", "添加");
         }else {
             //修改
              body = new FormBody.Builder()
@@ -946,7 +1036,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                      .add("token",baoCunBean.getToken())
                      .add("accountId",baoCunBean.getSid())
                     .build();
-            Log.d("XiuGaiYuanGongActivity", "修改");
+         //   Log.d("XiuGaiYuanGongActivity", "修改");
         }
 
 
@@ -993,7 +1083,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                     //获得返回体
                     ResponseBody body = response.body();
                      ss=body.string();
-                      Log.d("AllConnects", "aa   "+ss);
+                     // Log.d("AllConnects", "aa   "+ss);
                     JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
 //                Gson gson=new Gson();
                     int code = jsonObject.get("dtoResult").getAsInt();
@@ -1019,16 +1109,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                 } catch (Exception e) {
                     dengLuGuoQi(ss);
                     e.printStackTrace();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            TastyToast.makeText(XiuGaiYuanGongActivity.this, "发生未知错误", Toast.LENGTH_LONG, TastyToast.INFO).show();
-                            if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing() && tiJIaoDialog.isShowing()) {
-                                tiJIaoDialog.dismiss();
-                                tiJIaoDialog = null;
-                            }
-                        }
-                    });
+
                 }
 
             }
@@ -1403,8 +1484,8 @@ public class XiuGaiYuanGongActivity extends Activity {
                                     });
 
                                 }
-                            Log.d("UserInfoActivity", str);
-                            isTiJiao = true;
+                           // Log.d("UserInfoActivity", str);
+                            //isTiJiao = true;
                         }
 
                     } catch (Exception e) {
@@ -1535,11 +1616,19 @@ public class XiuGaiYuanGongActivity extends Activity {
                             });
 
                         } else {
-                            if (!XiuGaiYuanGongActivity.this.isFinishing()) {
-                                Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "删除失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
-                                tastyToast.setGravity(Gravity.CENTER, 0, 0);
-                                tastyToast.show();
-                            }
+
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                    if (!XiuGaiYuanGongActivity.this.isFinishing()) {
+                                        Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "删除失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                                        tastyToast.setGravity(Gravity.CENTER, 0, 0);
+                                        tastyToast.show();
+                                    }
+                                }
+
+                        });
                         }
 
                     } catch (Exception e) {
@@ -1553,16 +1642,87 @@ public class XiuGaiYuanGongActivity extends Activity {
                                 }
                             }
                         });
+
+                        Log.d("WebsocketPushMsg", e.getMessage());
+                    }
+                }
+            });
+        }else {
+            Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "账户ID为空!,请设置帐户ID", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            tastyToast.setGravity(Gravity.CENTER, 0, 0);
+            tastyToast.show();
+        }
+    }
+
+    private void link_bumen() {
+
+        //final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        //http://192.168.2.4:8080/sign?cmd=getUnSignList&subjectId=jfgsdf
+        OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
+
+        if (null!=baoCunBean.getSid()) {
+
+            //    /* form的分割线,自己定义 */
+            //        String boundary = "xx--------------------------------------------------------------xx";
+            RequestBody body = new FormBody.Builder()
+                    .add("status","1")
+                    .add("token",baoCunBean.getToken())
+                    .add("accountId",baoCunBean.getSid())
+                    .build();
+
+            Request.Builder requestBuilder = new Request.Builder()
+                    // .header("Content-Type", "application/json")
+                    .post(body)
+                    .url(baoCunBean.getDizhi() + "/queryAllDept.do");
+
+            // step 3：创建 Call 对象
+            Call call = okHttpClient.newCall(requestBuilder.build());
+
+            //step 4: 开始异步请求
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("AllConnects", "请求识别失败" + e.getMessage());
+
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+
+                    Log.d("AllConnects", "请求识别成功" + call.request().toString());
+                    //获得返回体
+                    try {
+
+                        ResponseBody body = response.body();
+                        ss = body.string().trim();
+                        Log.d("DengJiActivity", ss);
+
+                        JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                        Gson gson = new Gson();
+                        BuMenBeans zhaoPianBean = gson.fromJson(jsonObject, BuMenBeans.class);
+                        int size=zhaoPianBean.getObjects().size();
+                        if (stringList.size()>0){
+                            stringList.clear();
+                        }
+                        for (int i=0;i<size;i++){
+                            stringList.add(zhaoPianBean.getObjects().get(i).getDeptName());
+                        }
+                        Collections.reverse(stringList); // 倒序排列
+
+
+                    } catch (Exception e) {
+                        dengLuGuoQi(ss);
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-
-                                Toast tastyToast = TastyToast.makeText(XiuGaiYuanGongActivity.this, "提交失败,请检查网络", TastyToast.LENGTH_LONG, TastyToast.ERROR);
-                                tastyToast.setGravity(Gravity.CENTER, 0, 0);
-                                tastyToast.show();
-
+                                if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing()) {
+                                    tiJIaoDialog.dismiss();
+                                    tiJIaoDialog = null;
+                                }
                             }
                         });
+
                         Log.d("WebsocketPushMsg", e.getMessage());
                     }
                 }
@@ -1579,22 +1739,28 @@ public class XiuGaiYuanGongActivity extends Activity {
             JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
             Gson gson=new Gson();
             final MoRenFanHuiBean zhaoPianBean=gson.fromJson(jsonObject,MoRenFanHuiBean.class);
-            if (zhaoPianBean.getDtoResult()==-33){
+
                 //登陆过期
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-//                                    if (jiaZaiDialog!=null && jiaZaiDialog.isShowing()){
-//                                        jiaZaiDialog.dismiss();
-//                                    }
-                        Toast tastyToast= TastyToast.makeText(XiuGaiYuanGongActivity.this,"登陆过期,或账号在其它机器登陆,请重新登陆",TastyToast.LENGTH_LONG,TastyToast.ERROR);
+                        Toast tastyToast= TastyToast.makeText(XiuGaiYuanGongActivity.this,zhaoPianBean.getDtoDesc(),TastyToast.LENGTH_LONG,TastyToast.ERROR);
                         tastyToast.setGravity(Gravity.CENTER,0,0);
                         tastyToast.show();
                     }
                 });
-            }
+
         }catch (Exception e1){
-            Log.d("Fragment1", "e1:" + e1);
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    TastyToast.makeText(XiuGaiYuanGongActivity.this, "发生未知错误", Toast.LENGTH_LONG, TastyToast.INFO).show();
+                    if (tiJIaoDialog != null && !XiuGaiYuanGongActivity.this.isFinishing() && tiJIaoDialog.isShowing()) {
+                        tiJIaoDialog.dismiss();
+                        tiJIaoDialog = null;
+                    }
+                }
+            });
         }
     }
 

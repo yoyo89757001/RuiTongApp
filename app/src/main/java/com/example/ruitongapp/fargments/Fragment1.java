@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,12 +14,17 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
+import com.example.ruitongapp.adapters.PopupWindowAdapter;
 import com.example.ruitongapp.adapters.YuanGongAdapter;
 import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
@@ -90,6 +96,7 @@ public class Fragment1 extends Fragment {
     private int piotions=-1;
 
 
+
     public Fragment1() {
         dataList = new ArrayList<>();
 
@@ -106,6 +113,8 @@ public class Fragment1 extends Fragment {
         if (baoCunBeanDao!=null){
             baoCunBean=baoCunBeanDao.load(123456L);
         }
+
+
         //实例化过滤器；
         intentFilter = new IntentFilter();
         //添加过滤的Action值；
@@ -117,6 +126,7 @@ public class Fragment1 extends Fragment {
         getActivity().registerReceiver(netChangReceiver, intentFilter);
 
          view = inflater.inflate(R.layout.fragment_fragment1, container, false);
+
         sideBar = (SideBar) view.findViewById(R.id.side_bar);
         txtShowCurrentLetter = (TextView) view.findViewById(R.id.txt_show_current_letter);
         linearLayoutManager = new WrapContentLinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
@@ -365,7 +375,17 @@ public class Fragment1 extends Fragment {
                     ResponseBody body = response.body();
                     // Log.d("AllConnects", "识别结果返回"+response.body().string());
                     ss=body.string();
-                    Log.d("Fragment1", ss);
+
+//                    int i9 = 0;
+//                    while (true) {
+//                        if (i9 + 4000 >= ss.length()) {
+//                            Log.d("Fragment1", ss.substring(i9, ss.length()));
+//                            break;
+//                        } else {
+//                            Log.d("Fragment1", ss.substring(i9, i9 += 4000));
+//                        }
+//
+//                    }
                     JsonObject jsonObject= GsonUtil.parse(ss).getAsJsonObject();
                     Gson gson=new Gson();
                     final YuanGongBean zhaoPianBean=gson.fromJson(jsonObject,YuanGongBean.class);
@@ -384,7 +404,7 @@ public class Fragment1 extends Fragment {
                                     taiZhangAdapter.setLetters();
                                     lRecyclerView.refreshComplete(dataList.size());// REQUEST_COUNT为每页加载数量
                                     taiZhangAdapter.notifyDataSetChanged();
-
+                                  //  Log.d("Fragment1", "dataList.size():" + dataList.size());
                                 }
                             });
                         }
@@ -405,6 +425,7 @@ public class Fragment1 extends Fragment {
                                     taiZhangAdapter.setLetters();
                                     lRecyclerView.refreshComplete(20);// REQUEST_COUNT为每页加载数量
                                     taiZhangAdapter.notifyDataSetChanged();
+                                  //  Log.d("Fragment1", "dataList.size():" + dataList.size());
                                 }
                             });
                         }
