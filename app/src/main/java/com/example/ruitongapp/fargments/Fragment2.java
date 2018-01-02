@@ -341,7 +341,6 @@ public class Fragment2 extends Fragment {
                         .add("accountId", baoCunBean.getSid())
                         .add("compareTimeStart", "2016-01-01 11:22")
                         .add("compareTimeEnd", DateUtils.time(System.currentTimeMillis() + ""))
-                        .add("source", "0")
                         .add("name", name)
                         .add("pageNum", pageNum + "")
                         .add("pageSize", "20")
@@ -397,7 +396,7 @@ public class Fragment2 extends Fragment {
                         ResponseBody body = response.body();
                         // Log.d("AllConnects", "识别结果返回"+response.body().string());
                         ss = body.string();
-                        Log.d("Fragment2", "请求数据成功");
+                        Log.d("Fragment2", "请求数据成功"+ss);
                         JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
                         Gson gson = new Gson();
                         final FangKeBean zhaoPianBean = gson.fromJson(jsonObject, FangKeBean.class);

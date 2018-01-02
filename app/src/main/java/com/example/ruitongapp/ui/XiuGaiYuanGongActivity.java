@@ -1684,7 +1684,6 @@ public class XiuGaiYuanGongActivity extends Activity {
                 public void onFailure(Call call, IOException e) {
                     Log.d("AllConnects", "请求识别失败" + e.getMessage());
 
-
                 }
 
                 @Override
