@@ -329,7 +329,6 @@ public class Fragment2 extends Fragment {
                         .add("audit", audit + "")
                         .add("compareTimeStart", "2016-01-01 11:22")
                         .add("compareTimeEnd", DateUtils.time(System.currentTimeMillis() + ""))
-                        .add("source", "0")
                         .add("name", name)
                         .add("pageNum", pageNum + "")
                         .add("pageSize", "20")

@@ -1654,10 +1654,10 @@ public class XiuGaiYuanGongActivity extends Activity {
         }
     }
 
-    private void link_bumen() {
+     private void link_bumen() {
 
-        //final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
-        //http://192.168.2.4:8080/sign?cmd=getUnSignList&subjectId=jfgsdf
+            //final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+            //http://192.168.2.4:8080/sign?cmd=getUnSignList&subjectId=jfgsdf
         OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
 
         if (null!=baoCunBean.getSid()) {

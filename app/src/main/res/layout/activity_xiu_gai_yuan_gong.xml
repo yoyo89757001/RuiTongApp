@@ -65,7 +65,7 @@
                         android:id="@+id/gonghao111"
                         android:layout_marginLeft="16dp"
                         android:layout_marginStart="16dp"
-                        android:text="学号"
+                        android:text="姓名"
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
@@ -78,7 +78,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_marginRight="@dimen/sp_16"
                         android:id="@+id/name"
-                        android:hint="请输入学号"
+                        android:hint="请输入姓名"
                         android:textColorHint="@color/textcolor"
                         android:background="@null"
                         android:gravity="right|center_vertical"
@@ -110,7 +110,7 @@
                         android:layout_marginStart="16dp"
                         android:text="性别"
                         android:textColor="@color/blake"
-                        android:textSize="16sp" />
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/ff11"
@@ -419,7 +419,7 @@
                     <TextView
                         android:text="入职时间"
                         android:textColor="@color/blake"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
                         android:layout_marginLeft="16dp"
@@ -464,7 +464,7 @@
                     <TextView
                         android:text="员工生日"
                         android:textColor="@color/blake"
-                        android:textSize="16sp"
+                        android:textSize="14sp"
                         android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
                         android:layout_marginLeft="16dp"

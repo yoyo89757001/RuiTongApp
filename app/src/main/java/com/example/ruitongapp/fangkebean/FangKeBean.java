@@ -167,6 +167,15 @@ public class FangKeBean {
         public String visitIncident;
         public int visitNum;
         public String visitPerson;
+        public String homeNumber;
+
+        public String getHomeNumber() {
+            return homeNumber;
+        }
+
+        public void setHomeNumber(String homeNumber) {
+            this.homeNumber = homeNumber;
+        }
 
         public String getFirstLetter() {
             return firstLetter;

@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.media.FaceDetector;
 import android.net.Uri;
 import android.os.Build;
@@ -17,11 +18,15 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,8 +34,10 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.ruitongapp.MyApplication;
 import com.example.ruitongapp.R;
+import com.example.ruitongapp.adapters.PopupWindowAdapter;
 import com.example.ruitongapp.beans.BaoCunBean;
 import com.example.ruitongapp.beans.BaoCunBeanDao;
+import com.example.ruitongapp.beans.BuMenBeans;
 import com.example.ruitongapp.beans.MoRenFanHuiBean;
 import com.example.ruitongapp.beans.ShouFangBean;
 import com.example.ruitongapp.dialogs.PaiZhaoDialog2;
@@ -51,6 +58,9 @@ import org.parceler.Parcels;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,12 +104,15 @@ public class XiuGaiFangKeActivity extends Activity {
     @BindView(R.id.ruzhishijian)
     TextView ruzhishijian;
     @BindView(R.id.shouji)
-    EditText shouji;
+    TextView shouji;     //部门
     @BindView(R.id.laifangren)
     EditText laifangren;
     @BindView(R.id.zhiwei)
-    EditText zhiwei;
-
+    TextView zhiwei;  //来访目的
+    @BindView(R.id.laifangren1)
+    EditText laifangren1;  //来访人电话
+    @BindView(R.id.beifangren2)
+    EditText beifangren2;  //被访人电话
 
     private boolean isVip = false;
     private int type;
@@ -123,6 +136,12 @@ public class XiuGaiFangKeActivity extends Activity {
     private String cameraPath = null;
     private String ss;
     private int vipNum = 2;
+    private List<String> stringList=new ArrayList<>();
+    private List<String> stringList2=new ArrayList<>();
+    private PopupWindowAdapter adapterss;
+    private PopupWindowAdapter adapterss2;
+    private PopupWindow popupWindow=null;
+
 
 
     @Override
@@ -136,6 +155,10 @@ public class XiuGaiFangKeActivity extends Activity {
             tintManager.setStatusBarTintEnabled(true);
             tintManager.setStatusBarTintResource(R.color.titlecolor);
         }
+        stringList2.add("业务");
+        stringList2.add("面试");
+        stringList2.add("合作");
+        stringList2.add("其它");
 
         benDiYuanGong = Parcels.unwrap(getIntent().getParcelableExtra("chuansong"));
         baoCunBeanDao = MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
@@ -166,9 +189,11 @@ public class XiuGaiFangKeActivity extends Activity {
 
         if (benDiYuanGong != null) {
             laifangren.setText(benDiYuanGong.getName());
+            beifangren2.setText(benDiYuanGong.getHomeNumber()==null?"":benDiYuanGong.getHomeNumber());
+            laifangren1.setText(benDiYuanGong.getPhone()==null?"":benDiYuanGong.getPhone());
             ruzhishijian.setText(DateUtils.time(benDiYuanGong.getVisitDate() + ""));
             beifangren.setText(benDiYuanGong.getVisitPerson());
-            shouji.setText(benDiYuanGong.getPhone());
+            shouji.setText(benDiYuanGong.getVisitDepartment());
             zhiwei.setText(benDiYuanGong.getVisitIncident());
             if (benDiYuanGong.getSubjectType() == 1) {
                 vip_im.setImageResource(R.drawable.guan);
@@ -189,13 +214,17 @@ public class XiuGaiFangKeActivity extends Activity {
                         .into(fangkeruku);
             }
             shibiePaths = benDiYuanGong.getScanPhoto();
-            touxiangPath = benDiYuanGong.getAvatar();
+            if (benDiYuanGong.getAvatar()!=null){
+                touxiangPath=benDiYuanGong.getAvatar();
+            }
+
         }
+        link_bumen();
 
     }
 
 
-    @OnClick({R.id.ruzhi, R.id.vip, R.id.r6, R.id.leftim, R.id.righttv, R.id.fangkeruku,R.id.shanchu})
+    @OnClick({R.id.ruzhi, R.id.vip, R.id.r6, R.id.leftim, R.id.righttv, R.id.fangkeruku,R.id.shanchu,R.id.shouji,R.id.zhiwei})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ruzhi:
@@ -281,6 +310,47 @@ public class XiuGaiFangKeActivity extends Activity {
                 });
                 dialog.show();
                 break;
+                case R.id.shouji:
+                    View contentView = LayoutInflater.from(XiuGaiFangKeActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                    popupWindow=new PopupWindow(contentView,400, 560);
+                    ListView listView= (ListView) contentView.findViewById(R.id.dddddd);
+                    adapterss=new PopupWindowAdapter(XiuGaiFangKeActivity.this,stringList);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            shouji.setText(stringList.get(position));
+                            popupWindow.dismiss();
+                        }
+                    });
+                    listView.setAdapter(adapterss);
+
+                    popupWindow.setFocusable(true);//获取焦点
+                    popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                    popupWindow.setTouchable(true);//能够响应触摸事件
+                    popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                    popupWindow.showAsDropDown(shouji,shouji.getRight(),0);
+
+                    break;
+            case R.id.zhiwei:
+                View contentView2 = LayoutInflater.from(XiuGaiFangKeActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                popupWindow=new PopupWindow(contentView2,400, 400);
+                ListView listView2= (ListView) contentView2.findViewById(R.id.dddddd);
+                adapterss2=new PopupWindowAdapter(XiuGaiFangKeActivity.this,stringList2);
+                listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        zhiwei.setText(stringList2.get(position));
+                        popupWindow.dismiss();
+                    }
+                });
+                listView2.setAdapter(adapterss2);
+
+                popupWindow.setFocusable(true);//获取焦点
+                popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                popupWindow.setTouchable(true);//能够响应触摸事件
+                popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                popupWindow.showAsDropDown(zhiwei,zhiwei.getRight(),0);
+                break;
         }
     }
 
@@ -339,17 +409,19 @@ public class XiuGaiFangKeActivity extends Activity {
             //添加
             body = new FormBody.Builder()
                     .add("name", laifangren.getText().toString().trim())
-                    .add("phone", shouji.getText().toString().trim())
+                    .add("phone", laifangren1.getText().toString().trim())
                     .add("visitDate2", ruzhishijian.getText().toString().trim())
                     .add("visitPerson", beifangren.getText().toString().trim())
                     .add("avatar", touxiangPath)
                     .add("visitNum", "1")
+                    .add("visitDepartment", shouji.getText().toString().trim())
                     .add("scanPhoto", shibiePaths)
                     .add("visitIncident", zhiwei.getText().toString().trim())
                     .add("cardNumber", "rt" + System.currentTimeMillis())
                     .add("source", "2")
                     .add("subjectType", vipNum + "")
                     .add("token", baoCunBean.getToken())
+                    .add("homeNumber", beifangren2.getText().toString().trim())
                     .add("accountId", baoCunBean.getSid())
                     .build();
 
@@ -358,11 +430,13 @@ public class XiuGaiFangKeActivity extends Activity {
             body = new FormBody.Builder()
                     .add("id", benDiYuanGong.getId() + "")
                     .add("name", laifangren.getText().toString().trim())
-                    .add("phone", shouji.getText().toString().trim())
+                    .add("phone", laifangren1.getText().toString().trim())
                     .add("visitDate2", ruzhishijian.getText().toString().trim())
                     .add("visitPerson", beifangren.getText().toString().trim())
                     .add("avatar", touxiangPath)
                     .add("visitNum", "1")
+                    .add("visitDepartment", shouji.getText().toString().trim())
+                    .add("homeNumber", beifangren2.getText().toString().trim())
                     .add("scanPhoto", shibiePaths)
                     .add("visitIncident", zhiwei.getText().toString().trim())
                     .add("source", "2")
@@ -1157,6 +1231,85 @@ public class XiuGaiFangKeActivity extends Activity {
             }
         });
 
+    }
+
+    private void link_bumen() {
+
+        //final MediaType JSON=MediaType.parse("application/json; charset=utf-8");
+        //http://192.168.2.4:8080/sign?cmd=getUnSignList&subjectId=jfgsdf
+        OkHttpClient okHttpClient= MyApplication.getOkHttpClient();
+
+        if (null!=baoCunBean.getSid()) {
+
+            //    /* form的分割线,自己定义 */
+            //        String boundary = "xx--------------------------------------------------------------xx";
+            RequestBody body = new FormBody.Builder()
+                    .add("status","1")
+                    .add("token",baoCunBean.getToken())
+                    .add("accountId",baoCunBean.getSid())
+                    .build();
+
+            Request.Builder requestBuilder = new Request.Builder()
+                    // .header("Content-Type", "application/json")
+                    .post(body)
+                    .url(baoCunBean.getDizhi() + "/queryAllDept.do");
+
+            // step 3：创建 Call 对象
+            Call call = okHttpClient.newCall(requestBuilder.build());
+
+            //step 4: 开始异步请求
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.d("AllConnects", "请求识别失败" + e.getMessage());
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+
+                    Log.d("AllConnects", "请求识别成功" + call.request().toString());
+                    //获得返回体
+                    try {
+
+                        ResponseBody body = response.body();
+                        ss = body.string().trim();
+                        Log.d("DengJiActivity", ss);
+
+                        JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                        Gson gson = new Gson();
+                        BuMenBeans zhaoPianBean = gson.fromJson(jsonObject, BuMenBeans.class);
+                        int size=zhaoPianBean.getObjects().size();
+                        if (stringList.size()>0){
+                            stringList.clear();
+                        }
+                        for (int i=0;i<size;i++){
+                            stringList.add(zhaoPianBean.getObjects().get(i).getDeptName());
+                        }
+                        Collections.reverse(stringList); // 倒序排列
+
+
+                    } catch (Exception e) {
+                        dengLuGuoQi(ss);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (tiJIaoDialog != null && !XiuGaiFangKeActivity.this.isFinishing()) {
+                                    tiJIaoDialog.dismiss();
+                                    tiJIaoDialog = null;
+                                }
+                            }
+                        });
+
+                        Log.d("WebsocketPushMsg", e.getMessage());
+                    }
+                }
+            });
+        }else {
+            Toast tastyToast = TastyToast.makeText(XiuGaiFangKeActivity.this, "账户ID为空!,请设置帐户ID", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+            tastyToast.setGravity(Gravity.CENTER, 0, 0);
+            tastyToast.show();
+        }
     }
 
     private void dengLuGuoQi(String ss) {
