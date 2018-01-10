@@ -311,25 +311,30 @@ public class XiuGaiFangKeActivity extends Activity {
                 dialog.show();
                 break;
                 case R.id.shouji:
-                    View contentView = LayoutInflater.from(XiuGaiFangKeActivity.this).inflate(R.layout.xiangmu_po_item, null);
-                    popupWindow=new PopupWindow(contentView,400, 560);
-                    ListView listView= (ListView) contentView.findViewById(R.id.dddddd);
-                    adapterss=new PopupWindowAdapter(XiuGaiFangKeActivity.this,stringList);
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            shouji.setText(stringList.get(position));
-                            popupWindow.dismiss();
-                        }
-                    });
-                    listView.setAdapter(adapterss);
+                    if (stringList.size()>0) {
+                        View contentView = LayoutInflater.from(XiuGaiFangKeActivity.this).inflate(R.layout.xiangmu_po_item, null);
+                        popupWindow = new PopupWindow(contentView, 400, 560);
+                        ListView listView = (ListView) contentView.findViewById(R.id.dddddd);
+                        adapterss = new PopupWindowAdapter(XiuGaiFangKeActivity.this, stringList);
+                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                shouji.setText(stringList.get(position));
+                                popupWindow.dismiss();
+                            }
+                        });
+                        listView.setAdapter(adapterss);
 
-                    popupWindow.setFocusable(true);//获取焦点
-                    popupWindow.setOutsideTouchable(true);//获取外部触摸事件
-                    popupWindow.setTouchable(true);//能够响应触摸事件
-                    popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
-                    popupWindow.showAsDropDown(shouji,shouji.getRight(),0);
-
+                        popupWindow.setFocusable(true);//获取焦点
+                        popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                        popupWindow.setTouchable(true);//能够响应触摸事件
+                        popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                        popupWindow.showAsDropDown(shouji, shouji.getRight(), 0);
+                    }else {
+                        Toast tastyToast= TastyToast.makeText(XiuGaiFangKeActivity.this,"暂无部门数据，请从后台添加",TastyToast.LENGTH_LONG,4);
+                        tastyToast.setGravity(Gravity.CENTER,0,0);
+                        tastyToast.show();
+                    }
                     break;
             case R.id.zhiwei:
                 View contentView2 = LayoutInflater.from(XiuGaiFangKeActivity.this).inflate(R.layout.xiangmu_po_item, null);
@@ -1274,7 +1279,7 @@ public class XiuGaiFangKeActivity extends Activity {
 
                         ResponseBody body = response.body();
                         ss = body.string().trim();
-                        Log.d("DengJiActivity", ss);
+                        Log.d("DengJiActivity", ss+"hhhh");
 
                         JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
                         Gson gson = new Gson();

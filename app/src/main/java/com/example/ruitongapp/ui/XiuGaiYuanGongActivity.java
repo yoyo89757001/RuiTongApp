@@ -210,14 +210,12 @@ public class XiuGaiYuanGongActivity extends Activity {
             baoCunBean=baoCunBeanDao.load(123456L);
         }
         link_bumen();
-        stringList.add("省公司领导");
-        stringList.add("市公司领导");
-        stringList.add("特邀嘉宾");
-        stringList.add("技术部");
+
         r3= (RelativeLayout) findViewById(R.id.r3);
         r3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (stringList.size()>0){
                 View contentView = LayoutInflater.from(XiuGaiYuanGongActivity.this).inflate(R.layout.xiangmu_po_item, null);
                 popupWindow=new PopupWindow(contentView,400, 560);
                 ListView listView= (ListView) contentView.findViewById(R.id.dddddd);
@@ -237,6 +235,11 @@ public class XiuGaiYuanGongActivity extends Activity {
                 popupWindow.setTouchable(true);//能够响应触摸事件
                 popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
                 popupWindow.showAsDropDown(r3,bumen.getRight(),0);
+                }else {
+                    Toast tastyToast= TastyToast.makeText(XiuGaiYuanGongActivity.this,"暂无部门数据，请从后台添加",TastyToast.LENGTH_LONG,4);
+                    tastyToast.setGravity(Gravity.CENTER,0,0);
+                    tastyToast.show();
+                }
             }
         });
 
@@ -1695,7 +1698,7 @@ public class XiuGaiYuanGongActivity extends Activity {
 
                         ResponseBody body = response.body();
                         ss = body.string().trim();
-                        Log.d("DengJiActivity", ss);
+                        Log.d("DengJiActivity", ss+"hhhh");
 
                         JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
                         Gson gson = new Gson();
