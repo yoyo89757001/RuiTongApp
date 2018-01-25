@@ -69,6 +69,18 @@
         <activity android:name=".ui.SouSuo3Activity" />
         <activity android:name=".ui.LogingActivity" />
         <activity android:name=".ui.FaBuGongGaoActivity"/>
+
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_pathss" />
+        </provider>
+
+
     </application>
 
 </manifest>

@@ -66,7 +66,7 @@ public class QiDongActivity extends Activity {
             @Override
             public void run() {
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(5000);
                     startActivity(new Intent(QiDongActivity.this,LogingActivity.class));
                     finish();
                 } catch (InterruptedException e) {

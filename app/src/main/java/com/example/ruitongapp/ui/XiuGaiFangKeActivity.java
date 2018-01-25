@@ -25,6 +25,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -141,6 +142,9 @@ public class XiuGaiFangKeActivity extends Activity {
     private PopupWindowAdapter adapterss;
     private PopupWindowAdapter adapterss2;
     private PopupWindow popupWindow=null;
+    private EditText qiye;
+    private RelativeLayout ruizhi2;
+    private TextView riqi2;
 
 
 
@@ -160,6 +164,9 @@ public class XiuGaiFangKeActivity extends Activity {
         stringList2.add("合作");
         stringList2.add("其它");
 
+        ruizhi2= (RelativeLayout) findViewById(R.id.ruzhi2);
+        riqi2= (TextView) findViewById(R.id.jieshushijian);
+        qiye= (EditText) findViewById(R.id.qiye);
         benDiYuanGong = Parcels.unwrap(getIntent().getParcelableExtra("chuansong"));
         baoCunBeanDao = MyApplication.myAppLaction.getDaoSession().getBaoCunBeanDao();
         if (baoCunBeanDao != null) {
@@ -224,13 +231,18 @@ public class XiuGaiFangKeActivity extends Activity {
     }
 
 
-    @OnClick({R.id.ruzhi, R.id.vip, R.id.r6, R.id.leftim, R.id.righttv, R.id.fangkeruku,R.id.shanchu,R.id.shouji,R.id.zhiwei})
+    @OnClick({R.id.ruzhi, R.id.vip, R.id.r6, R.id.leftim, R.id.righttv, R.id.fangkeruku,R.id.shanchu,R.id.shouji,R.id.zhiwei,R.id.ruzhi2})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.ruzhi:
                 //来访时间
                 Intent intent = new Intent(XiuGaiFangKeActivity.this, DatePickActivity.class).putExtra("yyy", 1);
                 startActivityForResult(intent, 2);
+                break;
+            case R.id.ruzhi2:
+                //来访时间
+                Intent intent2 = new Intent(XiuGaiFangKeActivity.this, DatePickActivity.class).putExtra("yyy", 1);
+                startActivityForResult(intent2, 3);
                 break;
             case R.id.vip:
 
@@ -266,10 +278,10 @@ public class XiuGaiFangKeActivity extends Activity {
                 break;
             case R.id.righttv:
                 //保存
-                if (!laifangren.getText().toString().trim().equals("") && !ruzhishijian.getText().toString().trim().equals("") && !shibiePaths.equals("")) {
+                if (!laifangren.getText().toString().trim().equals("") && !ruzhishijian.getText().toString().trim().equals("") && !shibiePaths.equals("") && !riqi2.getText().toString().trim().equals("")) {
                     link_gengxinTuPian();
                 } else {
-                    Utils.showToast(XiuGaiFangKeActivity.this, "请填写完整信息再提交", 3);
+                    Utils.showToast(XiuGaiFangKeActivity.this, "姓名,来访时间,识别照片,必须填写", 3);
                 }
 
                 break;
@@ -310,35 +322,35 @@ public class XiuGaiFangKeActivity extends Activity {
                 });
                 dialog.show();
                 break;
-                case R.id.shouji:
-                    if (stringList.size()>0) {
-                        View contentView = LayoutInflater.from(XiuGaiFangKeActivity.this).inflate(R.layout.xiangmu_po_item, null);
-                        popupWindow = new PopupWindow(contentView, 400, 560);
-                        ListView listView = (ListView) contentView.findViewById(R.id.dddddd);
-                        adapterss = new PopupWindowAdapter(XiuGaiFangKeActivity.this, stringList);
-                        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                shouji.setText(stringList.get(position));
-                                popupWindow.dismiss();
-                            }
-                        });
-                        listView.setAdapter(adapterss);
+            case R.id.shouji:
+                if (stringList.size()>0) {
+                    View contentView = LayoutInflater.from(XiuGaiFangKeActivity.this).inflate(R.layout.xiangmu_po_item, null);
 
-                        popupWindow.setFocusable(true);//获取焦点
-                        popupWindow.setOutsideTouchable(true);//获取外部触摸事件
-                        popupWindow.setTouchable(true);//能够响应触摸事件
-                        popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
-                        popupWindow.showAsDropDown(shouji, shouji.getRight(), 0);
-                    }else {
-                        Toast tastyToast= TastyToast.makeText(XiuGaiFangKeActivity.this,"暂无部门数据，请从后台添加",TastyToast.LENGTH_LONG,4);
-                        tastyToast.setGravity(Gravity.CENTER,0,0);
-                        tastyToast.show();
-                    }
-                    break;
+                    ListView listView = (ListView) contentView.findViewById(R.id.dddddd);
+                    adapterss = new PopupWindowAdapter(XiuGaiFangKeActivity.this, stringList);
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            shouji.setText(stringList.get(position));
+                            popupWindow.dismiss();
+                        }
+                    });
+                    listView.setAdapter(adapterss);
+                    popupWindow = new PopupWindow(contentView, 400, setListViewHeightBasedOnChildren(listView));
+                    popupWindow.setFocusable(true);//获取焦点
+                    popupWindow.setOutsideTouchable(true);//获取外部触摸事件
+                    popupWindow.setTouchable(true);//能够响应触摸事件
+                    popupWindow.setBackgroundDrawable(new ColorDrawable(0x00000000));//设置背景
+                    popupWindow.showAsDropDown(shouji, shouji.getRight(), 0);
+                }else {
+                    Toast tastyToast= TastyToast.makeText(XiuGaiFangKeActivity.this,"暂无部门数据，请从后台添加",TastyToast.LENGTH_LONG,4);
+                    tastyToast.setGravity(Gravity.CENTER,0,0);
+                    tastyToast.show();
+                }
+                break;
             case R.id.zhiwei:
                 View contentView2 = LayoutInflater.from(XiuGaiFangKeActivity.this).inflate(R.layout.xiangmu_po_item, null);
-                popupWindow=new PopupWindow(contentView2,400, 400);
+
                 ListView listView2= (ListView) contentView2.findViewById(R.id.dddddd);
                 adapterss2=new PopupWindowAdapter(XiuGaiFangKeActivity.this,stringList2);
                 listView2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -349,7 +361,7 @@ public class XiuGaiFangKeActivity extends Activity {
                     }
                 });
                 listView2.setAdapter(adapterss2);
-
+                popupWindow=new PopupWindow(contentView2,400, setListViewHeightBasedOnChildren(listView2));
                 popupWindow.setFocusable(true);//获取焦点
                 popupWindow.setOutsideTouchable(true);//获取外部触摸事件
                 popupWindow.setTouchable(true);//能够响应触摸事件
@@ -359,6 +371,30 @@ public class XiuGaiFangKeActivity extends Activity {
         }
     }
 
+
+    public int setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return 0;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            // listItem.measure(0, 0);
+            listItem.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+//        ViewGroup.LayoutParams params = listView.getLayoutParams();
+//        params.height = totalHeight
+//                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+//        listView.setLayoutParams(params);
+        return totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+    }
 
     private class NetChangReceiver extends BroadcastReceiver {
 
@@ -380,16 +416,18 @@ public class XiuGaiFangKeActivity extends Activity {
     private void xiangce(int type) {
         if (type == 99) {
             //更新头像
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
+            Intent intent = new Intent();
+            // intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            intent.setAction(Intent.ACTION_PICK);
+            intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, ALBUM_REQUEST_CODE2);
 
         } else {
             //更新识别照片
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
+            Intent intent = new Intent();
+            // intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            intent.setAction(Intent.ACTION_PICK);
+            intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, ALBUM_REQUEST_CODE);
         }
 
@@ -452,7 +490,6 @@ public class XiuGaiFangKeActivity extends Activity {
                     .build();
 
         }
-
 
         Request.Builder requestBuilder = new Request.Builder()
                 // .header("Content-Type", "application/json")
@@ -553,7 +590,14 @@ public class XiuGaiFangKeActivity extends Activity {
                 ruzhishijian.setText(date);
             }
         }
-
+        if (resultCode == Activity.RESULT_OK && requestCode == 3) {
+            // 选择预约时间的页面被关闭
+            String date = data.getStringExtra("date");
+            int yyy = data.getIntExtra("yyy", 0);
+            if (yyy == 1) {
+                riqi2.setText(date);
+            }
+        }
 
         //相册，更新识别照片
         if (requestCode == ALBUM_REQUEST_CODE) {
@@ -1064,34 +1108,34 @@ public class XiuGaiFangKeActivity extends Activity {
                 try {
 
 
-                cameraPath = null;
-                //获得返回体
-                ResponseBody body = response.body();
-                String ss = body.string();
-                Log.d("AllConnects", "aa   " + ss);
-                JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
-                // Gson gson=new Gson();
-                int code = jsonObject.get("exId").getAsInt();
-                if (code == 0) {
-                    String array = jsonObject.get("exDesc").getAsString();
-                    link_zhiliang(array);
+                    cameraPath = null;
+                    //获得返回体
+                    ResponseBody body = response.body();
+                    String ss = body.string();
+                    Log.d("AllConnects", "aa   " + ss);
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    // Gson gson=new Gson();
+                    int code = jsonObject.get("exId").getAsInt();
+                    if (code == 0) {
+                        String array = jsonObject.get("exDesc").getAsString();
+                        link_zhiliang(array);
 
-                } else {
+                    } else {
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
 
-                            if (dialog2 != null && !XiuGaiFangKeActivity.this.isFinishing()) {
-                                dialog2.dismiss();
-                                dialog2 = null;
+                                if (dialog2 != null && !XiuGaiFangKeActivity.this.isFinishing()) {
+                                    dialog2.dismiss();
+                                    dialog2 = null;
+                                }
+                                TastyToast.makeText(getApplicationContext(),
+                                        "上传失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
                             }
-                            TastyToast.makeText(getApplicationContext(),
-                                    "上传失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
-                        }
-                    });
+                        });
 
-                }
+                    }
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -1182,57 +1226,57 @@ public class XiuGaiFangKeActivity extends Activity {
                         }
                     }
                 });
-               try {
+                try {
 
 
-                cameraPath = null;
-                //获得返回体
-                ResponseBody body = response.body();
-                String ss = body.string();
-                Log.d("AllConnects", "aa   " + ss);
-                JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
-                Gson gson = new Gson();
-                int code = jsonObject.get("exId").getAsInt();
-                if (code == 0) {
+                    cameraPath = null;
+                    //获得返回体
+                    ResponseBody body = response.body();
+                    String ss = body.string();
+                    Log.d("AllConnects", "aa   " + ss);
+                    JsonObject jsonObject = GsonUtil.parse(ss).getAsJsonObject();
+                    Gson gson = new Gson();
+                    int code = jsonObject.get("exId").getAsInt();
+                    if (code == 0) {
 
-                    touxiangPath = jsonObject.get("exDesc").getAsString();
+                        touxiangPath = jsonObject.get("exDesc").getAsString();
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Glide.with(XiuGaiFangKeActivity.this)
-                                    .load(baoCunBean.getDizhi() + "/upload/avatar/" + touxiangPath)
-                                    .transform(new GlideCircleTransform(XiuGaiFangKeActivity.this, 0.6f, Color.parseColor("#ffffffff")))
-                                    .into(touxiang);
-                        }
-                    });
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Glide.with(XiuGaiFangKeActivity.this)
+                                        .load(baoCunBean.getDizhi() + "/upload/avatar/" + touxiangPath)
+                                        .transform(new GlideCircleTransform(XiuGaiFangKeActivity.this, 0.6f, Color.parseColor("#ffffffff")))
+                                        .into(touxiang);
+                            }
+                        });
 
-                    //link_gengxinTuPian();
+                        //link_gengxinTuPian();
 
-                } else {
+                    } else {
 
 
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
 
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (!XiuGaiFangKeActivity.this.isFinishing() && dialog88 != null && dialog88.isShowing()) {
-                                        dialog88.dismiss();
-                                        dialog88 = null;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (!XiuGaiFangKeActivity.this.isFinishing() && dialog88 != null && dialog88.isShowing()) {
+                                            dialog88.dismiss();
+                                            dialog88 = null;
+                                        }
                                     }
-                                }
-                            });
-                            TastyToast.makeText(getApplicationContext(),
-                                    "上传头像失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
-                        }
-                    });
+                                });
+                                TastyToast.makeText(getApplicationContext(),
+                                        "上传头像失败", TastyToast.LENGTH_LONG, TastyToast.ERROR);
+                            }
+                        });
+                    }
+                }catch (Exception e){
+                    Log.d("XiuGaiFangKeActivity", e.getMessage()+"");
                 }
-               }catch (Exception e){
-                   Log.d("XiuGaiFangKeActivity", e.getMessage()+"");
-               }
             }
         });
 

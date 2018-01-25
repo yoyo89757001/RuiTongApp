@@ -29,6 +29,7 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -163,7 +164,7 @@ public class XiuGaiYuanGongActivity extends Activity {
     private PopupWindow popupWindow=null;
     private RelativeLayout r3;
     private List<String> stringList=new ArrayList<>();
-    private int p1=-1;
+//    private int p1=-1;
     private PopupWindowAdapter adapterss;
 
 
@@ -217,19 +218,19 @@ public class XiuGaiYuanGongActivity extends Activity {
             public void onClick(View v) {
                 if (stringList.size()>0){
                 View contentView = LayoutInflater.from(XiuGaiYuanGongActivity.this).inflate(R.layout.xiangmu_po_item, null);
-                popupWindow=new PopupWindow(contentView,400, 560);
+
                 ListView listView= (ListView) contentView.findViewById(R.id.dddddd);
                 adapterss=new PopupWindowAdapter(XiuGaiYuanGongActivity.this,stringList);
                 listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        p1=position;
+                       // p1=position;
                         bumen.setText(stringList.get(position));
                         popupWindow.dismiss();
                     }
                 });
                 listView.setAdapter(adapterss);
-
+                popupWindow=new PopupWindow(contentView,400, setListViewHeightBasedOnChildren(listView));
                 popupWindow.setFocusable(true);//获取焦点
                 popupWindow.setOutsideTouchable(true);//获取外部触摸事件
                 popupWindow.setTouchable(true);//能够响应触摸事件
@@ -527,7 +528,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                 break;
             case R.id.righttv:
                 //保存
-                if (!name.getText().toString().trim().equals("") && !shibiePaths.equals("") && p1!=-1){
+                if (!name.getText().toString().trim().equals("") && !shibiePaths.equals("") ){
                     link_gengxinTuPian();
                 }else {
                     TastyToast.makeText(getApplicationContext(),
@@ -1121,6 +1122,30 @@ public class XiuGaiYuanGongActivity extends Activity {
 
     }
 
+    public int setListViewHeightBasedOnChildren(ListView listView) {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter == null) {
+            // pre-condition
+            return 0;
+        }
+
+        int totalHeight = 0;
+        for (int i = 0; i < listAdapter.getCount(); i++) {
+            View listItem = listAdapter.getView(i, null, listView);
+            // listItem.measure(0, 0);
+            listItem.measure(
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                    View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+            totalHeight += listItem.getMeasuredHeight();
+        }
+
+//        ViewGroup.LayoutParams params = listView.getLayoutParams();
+//        params.height = totalHeight
+//                + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+//        listView.setLayoutParams(params);
+        return totalHeight + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+    }
+
     @Override
     public void onDestroy() {
         handler.removeCallbacksAndMessages(null);
@@ -1302,16 +1327,18 @@ public class XiuGaiYuanGongActivity extends Activity {
     private void xiangce(int type) {
         if (type == 99) {
             //更新头像
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
+            Intent intent = new Intent();
+           // intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            intent.setAction(Intent.ACTION_PICK);
+            intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, ALBUM_REQUEST_CODE2);
 
         } else {
             //更新识别照片
-            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
-            intent.setAction(Intent.ACTION_GET_CONTENT);
+            Intent intent = new Intent();
+           // intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
+            intent.setAction(Intent.ACTION_PICK);
+            intent.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(intent, ALBUM_REQUEST_CODE);
         }
 
