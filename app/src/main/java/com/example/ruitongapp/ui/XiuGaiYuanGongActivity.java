@@ -153,7 +153,7 @@ public class XiuGaiYuanGongActivity extends Activity {
     private FuWuQiBeanDao fuWuQiBeanDao = null;
     private List<FuWuQiBean> fuWuQiBeanList = null;
     private FuWuQiBean fuWuQiBean = null;
-    private int nannv = 0;
+    private int nannv = 1;
     private String touxiangPath="";
     private String shibiePaths="";
     private BaoCunBeanDao baoCunBeanDao=null;
