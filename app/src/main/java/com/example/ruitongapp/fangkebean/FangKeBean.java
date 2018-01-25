@@ -168,6 +168,24 @@ public class FangKeBean {
         public int visitNum;
         public String visitPerson;
         public String homeNumber;
+        public long visitEndDate;
+        public String companyName;
+
+        public long getVisitEndDate() {
+            return visitEndDate;
+        }
+
+        public void setVisitEndDate(long visitEndDate) {
+            this.visitEndDate = visitEndDate;
+        }
+
+        public String getCompanyName() {
+            return companyName;
+        }
+
+        public void setCompanyName(String companyName) {
+            this.companyName = companyName;
+        }
 
         public String getHomeNumber() {
             return homeNumber;

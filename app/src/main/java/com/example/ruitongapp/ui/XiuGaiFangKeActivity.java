@@ -198,7 +198,11 @@ public class XiuGaiFangKeActivity extends Activity {
             laifangren.setText(benDiYuanGong.getName());
             beifangren2.setText(benDiYuanGong.getHomeNumber()==null?"":benDiYuanGong.getHomeNumber());
             laifangren1.setText(benDiYuanGong.getPhone()==null?"":benDiYuanGong.getPhone());
-            ruzhishijian.setText(DateUtils.time(benDiYuanGong.getVisitDate() + ""));
+            if (benDiYuanGong.getVisitDate()!=0)
+                ruzhishijian.setText(DateUtils.time(benDiYuanGong.getVisitDate() + ""));
+            if (benDiYuanGong.getVisitEndDate()!=0)
+                riqi2.setText(DateUtils.time(benDiYuanGong.getVisitEndDate() + ""));
+            qiye.setText(benDiYuanGong.getCompanyName());
             beifangren.setText(benDiYuanGong.getVisitPerson());
             shouji.setText(benDiYuanGong.getVisitDepartment());
             zhiwei.setText(benDiYuanGong.getVisitIncident());
@@ -466,6 +470,8 @@ public class XiuGaiFangKeActivity extends Activity {
                     .add("token", baoCunBean.getToken())
                     .add("homeNumber", beifangren2.getText().toString().trim())
                     .add("accountId", baoCunBean.getSid())
+                    .add("visitEndDate2", riqi2.getText().toString().trim())
+                    .add("companyName", qiye.getText().toString().trim())
                     .build();
 
         } else {
@@ -487,6 +493,8 @@ public class XiuGaiFangKeActivity extends Activity {
                     .add("subjectType", vipNum + "")
                     .add("token", baoCunBean.getToken())
                     .add("accountId", baoCunBean.getSid())
+                    .add("visitEndDate2", riqi2.getText().toString().trim())
+                    .add("companyName", qiye.getText().toString().trim())
                     .build();
 
         }
@@ -498,7 +506,6 @@ public class XiuGaiFangKeActivity extends Activity {
 
         // step 3：创建 Call 对象
         Call call = okHttpClient.newCall(requestBuilder.build());
-
         //step 4: 开始异步请求
         call.enqueue(new Callback() {
             @Override
