@@ -230,7 +230,7 @@ public class XiuGaiYuanGongActivity extends Activity {
                     }
                 });
                 listView.setAdapter(adapterss);
-                popupWindow=new PopupWindow(contentView,400, setListViewHeightBasedOnChildren(listView));
+                popupWindow=new PopupWindow(contentView,400, setListViewHeightBasedOnChildren(listView)>500?500:setListViewHeightBasedOnChildren(listView));
                 popupWindow.setFocusable(true);//获取焦点
                 popupWindow.setOutsideTouchable(true);//获取外部触摸事件
                 popupWindow.setTouchable(true);//能够响应触摸事件
